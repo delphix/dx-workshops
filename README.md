@@ -24,7 +24,7 @@ This template depends on packer and ansible existing in your path. If you are ru
 After cloning this repo, install the required ansible dependencies.
 
 ```bash
-git clone https://gitlab.delphix.com/cto-research/packer-CentOS6.9-Oracle11.2.0.4
+git clone https://github.com/delphix/packer-delphix-centos69-oracle11204
 packer-CentOS6.9-Oracle11.2.0.4
 brew install ansible packer
 ansible-galaxy install -r requirements.yml
@@ -52,6 +52,7 @@ packer build delphix-centOS6.9-oracle11.2.0.4.json
 5. ORACLE_BINARIES_ROOT_URL - The URL where the AWS instance can retrieve the Oracle binaries during the packer build
 6. AWS_VPC_ID - The VPC ID from the region that packer will use
 7. AWS_SUBNET_ID - The subnet ID from the VPC that packer will use
+#The below values are arbitrary, and only for tagging resources
 8. AWS_EXPIRATION - The date this AMI is expired, i.e. "2037-07-01" or "never"
 9. AWS_OWNER - The name of the person who owns the AMI, i.e. "Adam Bowen"
 10. AWS_PROJECT - The name of the project that the AMI belongs, or came, from
