@@ -25,7 +25,7 @@ After cloning this repo, install the required ansible dependencies.
 
 ```bash
 git clone https://github.com/delphix/packer-delphix-centos69-oracle11204
-packer-CentOS6.9-Oracle11.2.0.4
+cd packer-delphix-centos69-oracle11204
 brew install ansible packer
 ansible-galaxy install -r requirements.yml
 ```
