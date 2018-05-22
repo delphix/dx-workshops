@@ -53,7 +53,8 @@
         "ANSIBLE_HOST_KEY_CHECKING=False"
       ],
       "playbook_file": "oracle_install.yml",
-      "type": "ansible"
+      "type": "ansible",
+      "user": "centos"
     },
     {
       "inline": [
