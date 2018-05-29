@@ -17,6 +17,16 @@
       ],
       "name": "cent69-Oracle11204",
       "region": "{{user `region`}}",
+      "run_tags": {
+        "dlpx:Expiration": "{{isotime \"2006-01-02\"}}",
+        "dlpx:Owner": "{{user `dlpx:Owner`}}",
+        "dlpx:Project": "{{user `dlpx:Project`}}"
+      },
+      "run_volume_tags": {
+        "dlpx:Expiration": "{{isotime \"2006-01-02\"}}",
+        "dlpx:Owner": "{{user `dlpx:Owner`}}",
+        "dlpx:Project": "{{user `dlpx:Project`}}"
+      },
       "secret_key": "{{user `aws_secret_key`}}",
       "source_ami_filter": {
         "filters": {
