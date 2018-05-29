@@ -42,6 +42,8 @@
   "provisioners": [
     {
       "inline": [
+        "sudo yum update -y",
+        "sudo yum install -y bind-utils",
         "curl -o /tmp/p13390677_112040_Linux-x86-64_1of7.zip {{user `oracle_binaries_root_url`}}/p13390677_112040_Linux-x86-64_1of7.zip",
         "curl -o /tmp/p13390677_112040_Linux-x86-64_2of7.zip {{user `oracle_binaries_root_url`}}/p13390677_112040_Linux-x86-64_2of7.zip",
         "ls -lart /tmp"
