@@ -1,5 +1,6 @@
-# Install a role from the Ansible Galaxy
+- src: geerlingguy.java
 - src: delphix.target-host
 - src: https://github.com/delphix/oracle_install
 #- src: delphix_oracle
-- src:  geerlingguy.firewall
+- src: geerlingguy.firewall
+- src: geerlingguy.nginx
