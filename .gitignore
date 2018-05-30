@@ -1,3 +1,4 @@
 *.retry
 *.bak
 facts.yml
+*.DS_Store
