@@ -1,0 +1,84 @@
+---
+
+- name: install rds demo components
+  hosts: "all"
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Install Java
+      include_role:
+        name: geerlingguy.java      
+    - name: "Install and Configure WebApp"
+      include_role:
+        name: webapp
+      vars:
+        - install_dir: "{{ item.value.install_dir }}"
+        - catalina_home: "{{ item.value.catalina_home }}"
+        - http_port: "{{ item.value.http_port }}"
+        - shutdown_port: "{{ item.value.shutdown_port }}"
+        - ajp_port: "{{ item.value.ajp_port }}"
+        - db_host: "{{ item.value.db_host }}"
+        - service_name: "{{ item.value.service_name }}"
+        - db_password: "{{ item.value.db_password }}"
+        - db_sid: "{{ item.value.db_sid }}"
+        - page_title: "{{ item.value.page_title }}"
+        - read_only: "{{ item.value.read_only }}"
+      loop: "{{ q('dict', apache_instances) }}"
+    - name: Configure nginx for the tomcat instances
+      include_role:
+        name: configure_nginx
+    - name: Configure the nginx splash page for the rds demo
+      include_role:
+        name: rds_demo 
+  vars:
+    java_home: "/usr/lib/jvm/jre"
+    firewall_allowed_tcp_ports:
+      - "22"
+      - "1521"
+      - "80"
+      - "8080"
+      - "8181"
+      - "8282"
+    apache_instances:
+      replica:
+        install_dir: "/opt/apache-tomcat-replica"
+        catalina_home: "/usr/share/tomcat-replica"
+        http_port: 8080
+        shutdown_port: 8005
+        ajp_port: 8009
+        service_name: tomcat-replica
+        db_host: localhost
+        db_sid: rdsrepl
+        db_password: delphixdb
+        page_title: "RDS Replica - Only for Viewing"
+        read_only: "true"
+        button_title: "RDS Replica Instance"
+        button_description: "Click the button below to launch the Employee Web Application associated with the database that is functioning as the target in Amazon DMS replication from the source database running in Amazon RDS."
+      dev:
+        install_dir: "/opt/apache-tomcat-dev"
+        catalina_home: "/usr/share/tomcat-dev"
+        http_port: 8181
+        shutdown_port: 8105
+        ajp_port: 8109
+        service_name: tomcat-dev
+        db_host: localhost
+        db_sid: devdb
+        db_password: delphixdb
+        page_title: "Dev Instance"
+        read_only: "false"
+        button_title: "Dev Instance"
+        button_description: "Click the button below to launch the Employee Web Application associated with the development virtual database which is a read/write clone of the source database running in Amazon RDS."
+      source:
+        install_dir: "/opt/apache-tomcat-source"
+        catalina_home: "/usr/share/tomcat-source"
+        http_port: 8282
+        shutdown_port: 8205
+        ajp_port: 8209
+        service_name: tomcat-source
+        db_host: "rdshost"
+        db_sid: orcl
+        db_password: delphixdbpassword
+        page_title: "RDS Source Instance"
+        read_only: "false"
+        button_title: "RDS Source Instance"
+        button_description: "Click the button below to launch the Employee Web Application associated with the source database running in Amazon RDS."

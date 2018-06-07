@@ -1,0 +1,83 @@
+---
+
+  - name: add group "{{ tomcat_group }}"
+    group: 
+      name: "{{ tomcat_group }}"
+
+  - name: add user "tomcat"
+    user: 
+      name: "{{ tomcat_user }}" 
+      group: "{{ tomcat_group }}"
+      createhome: yes
+
+  - name: Download Tomcat
+    get_url:
+      url: "http://archive.apache.org/dist/tomcat/tomcat-7/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
+      dest: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
+
+  - name: Extract archive
+    unarchive:
+      src: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
+      dest: "/tmp"
+      remote_src: yes
+  
+  - name: "Create {{ install_dir }}"
+    command: creates="{{ install_dir }}" mv "/tmp/apache-tomcat-{{ tomcat_version }}" "{{ install_dir }}"
+
+  - name: Symlink install directory
+    file:
+      src: "{{ install_dir }}"
+      path: "{{ catalina_home }}"
+      state: link
+
+  - name: Change ownership of Tomcat installation
+    file: 
+      path: "{{ catalina_home }}"
+      owner: "{{ tomcat_user }}"
+      group: "{{ tomcat_group }}"
+      state: directory
+      recurse: yes
+  
+  - name: Configure Tomcat server
+    template: 
+      src: server.xml.j2
+      dest: "{{ catalina_home }}/conf/server.xml"
+
+  - name: Configure Tomcat users
+    template:
+      src: tomcat-users.xml.j2
+      dest: "{{ catalina_home }}/conf/tomcat-users.xml"
+       
+  - name: Setup Oracle to start on boot (RHEL 7)
+    block:
+      - name: Install Tomcat init script
+        template: 
+          src: tomcat-init.j2
+          dest: "/etc/init.d/{{ service_name }}"
+          mode: 0755
+    tags:
+      - tomcat_service
+    when: ansible_distribution_major_version == "6"
+  
+  - name: Setup Tomcat to start on boot (RHEL 7)
+    block:
+      - name: Create Tomcat Unit File
+        template: 
+          src: tomcat-unit.j2
+          dest: "/etc/systemd/system/{{ service_name }}.service"
+      - name: Enable the Tomcat service to start on boot
+        systemd:
+          daemon_reload: yes
+          enabled: yes
+          name: "{{ service_name }}.service"
+    tags:
+      - tomcat_service
+    when: ansible_distribution_major_version == "7"
+  - name: Start Tomcat
+    service: 
+      name: "{{ service_name }}"
+      state: started
+      enabled: yes
+  - name: wait for tomcat to start
+    wait_for: 
+      port: "{{ http_port }}"
