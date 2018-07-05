@@ -28,7 +28,7 @@ control_files=("/u01/app/oracle/oradata/EMPTY/control01.ctl", "/u01/app/oracle/o
 ###########################################
 compatible=11.2.0.4.0
 diagnostic_dest=/u01/app/oracle
-memory_target=3299868672
+#memory_target=3299868672
  
 ###########################################
 # Processes and Sessions
