@@ -2,3 +2,4 @@
 *.bak
 facts.yml
 *.DS_Store
+.environment.env
