@@ -12,38 +12,44 @@
 ## <a id="description"></a>Description
 
 This is a working Packer template that will create an AWS image that consists of:
-- CentOS 6.9
+- CentOS
 - Oracle 11.2.0.4
 - Delphix prerequisites installed and configured for use.
 
-This Packer template requires the provisioned system to be able to access p13390677_112040_Linux-x86-64_1of7.zip and p13390677_112040_Linux-x86-64_2of7.zip via an unauthenticated http location. 
+This Packer template requires the provisioned system to be able to access p13390677_112040_Linux-x86-64_1of7.zip and p13390677_112040_Linux-x86-64_2of7.zip via an unauthenticated http location (like an s3 bucket). 
 
 ## <a id="installation"></a>Installation
+
+### <a id="installation-via-docker"></a>Via Docker (the easiest) ###
+1. Clone this repository
+2. Navigate into the cloned directory
+3. Copy the .example.docker to .environment.env
+
+```bash
+git clone https://github.com/delphix/packer-templates
+cd packer-templates
+cp .example.docker .example.env
+```
+
+### <a id="installation-without-docker"></a>Without Docker (the second easiest) ###
+1. Clone this repository
+2. Navigate into the cloned directory
+3. Copy the .example.env to .environment.env
 
 This template depends on packer and ansible existing in your path. If you are running a Mac, then the easiest way is to install via homebrew.
 After cloning this repo, install the required ansible dependencies.
 
 ```bash
-git clone https://github.com/delphix/packer-delphix-centos69-oracle11204
-cd packer-delphix-centos69-oracle11204
+git clone https://github.com/delphix/packer-templates
+cd packer-templates
 brew install ansible packer
-ansible-galaxy install -r requirements.yml
+cp .example.env .example.env
+ansible-galaxy install -r roles/requirements.yml
 ```
 
 ## <a id="usage"></a>Usage
-
-1. Edit the user variables in .example.env to suit your environment
-2. source the .example.env file
-3. Build the ami.
-
-```bash
-#edit the .example.env file
-vi .example.env
-#...
-source .example.env
-packer build delphix-centOS6.9-oracle11.2.0.4.json
-```
-
+### Configuring
+1. Edit the .environment.env file in the root directory of the cloned repo
 ### user variables
 1. AWS_ACCESS_KEY_ID - The AWS_ACCESS_KEY_ID environment variable
 2. AWS_SECRET_ACCESS_KEY - The AWS_SECRET_ACCESS_KEY environment variable
@@ -56,6 +62,26 @@ packer build delphix-centOS6.9-oracle11.2.0.4.json
 8. AWS_EXPIRATION - The date this AMI is expired, i.e. "2037-07-01" or "never"
 9. AWS_OWNER - The name of the person who owns the AMI, i.e. "Adam Bowen"
 10. AWS_PROJECT - The name of the project that the AMI belongs, or came, from
+
+### Building
+#### Via Docker
+1. (Optional) Pull the cloudsurgeon/rds_demo docker image
+2. Run the container against the packer template you want to use.
+
+```bash
+docker pull cloudsurgeon/packer-ansible
+docker run --env-file .environment.env -v $(pwd):/build -i -t cloudsurgeon/packer-ansible:latest build delphix-centos7-rds.json
+```
+
+#### Without Docker
+1. source the .example.env file
+2. run packer against the template you want to use:
+```bash
+source .example.env
+packer build delphix-centOS6.9-oracle11.2.0.4.json
+```
+
+
 
 
 ```bash
