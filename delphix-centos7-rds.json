@@ -20,12 +20,14 @@
       "run_tags": {
         "dlpx:Expiration": "{{isotime \"2006-01-02\"}}",
         "dlpx:Owner": "{{user `dlpx:Owner`}}",
-        "dlpx:Project": "{{user `dlpx:Project`}}"
+        "dlpx:Project": "{{user `dlpx:Project`}}",
+        "dlpx:CostCenter": "{{user `AWS_COSTCENTER`}}"
       },
       "run_volume_tags": {
         "dlpx:Expiration": "{{isotime \"2006-01-02\"}}",
         "dlpx:Owner": "{{user `dlpx:Owner`}}",
-        "dlpx:Project": "{{user `dlpx:Project`}}"
+        "dlpx:Project": "{{user `dlpx:Project`}}",
+        "dlpx:CostCenter": "{{user `AWS_COSTCENTER`}}"
       },
       "secret_key": "{{user `aws_secret_key`}}",
       "source_ami_filter": {
@@ -42,7 +44,8 @@
       "tags": {
         "dlpx:Expiration": "{{user `dlpx:Expiration`}}",
         "dlpx:Owner": "{{user `dlpx:Owner`}}",
-        "dlpx:Project": "{{user `dlpx:Project`}}"
+        "dlpx:Project": "{{user `dlpx:Project`}}",
+        "dlpx:CostCenter": "{{user `AWS_COSTCENTER`}}"
       },
       "type": "amazon-ebs",
       "vpc_id": "{{user `vpc_id`}}"
@@ -118,6 +121,7 @@
     "dlpx:Expiration": "{{env `AWS_EXPIRATION`}}",
     "dlpx:Owner": "{{env `AWS_OWNER`}}",
     "dlpx:Project": "{{env `AWS_PROJECT`}}",
+    "dlpx:CostCenter": "{{env `AWS_COSTCENTER`}}",
     "oracle_binaries_root_url": "{{env `ORACLE_BINARIES_ROOT_URL`}}",
     "region": "{{env `AWS_BUILD_REGION`}}",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",
