@@ -21,13 +21,13 @@
         "dlpx:Expiration": "{{isotime \"2006-01-02\"}}",
         "dlpx:Owner": "{{user `dlpx:Owner`}}",
         "dlpx:Project": "{{user `dlpx:Project`}}",
-        "dlpx:CostCenter": "{{user `AWS_COSTCENTER`}}"
+        "dlpx:CostCenter": "{{user `dlpx:CostCenter`}}"
       },
       "run_volume_tags": {
         "dlpx:Expiration": "{{isotime \"2006-01-02\"}}",
         "dlpx:Owner": "{{user `dlpx:Owner`}}",
         "dlpx:Project": "{{user `dlpx:Project`}}",
-        "dlpx:CostCenter": "{{user `AWS_COSTCENTER`}}"
+        "dlpx:CostCenter": "{{user `dlpx:CostCenter`}}"
       },
       "secret_key": "{{user `aws_secret_key`}}",
       "source_ami_filter": {
@@ -45,7 +45,7 @@
         "dlpx:Expiration": "{{user `dlpx:Expiration`}}",
         "dlpx:Owner": "{{user `dlpx:Owner`}}",
         "dlpx:Project": "{{user `dlpx:Project`}}",
-        "dlpx:CostCenter": "{{user `AWS_COSTCENTER`}}"
+        "dlpx:CostCenter": "{{user `dlpx:CostCenter`}}"
       },
       "type": "amazon-ebs",
       "vpc_id": "{{user `vpc_id`}}"
