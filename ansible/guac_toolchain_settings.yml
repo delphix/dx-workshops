@@ -1,0 +1,9 @@
+---
+- name: Guacamole User Setup
+  hosts: all
+  vars:
+    guacadmin_password: changeme
+    guac_user_password: changeme
+    vnc_password: changeme
+  roles:
+    - { role: guac_toolchain_settings }

@@ -1,0 +1,5 @@
+- src: https://github.com/CloudSurgeon/ansible-role-guacamole
+  name: alexfeig.guacamole
+- src: carloslongarela.mariadb
+- src: sdarwin.vnc
+- src: geerlingguy.postgresql

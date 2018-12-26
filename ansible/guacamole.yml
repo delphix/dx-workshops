@@ -1,0 +1,13 @@
+---
+- name: Guacamole playbook
+  hosts: all
+  become: true
+
+  vars:
+    guacamole_version: 0.9.14
+    guacamole_db_user: guacamole
+    guacamole_db_password: changeme
+    guacamole_db_name: guacamole
+  
+  roles:
+    - { role: alexfeig.guacamole }

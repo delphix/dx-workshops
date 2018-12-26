@@ -1,0 +1,139 @@
+{
+  "builders": [
+    {
+      "access_key": "{{user `aws_access_key`}}",
+      "ami_name": "delphix-ubuntu-bionic-guacamole-{{isotime \"20060102030405\"}}",
+      "ami_regions": "{{user `destination_regions`}}",
+      "associate_public_ip_address": true,
+      "force_deregister": true,
+      "instance_type": "m4.large",
+      "launch_block_device_mappings": [
+        {
+          "delete_on_termination": true,
+          "device_name": "/dev/sda1",
+          "volume_size": 15,
+          "volume_type": "gp2"
+        }
+      ],
+      "name": "delphix-ubuntu-bionic-guacamole",
+      "region": "{{user `region`}}",
+      "run_tags": {
+        "dlpx:CostCenter": "{{user `dlpx:CostCenter`}}",
+        "dlpx:Expiration": "{{isotime \"2006-01-02\"}}",
+        "dlpx:Owner": "{{user `dlpx:Owner`}}",
+        "dlpx:Project": "{{user `dlpx:Project`}}"
+      },
+      "run_volume_tags": {
+        "dlpx:CostCenter": "{{user `dlpx:CostCenter`}}",
+        "dlpx:Expiration": "{{isotime \"2006-01-02\"}}",
+        "dlpx:Owner": "{{user `dlpx:Owner`}}",
+        "dlpx:Project": "{{user `dlpx:Project`}}"
+      },
+      "secret_key": "{{user `aws_secret_key`}}",
+      "source_ami_filter": {
+        "filters": {
+          "name": "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server*"
+        },
+        "most_recent": true,
+        "owners": [
+          "099720109477"
+        ]
+      },
+      "ssh_username": "ubuntu",
+      "subnet_id": "{{user `subnet_id`}}",
+      "tags": {
+        "dlpx:CostCenter": "{{user `dlpx:CostCenter`}}",
+        "dlpx:Expiration": "{{user `dlpx:Expiration`}}",
+        "dlpx:Owner": "{{user `dlpx:Owner`}}",
+        "dlpx:Project": "{{user `dlpx:Project`}}"
+      },
+      "type": "amazon-ebs",
+      "vpc_id": "{{user `vpc_id`}}"
+    }
+  ],
+  "post-processors": [],
+  "provisioners": [
+    {
+      "inline": [
+        "sudo apt-get update",
+        "sudo DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -yq",
+        "sudo apt-add-repository ppa:ansible/ansible -y",
+        "sudo apt-get update -y",
+        "sudo apt-get install -y ansible python-pip libmariadbclient-dev git"
+      ],
+      "type": "shell"
+    },
+    {
+      "ansible_env_vars": [
+        "ANSIBLE_HOST_KEY_CHECKING=False"
+      ],
+      "playbook_file": "ansible/mariadb.yml",
+      "type": "ansible",
+      "user": "ubuntu",
+      "extra_arguments": ["--extra-vars", "mariadb_root_password={{user `mariadb_root_password`}}"]
+    },
+    {
+      "ansible_env_vars": [
+        "ANSIBLE_HOST_KEY_CHECKING=False"
+      ],
+      "playbook_file": "ansible/guacamole.yml",
+      "type": "ansible",
+      "user": "ubuntu",
+      "extra_arguments": ["--extra-vars", "guacamole_db_password={{user `guacamole_db_password`}}"]
+    },
+    {
+      "ansible_env_vars": [
+        "ANSIBLE_HOST_KEY_CHECKING=False"
+      ],
+      "playbook_file": "ansible/vnc_setup.yml",
+      "type": "ansible",
+      "user": "ubuntu",
+      "extra_arguments": ["--extra-vars", "{\"vnc_users\":[{\"username\":\"ubuntu\",\"vnc_num\":1,\"vnc_default_password\":\"{{user `vnc_default_password`}}\"}]}"]
+    },
+    {
+      "ansible_env_vars": [
+        "ANSIBLE_HOST_KEY_CHECKING=False"
+      ],
+      "playbook_file": "ansible/guac_toolchain_settings.yml",
+      "type": "ansible",
+      "user": "ubuntu",
+      "extra_arguments": ["--extra-vars", "guacadmin_password={{user `guacadmin_password`}} guac_user_password={{user `guac_user_password`}} vnc_password={{user `vnc_default_password`}}"]
+    },
+    {
+      "inline": [
+        "sudo sed -i -e '/.*'`hostname -s`'.*/d' /etc/hosts"
+      ],
+      "type": "shell"
+    },
+    {
+      "inline": [
+        "sudo rm -Rf /tmp/*"
+      ],
+      "type": "shell"
+    },
+    {
+      "inline": [
+        "cat /dev/null > .ssh/authorized_keys"
+      ],
+      "type": "shell"
+    }
+  ],
+  "variables": {
+    "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+    "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+    "destination_regions": "{{env `AWS_DESTINATION_REGIONS`}}",
+    "dlpx:CostCenter": "{{env `AWS_COSTCENTER`}}",
+    "dlpx:Expiration": "{{env `AWS_EXPIRATION`}}",
+    "dlpx:Owner": "{{env `AWS_OWNER`}}",
+    "dlpx:Project": "{{env `AWS_PROJECT`}}",
+    "region": "{{env `AWS_BUILD_REGION`}}",
+    "subnet_id": "{{env `AWS_SUBNET_ID`}}",
+    "vpc_id": "{{env `AWS_VPC_ID`}}",
+    "guacamole_db_password": "{{env `GUACAMOLE_DB_PASSWORD`}}",
+    "mariadb_root_password": "{{env `MARIADB_ROOT_PASSWORD`}}",
+    "guacadmin_password": "{{env `GUACADMIN_PASSWORD`}}",
+    "vnc_default_password": "{{env `VNC_DEFAULT_PASSWORD`}}",
+    "guac_user_password": "{{env `GUAC_USER_PASSWORD`}}"
+  }
+}
+
