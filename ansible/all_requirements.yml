@@ -1,0 +1,10 @@
+- src: delphix.target-host
+- src: geerlingguy.java
+- src: https://github.com/delphix/oracle_install
+- src: geerlingguy.firewall
+- src: geerlingguy.nginx
+- src: https://github.com/CloudSurgeon/ansible-role-guacamole
+  name: alexfeig.guacamole
+- src: carloslongarela.mariadb
+- src: sdarwin.vnc
+- src: geerlingguy.postgresql
