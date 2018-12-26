@@ -1,0 +1,23 @@
+---
+- name: VNC playbook
+  hosts: all
+  become: true
+
+  vars:
+    vnc_users:
+      - username: ubuntu
+        vnc_num: 1
+        vnc_default_password: changeme
+    vnc_desktop: xfce4
+    vnc_install_systemd_services: true
+    vnc_ansible_managed_startup_scripts: true
+    vnc_ansible_managed_xstartup: true
+    vnc_reboot_once: false
+    default_vnc_desktop_packages:
+      xfce4:
+        - xfce4
+        - gnome-icon-theme
+        - gnome-terminal
+        - xterm
+  roles:
+    - { role: sdarwin.vnc }
