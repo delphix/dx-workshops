@@ -107,45 +107,6 @@ ALTER TABLE public.billings_id_seq OWNER TO :user;
 
 ALTER SEQUENCE public.billings_id_seq OWNED BY public.billings.id;
 
-
---
--- Name: databasechangelog; Type: TABLE; Schema: public; Owner: :user
---
-
-CREATE TABLE public.databasechangelog (
-    id character varying(255) NOT NULL,
-    author character varying(255) NOT NULL,
-    filename character varying(255) NOT NULL,
-    dateexecuted timestamp without time zone NOT NULL,
-    orderexecuted integer NOT NULL,
-    exectype character varying(10) NOT NULL,
-    md5sum character varying(35),
-    description character varying(255),
-    comments character varying(255),
-    tag character varying(255),
-    liquibase character varying(20),
-    contexts character varying(255),
-    labels character varying(255),
-    deployment_id character varying(10)
-);
-
-
-ALTER TABLE public.databasechangelog OWNER TO :user;
-
---
--- Name: databasechangeloglock; Type: TABLE; Schema: public; Owner: :user
---
-
-CREATE TABLE public.databasechangeloglock (
-    id integer NOT NULL,
-    locked boolean NOT NULL,
-    lockgranted timestamp without time zone,
-    lockedby character varying(255)
-);
-
-
-ALTER TABLE public.databasechangeloglock OWNER TO :user;
-
 --
 -- Name: patients; Type: TABLE; Schema: public; Owner: :user
 --
@@ -348,29 +309,6 @@ SELECT pg_catalog.setval('public.billings_id_seq', 1, false);
 
 
 --
--- Data for Name: databasechangelog; Type: TABLE DATA; Schema: public; Owner: :user
---
-
-COPY public.databasechangelog (id, author, filename, dateexecuted, orderexecuted, exectype, md5sum, description, comments, tag, liquibase, contexts, labels, deployment_id) FROM stdin;
-createUsersTable	Derek Smart	src/main/resources/db/changelog/migrations/0001-create-users.yml	2018-10-31 11:30:06.529099	1	EXECUTED	8:7e3e9578cc9c961dee801cf3629715b8	createTable tableName=users		\N	3.6.2	\N	\N	0985405534
-createPatientsTable	Derek Smart	src/main/resources/db/changelog/migrations/0002-create-patients.yml	2018-10-31 11:30:07.787022	2	EXECUTED	8:bd439eda92742c7712a2f0f9f62c522d	createTable tableName=patients		\N	3.6.2	\N	\N	0985405534
-createRecordsTable	Derek Smart	src/main/resources/db/changelog/migrations/0003-create-records.yml	2018-10-31 11:30:08.814795	3	EXECUTED	8:29cb7f493caceef0aca0287f777f8811	createTable tableName=records		\N	3.6.2	\N	\N	0985405534
-addPasswordToUsers	Derek Smart	src/main/resources/db/changelog/migrations/0004-users-passwords.yml	2018-10-31 11:30:09.850404	4	EXECUTED	8:b4f0a18a99d7b8e8c7e8b32cf96be9d0	addColumn tableName=users		\N	3.6.2	\N	\N	0985405534
-createBillingsTable	Derek Smart	src/main/resources/db/changelog/migrations/0005-create-billings.yml	2018-10-31 11:30:10.868848	5	EXECUTED	8:d1b223d456938c3319d26d3cac31430f	createTable tableName=billings		\N	3.6.2	\N	\N	0985405534
-createPaymentsTable	Derek Smart	src/main/resources/db/changelog/migrations/0006-create-payments.yml	2018-10-31 11:30:11.887942	6	EXECUTED	8:3442163050c4ae28d15b3516085667da	createTable tableName=payments		\N	3.6.2	\N	\N	0985405534
-\.
-
-
---
--- Data for Name: databasechangeloglock; Type: TABLE DATA; Schema: public; Owner: :user
---
-
-COPY public.databasechangeloglock (id, locked, lockgranted, lockedby) FROM stdin;
-1	f	\N	\N
-\.
-
-
---
 -- Data for Name: patients; Type: TABLE DATA; Schema: public; Owner: :user
 --
 
@@ -433,14 +371,6 @@ SELECT pg_catalog.setval('public.users_id_seq', 1, false);
 
 ALTER TABLE ONLY public.billings
     ADD CONSTRAINT billings_pkey PRIMARY KEY (id);
-
-
---
--- Name: databasechangeloglock databasechangeloglock_pkey; Type: CONSTRAINT; Schema: public; Owner: :user
---
-
-ALTER TABLE ONLY public.databasechangeloglock
-    ADD CONSTRAINT databasechangeloglock_pkey PRIMARY KEY (id);
 
 
 --
