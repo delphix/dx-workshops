@@ -11,12 +11,19 @@
 
 ## <a id="description"></a>Description
 
-This is a working Packer template that will create an AWS image that consists of:
-- CentOS
-- Oracle 11.2.0.4
+These are working Packer templates that will create AWS images that consists of:
+- CentOS 6.9 w/ Oracle 11.2.0.4
+- CentOS 7 w/ Oracle 11.2.0.4
+- CentOS 7 w/ Postgres 9.6
 - Delphix prerequisites installed and configured for use.
 
-This Packer template requires the provisioned system to be able to access p13390677_112040_Linux-x86-64_1of7.zip and p13390677_112040_Linux-x86-64_2of7.zip via an unauthenticated http location (like an s3 bucket). 
+There are also some demo-specific Packer Templates
+- Ubunutu Bionic w/Guacamole
+- CentOS 7 configured for the RDS demo
+- CentOS 7 configured as a source for the Delphix Automation Framework Demo
+
+
+The Oracle templates require the provisioned system to be able to access p13390677_112040_Linux-x86-64_1of7.zip and p13390677_112040_Linux-x86-64_2of7.zip via an unauthenticated http location (like an s3 bucket). 
 
 ## <a id="installation"></a>Installation
 
@@ -35,6 +42,7 @@ cp .example.docker .example.env
 1. Clone this repository
 2. Navigate into the cloned directory
 3. Copy the .example.env to .environment.env
+4. Certain packer templates have additional variables. Make copies of those example files, as in step 3
 
 This template depends on packer and ansible existing in your path. If you are running a Mac, then the easiest way is to install via homebrew.
 After cloning this repo, install the required ansible dependencies.
@@ -49,7 +57,7 @@ ansible-galaxy install -r roles/requirements.yml
 
 ## <a id="usage"></a>Usage
 ### Configuring
-1. Edit the .environment.env file in the root directory of the cloned repo
+1. Edit the .environment.env file ###(HERE)### in the root directory of the cloned repo
 ### user variables
 1. AWS_ACCESS_KEY_ID - The AWS_ACCESS_KEY_ID environment variable
 2. AWS_SECRET_ACCESS_KEY - The AWS_SECRET_ACCESS_KEY environment variable
@@ -62,6 +70,7 @@ ansible-galaxy install -r roles/requirements.yml
 8. AWS_EXPIRATION - The date this AMI is expired, i.e. "2037-07-01" or "never"
 9. AWS_OWNER - The name of the person who owns the AMI, i.e. "Adam Bowen"
 10. AWS_PROJECT - The name of the project that the AMI belongs, or came, from
+11. AWS_COSTCENTER - The name of the cost center, if applicable
 
 ### Building
 #### Via Docker
@@ -99,6 +108,29 @@ cent69-Oracle11204 output will be in this color.
     cent69-Oracle11204: Instance ID: i-0434f9b2e3a90c0c3
 ==> cent69-Oracle11204: Waiting for instance (i-0434f9b2e3a90c0c3) to become ready...
 ==> cent69-Oracle11204: Waiting for SSH to become available...
+```
+
+Second Example:
+```bash
+source .dafdb-source
+packer build delphix-toolchain-dafdb-source.json
+```
+
+
+
+
+```bash
+packer build delphix-toolchain-dafdb-source.json
+delphix-toolchain-dafdb-source output will be in this color.
+
+==> delphix-toolchain-dafdb-source: Force Deregister flag found, skipping prevalidating AMI Name
+    delphix-toolchain-dafdb-source: Found Image ID: ami-090c2433423df7c1b
+==> delphix-toolchain-dafdb-source: Creating temporary keypair: packer_5c24fd34-75a9-e10e-afa8-5784ac498ae2
+==> delphix-toolchain-dafdb-source: Creating temporary security group for this instance: packer_5c24fd36-f5cc-8180-51b5-1bc18409d591
+==> delphix-toolchain-dafdb-source: Authorizing access to port 22 from 0.0.0.0/0 in the temporary security group...
+==> delphix-toolchain-dafdb-source: Launching a source AWS instance...
+==> delphix-toolchain-dafdb-source: Adding tags to source instance
+    delphix-toolchain-dafdb-source: Adding tag: "dlpx:CostCenter": "305000 - Development Engineering"
 ```
 
 ## <a id="links"></a>Links
