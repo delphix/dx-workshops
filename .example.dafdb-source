@@ -1,0 +1,6 @@
+#For use with delphix-toolchain-dafdb-source.json
+#Copy .example.env to .environment.env and set the variables
+#Copy this file to .dafdb-source and set the variables
+source .environment.env
+export DAF_USER="dafpostgresuser"
+export DAF_USER_PASS="testmasterpass"
