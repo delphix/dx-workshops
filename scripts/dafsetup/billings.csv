@@ -1,0 +1,501 @@
+id,patient_id,ccnum,cctype,ccexpmonth,ccexpyear,address1,address2,city,state,zip
+1,1,3.38E+14,americanexpress,6,2024,91415 Hoepker Alley, ,Las Vegas,NV,89193
+2,2,3.54E+15,jcb,3,2020,82065 Del Mar Pass, ,Hampton,VA,23663
+3,3,3.54E+15,jcb,12,2029,2632 Forster Parkway, ,Decatur,IL,62525
+4,4,5.10E+15,mastercard,2,2023,3654 Vernon Alley, ,Bozeman,MT,59771
+5,5,6.77E+16,laser,3,2028,562 Rigney Terrace, ,Portland,OR,97286
+6,6,5.60E+18,china-unionpay,9,2030,3377 Clove Alley, ,Buffalo,NY,14210
+7,7,6.33E+17,switch,12,2027,37 Sutteridge Circle, ,Pittsburgh,PA,15266
+8,8,3.74E+14,americanexpress,12,2021,8 Jana Alley, ,Sacramento,CA,95833
+9,9,3.54E+15,jcb,4,2023,76 Dexter Court, ,Sterling,VA,20167
+10,10,3.57E+15,jcb,12,2022,67 American Way, ,Oklahoma City,OK,73173
+11,11,3.56E+15,jcb,6,2024,1 Troy Court, ,Brooklyn,NY,11210
+12,12,6.76E+17,maestro,10,2030,75 Brentwood Plaza, ,Lansing,MI,48912
+13,13,3.05E+13,diners-club-carte-blanche,4,2030,38057 Veith Point, ,Richmond,VA,23289
+14,14,6.76E+18,maestro,4,2027,43 Harper Circle, ,Saint Louis,MO,63196
+15,15,2.01E+14,diners-club-enroute,3,2026,5 Clemons Parkway, ,Colorado Springs,CO,80935
+16,16,3.57E+15,jcb,7,2020,652 Eagan Park, ,Lynchburg,VA,24515
+17,17,3.56E+15,jcb,7,2025,9 Buhler Terrace, ,Aiken,SC,29805
+18,18,5.38E+15,mastercard,7,2030,93919 Park Meadow Center, ,Albuquerque,NM,87180
+19,19,3.55E+15,jcb,2,2027,65 Declaration Drive, ,New York City,NY,10160
+20,20,3.56E+15,jcb,11,2022,642 Schmedeman Park, ,New York City,NY,10155
+21,21,3.67E+13,diners-club-international,10,2020,4 Schlimgen Drive, ,Portland,OR,97296
+22,22,6.05E+17,maestro,10,2027,07 Cascade Place, ,Philadelphia,PA,19178
+23,23,5.60E+15,bankcard,10,2029,9663 Havey Park, ,San Francisco,CA,94169
+24,24,3.56E+15,jcb,1,2022,06 Valley Edge Place, ,Seattle,WA,98121
+25,25,5.43E+15,mastercard,10,2030,7 Marcy Point, ,Salt Lake City,UT,84170
+26,26,3.01E+13,diners-club-carte-blanche,4,2022,3697 Mallory Court, ,Columbia,SC,29208
+27,27,3.58E+15,jcb,5,2027,372 Hooker Place, ,Charlotte,NC,28247
+28,28,3.53E+15,jcb,3,2024,3976 Hallows Point, ,Columbus,OH,43215
+29,29,6.76E+16,maestro,10,2020,63 Lighthouse Bay Park, ,Minneapolis,MN,55446
+30,30,4.02E+15,visa,11,2020,78 Myrtle Alley, ,Prescott,AZ,86305
+31,31,3.58E+15,jcb,1,2023,19991 Rigney Avenue, ,Birmingham,AL,35285
+32,32,5.10E+15,mastercard,3,2029,7 Holmberg Street, ,Corpus Christi,TX,78470
+33,33,5.47E+15,diners-club-us-ca,8,2024,51 International Avenue, ,Modesto,CA,95354
+34,34,5.10E+15,mastercard,2,2021,4345 Hansons Point, ,Springfield,MA,1105
+35,35,3.44E+14,americanexpress,8,2027,5725 Armistice Avenue, ,Chicago,IL,60681
+36,36,5.04E+16,maestro,5,2029,4 Marcy Road, ,Arlington,TX,76096
+37,37,3.55E+15,jcb,9,2022,19 Village Point, ,Vero Beach,FL,32969
+38,38,5.02E+15,maestro,7,2020,7968 Menomonie Alley, ,Plano,TX,75074
+39,39,5.61E+15,china-unionpay,8,2026,8 Steensland Junction, ,Irvine,CA,92612
+40,40,4.91E+15,switch,2,2027,5462 Dakota Drive, ,Anchorage,AK,99507
+41,41,3.55E+15,jcb,3,2021,62452 Little Fleur Circle, ,Des Moines,IA,50315
+42,42,3.59E+15,jcb,12,2022,53574 Boyd Crossing, ,Watertown,MA,2472
+43,43,5.56E+15,mastercard,4,2025,9364 Scofield Place, ,Philadelphia,PA,19109
+44,44,4.84E+15,visa-electron,6,2020,68464 Eastlawn Park, ,Palo Alto,CA,94302
+45,45,5.60E+15,china-unionpay,9,2029,9088 Raven Hill, ,Shawnee Mission,KS,66215
+46,46,3.55E+15,jcb,7,2027,26819 Kim Parkway, ,Cincinnati,OH,45296
+47,47,3.59E+15,jcb,7,2027,039 Arkansas Place, ,New York City,NY,10125
+48,48,3.57E+15,jcb,2,2021,0 Lawn Lane, ,Austin,TX,78749
+49,49,4.92E+15,visa-electron,4,2023,33 Carey Road, ,Jacksonville,FL,32204
+50,50,6.30E+16,maestro,10,2026,95763 Hauk Plaza, ,Cincinnati,OH,45271
+51,51,5.64E+18,switch,12,2024,51 Southridge Terrace, ,Portland,OR,97229
+52,52,3.55E+15,jcb,8,2027,7287 Shoshone Street, ,Tulsa,OK,74170
+53,53,3.71E+14,americanexpress,12,2024,58915 Pearson Trail, ,Cincinnati,OH,45223
+54,54,3.55E+15,jcb,1,2021,700 Buell Parkway, ,Texarkana,TX,75507
+55,55,3.56E+15,jcb,4,2022,05726 Jana Lane, ,Tallahassee,FL,32399
+56,56,3.58E+15,jcb,3,2022,00 Center Plaza, ,Boston,MA,2203
+57,57,3.56E+15,jcb,5,2030,5 Fallview Hill, ,Des Moines,IA,50347
+58,58,5.60E+15,china-unionpay,7,2026,79158 Summit Point, ,Anchorage,AK,99517
+59,59,5.01E+15,mastercard,2,2030,344 Haas Circle, ,Oklahoma City,OK,73142
+60,60,5.10E+15,mastercard,7,2028,75 High Crossing Parkway, ,Washington,DC,20337
+61,61,6.76E+18,maestro,1,2020,4 Killdeer Road, ,Dallas,TX,75277
+62,62,3.69E+13,diners-club-international,12,2027,1309 Monica Street, ,Sioux Falls,SD,57110
+63,63,3.55E+15,jcb,9,2025,19 Victoria Circle, ,San Luis Obispo,CA,93407
+64,64,3.56E+15,jcb,6,2030,95506 Harper Park, ,Norwalk,CT,6854
+65,65,3.00E+13,diners-club-carte-blanche,4,2029,5893 Sauthoff Way, ,Richmond,VA,23272
+66,66,2.02E+14,diners-club-enroute,10,2021,8314 Artisan Park, ,Roanoke,VA,24048
+67,67,3.02E+13,diners-club-carte-blanche,11,2026,924 Heath Lane, ,San Bernardino,CA,92415
+68,68,4.18E+15,visa-electron,4,2024,55953 Buell Alley, ,Bonita Springs,FL,34135
+69,69,5.10E+15,mastercard,1,2026,8 Killdeer Pass, ,Saint Paul,MN,55146
+70,70,5.01E+15,mastercard,6,2029,7 Maryland Street, ,Arlington,TX,76011
+71,71,3.55E+15,jcb,10,2028,9822 Mallard Alley, ,El Paso,TX,88589
+72,72,6.77E+15,solo,7,2023,061 Rutledge Road, ,Oakland,CA,94627
+73,73,3.56E+15,jcb,11,2030,2 Melrose Court, ,Fort Pierce,FL,34981
+74,74,4.91E+17,switch,2,2028,754 Walton Terrace, ,Sunnyvale,CA,94089
+75,75,4.04E+15,visa,5,2021,5316 Myrtle Junction, ,New Orleans,LA,70187
+76,76,3.55E+15,jcb,2,2026,2 Hudson Road, ,Galveston,TX,77554
+77,77,3.54E+15,jcb,6,2027,77 Bartillon Center, ,Saint Cloud,MN,56398
+78,78,3.57E+15,jcb,12,2021,2 Gerald Point, ,Orange,CA,92668
+79,79,3.03E+13,diners-club-carte-blanche,8,2029,598 Graceland Point, ,Gainesville,FL,32610
+80,80,3.58E+15,jcb,9,2025,02549 Vera Alley, ,Palatine,IL,60078
+81,81,5.60E+18,china-unionpay,1,2023,9 Dunning Pass, ,Garland,TX,75044
+82,82,5.00E+15,mastercard,6,2026,38788 South Alley, ,Oklahoma City,OK,73104
+83,83,2.02E+14,diners-club-enroute,6,2020,19 Fairfield Street, ,Miami,FL,33233
+84,84,5.64E+15,switch,1,2022,15429 Westend Circle, ,Denton,TX,76205
+85,85,3.55E+15,jcb,6,2023,1 Magdeline Alley, ,Minneapolis,MN,55428
+86,86,3.54E+15,jcb,6,2026,24 Loeprich Road, ,Jackson,MS,39236
+87,87,3.57E+15,jcb,4,2022,74 High Crossing Place, ,Richmond,VA,23242
+88,88,5.61E+15,bankcard,6,2029,0342 Birchwood Avenue, ,San Jose,CA,95160
+89,89,5.10E+15,mastercard,10,2030,40 Gerald Hill, ,Boise,ID,83711
+90,90,2.02E+14,diners-club-enroute,2,2025,99780 Linden Alley, ,Oklahoma City,OK,73114
+91,91,3.59E+15,jcb,6,2026,5115 Warbler Court, ,Tallahassee,FL,32304
+92,92,3.58E+15,jcb,1,2021,0555 Del Mar Lane, ,Jackson,MS,39296
+93,93,3.59E+15,jcb,10,2022,8 Kenwood Hill, ,Santa Barbara,CA,93106
+94,94,3.01E+13,diners-club-carte-blanche,11,2026,2 Emmet Court, ,Mesa,AZ,85215
+95,95,4.04E+12,visa,12,2023,4342 Shelley Terrace, ,Tampa,FL,33661
+96,96,6.77E+15,solo,12,2020,414 Gale Street, ,New York City,NY,10203
+97,97,5.00E+15,mastercard,2,2022,1 Fremont Center, ,Missoula,MT,59806
+98,98,4.91E+15,switch,8,2027,37 Roxbury Circle, ,Chicago,IL,60636
+99,99,3.58E+15,jcb,3,2028,5066 Macpherson Street, ,Boston,MA,2216
+100,100,5.10E+15,mastercard,12,2022,290 Spaight Junction, ,Ogden,UT,84403
+101,101,3.56E+15,jcb,1,2027,13 Melvin Avenue, ,Visalia,CA,93291
+102,102,5.60E+15,bankcard,1,2029,5429 Oak Way, ,Reno,NV,89519
+103,103,3.59E+15,jcb,3,2025,92 Park Meadow Plaza, ,Phoenix,AZ,85030
+104,104,3.56E+15,jcb,2,2029,9 Northwestern Center, ,Tucson,AZ,85705
+105,105,3.55E+15,jcb,11,2028,524 Fair Oaks Junction, ,Fort Lauderdale,FL,33355
+106,106,3.75E+14,americanexpress,5,2026,8 Summerview Street, ,Honolulu,HI,96845
+107,107,5.10E+15,mastercard,7,2026,9 Talmadge Alley, ,Houston,TX,77040
+108,108,3.55E+15,jcb,8,2025,4 Carioca Road, ,Erie,PA,16534
+109,109,3.54E+15,jcb,12,2028,0120 Sherman Trail, ,Arlington,VA,22212
+110,110,3.75E+14,americanexpress,7,2021,1 Miller Trail, ,Tampa,FL,33615
+111,111,3.57E+15,jcb,7,2026,3 Mcguire Junction, ,Cumming,GA,30130
+112,112,4.91E+15,visa-electron,3,2024,16 Ridgeway Street, ,Tallahassee,FL,32399
+113,113,6.05E+15,maestro,2,2020,7 Declaration Parkway, ,New Orleans,LA,70142
+114,114,4.51E+15,visa-electron,4,2022,95397 Grim Alley, ,Bonita Springs,FL,34135
+115,115,5.05E+15,mastercard,10,2022,91 Dexter Alley, ,New Orleans,LA,70160
+116,116,3.72E+14,americanexpress,1,2023,415 Maryland Pass, ,Richmond,VA,23293
+117,117,5.00E+15,mastercard,5,2020,2 Mcbride Street, ,Boise,ID,83727
+118,118,5.64E+18,switch,8,2027,1 Kropf Parkway, ,Evanston,IL,60208
+119,119,3.57E+15,jcb,1,2023,824 Little Fleur Avenue, ,Oakland,CA,94627
+120,120,3.58E+15,jcb,11,2026,3452 Browning Avenue, ,Clearwater,FL,33758
+121,121,3.68E+13,diners-club-international,12,2022,0326 Weeping Birch Terrace, ,Marietta,GA,30061
+122,122,3.04E+13,diners-club-carte-blanche,8,2025,4 Clarendon Road, ,Tacoma,WA,98447
+123,123,4.84E+15,visa-electron,12,2023,1 La Follette Terrace, ,Austin,TX,78744
+124,124,3.56E+15,jcb,3,2021,82 Sutherland Park, ,Naperville,IL,60567
+125,125,4.94E+15,switch,10,2027,95828 Heath Place, ,Fresno,CA,93721
+126,126,5.61E+15,bankcard,10,2023,7690 Johnson Circle, ,Kansas City,MO,64142
+127,127,3.59E+15,jcb,9,2024,9390 Moland Lane, ,Tucson,AZ,85720
+128,128,6.37E+15,instapayment,6,2021,69 Mcbride Road, ,Louisville,KY,40293
+129,129,3.04E+13,diners-club-carte-blanche,9,2029,22011 Morrow Park, ,Washington,DC,20599
+130,130,5.61E+16,china-unionpay,9,2030,1645 Rutledge Park, ,Houston,TX,77293
+131,131,5.56E+15,diners-club-us-ca,4,2026,3983 Monterey Trail, ,Arlington,VA,22205
+132,132,3.59E+15,jcb,12,2021,39391 Hovde Drive, ,New York City,NY,10110
+133,133,5.01E+15,mastercard,8,2024,92961 Hoffman Crossing, ,Washington,DC,56944
+134,134,4.02E+12,visa,11,2027,1 Sachs Court, ,Montgomery,AL,36109
+135,135,3.58E+15,jcb,8,2023,004 Grasskamp Center, ,Monroe,LA,71213
+136,136,3.57E+15,jcb,7,2020,7 Paget Pass, ,Bakersfield,CA,93305
+137,137,4.41E+15,visa-electron,3,2027,2 Cambridge Center, ,Jackson,MS,39282
+138,138,4.90E+15,switch,5,2030,26 Forest Run Junction, ,Midland,MI,48670
+139,139,3.54E+15,jcb,2,2028,9397 Clyde Gallagher Plaza, ,Boise,ID,83716
+140,140,3.56E+15,jcb,4,2022,4012 Shoshone Trail, ,Springfield,MA,1152
+141,141,3.55E+15,jcb,5,2025,11935 Fuller Junction, ,Lynn,MA,1905
+142,142,3.56E+15,jcb,3,2030,751 Bonner Avenue, ,Stamford,CT,6905
+143,143,3.53E+15,jcb,1,2025,649 Killdeer Center, ,Huntington,WV,25709
+144,144,3.55E+15,jcb,7,2027,5 Emmet Pass, ,Hyattsville,MD,20784
+145,145,6.38E+15,instapayment,11,2021,9301 Mallard Court, ,Wichita Falls,TX,76310
+146,146,3.75E+14,americanexpress,4,2022,527 Lawn Center, ,Hartford,CT,6105
+147,147,4.41E+15,visa-electron,5,2025,38 Milwaukee Junction, ,Tyler,TX,75710
+148,148,4.84E+15,visa-electron,3,2020,58 Johnson Circle, ,Arvada,CO,80005
+149,149,3.58E+15,jcb,9,2025,15121 Hansons Drive, ,Austin,TX,78754
+150,150,3.54E+15,jcb,6,2029,921 Mayer Point, ,Lynchburg,VA,24515
+151,151,3.57E+15,jcb,2,2027,1 La Follette Place, ,San Antonio,TX,78265
+152,152,6.04E+15,maestro,12,2028,97880 Harbort Terrace, ,Duluth,MN,55811
+153,153,4.02E+15,visa,3,2024,1 Tennessee Terrace, ,Minneapolis,MN,55412
+154,154,5.61E+16,china-unionpay,2,2029,313 Ridge Oak Drive, ,Charlottesville,VA,22903
+155,155,3.58E+15,jcb,5,2028,28948 Portage Trail, ,Toledo,OH,43635
+156,156,3.58E+15,jcb,10,2026,62243 Wayridge Way, ,Jacksonville,FL,32255
+157,157,3.57E+15,jcb,12,2030,72 Bashford Crossing, ,Chattanooga,TN,37410
+158,158,5.10E+15,mastercard,3,2026,39 Comanche Street, ,Los Angeles,CA,90005
+159,159,3.55E+15,jcb,11,2020,2633 Buhler Lane, ,Detroit,MI,48224
+160,160,5.57E+15,diners-club-us-ca,2,2021,9420 John Wall Parkway, ,Baton Rouge,LA,70820
+161,161,3.72E+14,americanexpress,10,2024,21 Lighthouse Bay Court, ,Sunnyvale,CA,94089
+162,162,5.60E+18,china-unionpay,3,2020,0 Anderson Crossing, ,Macon,GA,31205
+163,163,3.59E+15,jcb,6,2021,6 Grover Terrace, ,Omaha,NE,68134
+164,164,4.91E+17,switch,6,2024,157 Pawling Crossing, ,Orange,CA,92668
+165,165,3.54E+15,jcb,4,2030,5409 Norway Maple Way, ,Oklahoma City,OK,73124
+166,166,5.60E+15,bankcard,4,2030,13895 Bartelt Plaza, ,Portland,OR,97271
+167,167,3.53E+15,jcb,3,2030,62 Hoard Crossing, ,Loretto,MN,55598
+168,168,3.58E+15,jcb,6,2029,46342 Bashford Road, ,Young America,MN,55551
+169,169,3.55E+15,jcb,9,2030,29789 Hansons Alley, ,Indianapolis,IN,46231
+170,170,6.76E+15,maestro,7,2026,13 Mallard Lane, ,Hamilton,OH,45020
+171,171,3.74E+14,americanexpress,8,2027,28 Service Avenue, ,Fort Myers,FL,33913
+172,172,3.04E+13,diners-club-carte-blanche,10,2021,65 Moose Drive, ,Ann Arbor,MI,48107
+173,173,5.31E+15,mastercard,7,2023,0 Charing Cross Avenue, ,Seminole,FL,34642
+174,174,5.60E+15,china-unionpay,2,2030,23449 Maple Point, ,Amarillo,TX,79118
+175,175,6.77E+15,laser,10,2029,419 Evergreen Drive, ,Corona,CA,92878
+176,176,3.59E+15,jcb,1,2028,207 Briar Crest Court, ,Bloomington,IL,61709
+177,177,5.16E+15,mastercard,12,2028,3147 Tennessee Terrace, ,Washington,DC,20057
+178,178,5.10E+15,mastercard,9,2025,11 Moose Lane, ,Birmingham,AL,35231
+179,179,6.40E+15,instapayment,6,2030,76063 Morrow Junction, ,Philadelphia,PA,19160
+180,180,3.58E+15,jcb,11,2023,48228 Dwight Circle, ,Orlando,FL,32835
+181,181,4.03E+15,visa-electron,12,2020,09 Cascade Street, ,Louisville,KY,40293
+182,182,3.67E+13,diners-club-international,10,2022,2 Johnson Alley, ,Minneapolis,MN,55412
+183,183,5.00E+15,mastercard,1,2020,864 Twin Pines Hill, ,Las Cruces,NM,88006
+184,184,2.02E+14,diners-club-enroute,3,2020,4 Hermina Point, ,Charlotte,NC,28263
+185,185,3.53E+15,jcb,2,2021,6248 Packers Way, ,Kansas City,KS,66160
+186,186,4.18E+15,visa-electron,12,2024,73 Cascade Alley, ,Migrate,KY,41905
+187,187,5.44E+15,mastercard,8,2026,628 Johnson Plaza, ,Lynchburg,VA,24503
+188,188,3.59E+15,jcb,4,2024,00 Sunbrook Center, ,Boston,MA,2104
+189,189,4.51E+15,visa-electron,2,2030,228 Nelson Center, ,Omaha,NE,68124
+190,190,6.77E+16,laser,12,2023,657 Everett Road, ,Stockton,CA,95210
+191,191,3.54E+15,jcb,1,2020,6155 Algoma Trail, ,Cincinnati,OH,45223
+192,192,4.91E+15,visa-electron,10,2029,6 Scoville Parkway, ,Charlotte,NC,28299
+193,193,6.76E+15,maestro,9,2025,7 Clemons Point, ,Palo Alto,CA,94302
+194,194,5.60E+15,bankcard,6,2027,0 Park Meadow Trail, ,Stockton,CA,95205
+195,195,4.68E+15,visa,10,2020,9908 Jenifer Place, ,Erie,PA,16565
+196,196,4.92E+15,visa-electron,12,2024,023 Shelley Point, ,Littleton,CO,80126
+197,197,3.59E+15,jcb,2,2027,69554 Thackeray Terrace, ,Los Angeles,CA,90065
+198,198,6.39E+15,instapayment,8,2023,46 Randy Way, ,Buffalo,NY,14269
+199,199,5.01E+15,mastercard,1,2030,4 Atwood Crossing, ,Spartanburg,SC,29319
+200,200,6.76E+16,maestro,5,2021,53630 Michigan Drive, ,Madison,WI,53705
+201,201,4.04E+12,visa,10,2027,8148 Welch Crossing, ,El Paso,TX,88514
+202,202,6.33E+18,switch,11,2021,4 Vidon Alley, ,Houston,TX,77050
+203,203,3.58E+15,jcb,6,2027,986 Village Green Lane, ,Petaluma,CA,94975
+204,204,6.77E+18,laser,3,2026,9 Green Ridge Street, ,Van Nuys,CA,91406
+205,205,4.02E+15,visa,8,2024,56 Mockingbird Drive, ,Terre Haute,IN,47805
+206,206,2.01E+14,diners-club-enroute,10,2021,4 Thackeray Crossing, ,Saint Louis,MO,63104
+207,207,3.58E+15,jcb,12,2020,38603 Bartillon Pass, ,Honolulu,HI,96845
+208,208,6.30E+16,laser,12,2020,560 Susan Lane, ,Chandler,AZ,85246
+209,209,3.03E+13,diners-club-carte-blanche,3,2021,3 Clyde Gallagher Lane, ,Detroit,MI,48224
+210,210,6.76E+15,maestro,12,2029,71 Farwell Trail, ,Bronx,NY,10469
+211,211,6.05E+16,maestro,8,2029,8 Eggendart Parkway, ,Portsmouth,NH,3804
+212,212,2.01E+14,diners-club-enroute,9,2030,44 Michigan Park, ,El Paso,TX,79923
+213,213,3.54E+15,jcb,9,2028,07 Namekagon Trail, ,Dallas,TX,75265
+214,214,3.41E+14,americanexpress,6,2020,648 Drewry Park, ,Anderson,IN,46015
+215,215,3.04E+13,diners-club-carte-blanche,8,2027,8763 Vermont Trail, ,Boston,MA,2298
+216,216,5.02E+16,maestro,2,2021,19089 Mayer Center, ,Washington,DC,20238
+217,217,4.92E+15,visa-electron,1,2027,1 Pankratz Terrace, ,Providence,RI,2905
+218,218,6.33E+15,switch,4,2030,41511 New Castle Alley, ,Greenville,SC,29615
+219,219,4.94E+18,switch,8,2020,80163 Stoughton Park, ,Greensboro,NC,27425
+220,220,3.55E+15,jcb,7,2028,4236 Weeping Birch Junction, ,Atlanta,GA,30368
+221,221,3.55E+15,jcb,2,2023,92 Beilfuss Court, ,San Francisco,CA,94147
+222,222,5.60E+15,bankcard,2,2027,01631 Coolidge Junction, ,Des Moines,IA,50347
+223,223,5.60E+15,bankcard,12,2021,0 Bluestem Way, ,Seattle,WA,98127
+224,224,3.54E+15,jcb,5,2030,8 Goodland Circle, ,Reno,NV,89510
+225,225,3.53E+15,jcb,10,2025,15762 Buell Point, ,Saint Paul,MN,55172
+226,226,3.01E+13,diners-club-carte-blanche,3,2020,3026 Ilene Parkway, ,Mesquite,TX,75185
+227,227,3.00E+13,diners-club-carte-blanche,1,2025,45 Leroy Street, ,Honolulu,HI,96810
+228,228,3.54E+15,jcb,9,2023,5217 Golf View Pass, ,San Antonio,TX,78230
+229,229,5.10E+15,mastercard,4,2020,79730 Sheridan Street, ,Shawnee Mission,KS,66225
+230,230,5.60E+15,china-unionpay,9,2026,91 5th Avenue, ,Honolulu,HI,96850
+231,231,3.54E+15,jcb,11,2025,51 Anniversary Pass, ,Bradenton,FL,34205
+232,232,3.56E+15,jcb,8,2021,57 Hollow Ridge Plaza, ,Utica,NY,13505
+233,233,5.61E+15,bankcard,9,2021,824 John Wall Junction, ,Washington,DC,20268
+234,234,5.01E+15,mastercard,10,2025,730 Amoth Drive, ,Olympia,WA,98506
+235,235,3.54E+15,jcb,9,2026,000 Ryan Street, ,San Francisco,CA,94169
+236,236,5.54E+15,diners-club-us-ca,5,2024,224 Mccormick Park, ,Aurora,CO,80044
+237,237,6.30E+15,maestro,6,2020,7368 Emmet Plaza, ,Louisville,KY,40287
+238,238,3.54E+15,jcb,1,2025,72 Dapin Crossing, ,Austin,TX,78759
+239,239,3.57E+15,jcb,8,2025,98295 Steensland Court, ,Buffalo,NY,14269
+240,240,3.02E+13,diners-club-carte-blanche,12,2026,3600 Myrtle Junction, ,Indianapolis,IN,46278
+241,241,5.43E+15,mastercard,2,2021,72696 Hermina Circle, ,Chicago,IL,60619
+242,242,3.53E+15,jcb,11,2025,3 Eagan Junction, ,North Hollywood,CA,91616
+243,243,6.30E+18,laser,10,2027,3 Manley Court, ,San Diego,CA,92145
+244,244,5.57E+15,mastercard,10,2030,8 Vahlen Plaza, ,Boise,ID,83757
+245,245,5.60E+15,bankcard,12,2024,5645 Daystar Trail, ,Lynchburg,VA,24515
+246,246,6.33E+18,switch,8,2020,70 Arkansas Way, ,Akron,OH,44305
+247,247,6.38E+15,instapayment,8,2021,82046 Bunting Road, ,Syracuse,NY,13224
+248,248,5.61E+16,china-unionpay,8,2027,69 Mitchell Crossing, ,Washington,DC,20260
+249,249,5.10E+15,mastercard,10,2025,012 Redwing Plaza, ,San Bernardino,CA,92424
+250,250,3.53E+15,jcb,2,2023,74999 Mifflin Place, ,Washington,DC,20022
+251,251,2.02E+14,diners-club-enroute,11,2024,799 Larry Circle, ,Independence,MO,64054
+252,252,5.05E+15,mastercard,12,2020,0586 Norway Maple Place, ,Lubbock,TX,79491
+253,253,3.53E+15,jcb,10,2023,7 Burrows Point, ,Greensboro,NC,27455
+254,254,3.54E+15,jcb,4,2028,6763 Kedzie Circle, ,Dayton,OH,45419
+255,255,3.54E+15,jcb,10,2029,78954 Morning Court, ,Dallas,TX,75277
+256,256,6.05E+16,maestro,9,2020,1438 Del Mar Trail, ,Phoenix,AZ,85040
+257,257,5.10E+15,mastercard,6,2030,36 Stone Corner Avenue, ,Levittown,PA,19058
+258,258,3.38E+14,americanexpress,1,2030,4229 Steensland Circle, ,Charlotte,NC,28205
+259,259,3.58E+15,jcb,5,2020,070 Commercial Plaza, ,Kansas City,MO,64187
+260,260,3.59E+15,jcb,7,2022,7 Paget Street, ,Washington,DC,20525
+261,261,5.60E+15,bankcard,10,2028,9 Lakewood Gardens Plaza, ,Amarillo,TX,79188
+262,262,5.60E+15,bankcard,3,2029,37144 Mariners Cove Point, ,Sacramento,CA,94286
+263,263,6.33E+18,switch,2,2027,2560 Redwing Street, ,Suffolk,VA,23436
+264,264,3.54E+15,jcb,8,2030,38 Chinook Street, ,Boise,ID,83716
+265,265,2.02E+14,diners-club-enroute,4,2029,12072 Ramsey Terrace, ,Santa Cruz,CA,95064
+266,266,3.57E+15,jcb,12,2027,52380 Leroy Plaza, ,El Paso,TX,88541
+267,267,3.58E+15,jcb,8,2026,5 Brown Junction, ,Austin,TX,78749
+268,268,3.06E+13,diners-club-carte-blanche,1,2020,42660 Aberg Drive, ,Shawnee Mission,KS,66215
+269,269,6.76E+16,maestro,9,2020,6989 Melrose Park, ,Atlanta,GA,31136
+270,270,5.02E+16,maestro,1,2024,85 Merchant Center, ,Canton,OH,44760
+271,271,3.53E+15,jcb,2,2030,15 Bobwhite Trail, ,Saint Petersburg,FL,33705
+272,272,2.02E+14,diners-club-enroute,3,2024,421 Atwood Junction, ,Annapolis,MD,21405
+273,273,5.60E+15,bankcard,12,2025,79139 Gulseth Plaza, ,Chicago,IL,60624
+274,274,5.00E+15,mastercard,6,2025,6 Brickson Park Road, ,Las Vegas,NV,89193
+275,275,3.56E+15,jcb,3,2027,07906 Moulton Alley, ,Fort Pierce,FL,34981
+276,276,2.02E+14,diners-club-enroute,5,2022,30515 Westend Road, ,Santa Cruz,CA,95064
+277,277,3.57E+15,jcb,11,2025,90 Arkansas Hill, ,Tucson,AZ,85715
+278,278,3.58E+15,jcb,4,2028,97029 Sheridan Plaza, ,Lancaster,CA,93584
+279,279,3.38E+14,americanexpress,7,2029,8371 Jana Parkway, ,Jackson,MS,39204
+280,280,3.55E+15,jcb,11,2028,003 Acker Way, ,Phoenix,AZ,85010
+281,281,2.02E+14,diners-club-enroute,8,2030,7 Macpherson Hill, ,Denver,CO,80209
+282,282,3.55E+15,jcb,11,2026,7641 Fuller Crossing, ,Shawnee Mission,KS,66286
+283,283,5.60E+15,bankcard,11,2028,65796 Drewry Place, ,Raleigh,NC,27658
+284,284,6.33E+17,solo,10,2025,50 Continental Point, ,Houston,TX,77260
+285,285,3.58E+15,jcb,9,2020,49944 American Ash Point, ,Huntsville,AL,35810
+286,286,3.58E+15,jcb,6,2029,7200 Judy Way, ,Erie,PA,16534
+287,287,3.57E+15,jcb,6,2022,316 Dakota Way, ,Duluth,MN,55805
+288,288,6.71E+17,laser,2,2030,8 Lakewood Gardens Hill, ,Visalia,CA,93291
+289,289,3.50E+14,americanexpress,3,2030,9009 Mcguire Alley, ,Santa Monica,CA,90405
+290,290,3.03E+13,diners-club-carte-blanche,12,2027,957 Basil Lane, ,Knoxville,TN,37939
+291,291,4.51E+15,visa-electron,5,2030,3 Schmedeman Hill, ,Rochester,NY,14639
+292,292,3.57E+15,jcb,2,2026,9303 Sommers Parkway, ,Lynchburg,VA,24515
+293,293,4.52E+15,visa,4,2025,6 Golf Course Lane, ,Maple Plain,MN,55572
+294,294,3.54E+15,jcb,9,2023,153 American Ash Court, ,Kalamazoo,MI,49048
+295,295,5.60E+17,china-unionpay,12,2021,3 Village Trail, ,Santa Monica,CA,90410
+296,296,4.41E+15,visa-electron,3,2030,67478 Elgar Hill, ,Cleveland,OH,44185
+297,297,6.71E+18,laser,1,2024,23189 Luster Circle, ,San Antonio,TX,78240
+298,298,3.54E+15,jcb,12,2023,74269 Westerfield Trail, ,Columbus,OH,43204
+299,299,3.06E+13,diners-club-carte-blanche,12,2027,3271 Duke Plaza, ,Houston,TX,77020
+300,300,2.02E+14,diners-club-enroute,7,2020,465 Riverside Trail, ,Sacramento,CA,94297
+301,301,6.33E+18,switch,10,2021,2953 Namekagon Street, ,Houston,TX,77260
+302,302,3.58E+15,jcb,3,2021,3502 Everett Trail, ,Virginia Beach,VA,23471
+303,303,3.58E+15,jcb,8,2030,77783 Kennedy Way, ,Largo,FL,33777
+304,304,5.01E+15,mastercard,9,2023,834 Hansons Plaza, ,Rockville,MD,20851
+305,305,5.60E+15,bankcard,11,2029,7 Manley Crossing, ,Oklahoma City,OK,73114
+306,306,5.56E+15,diners-club-us-ca,5,2025,07499 Forster Center, ,Columbia,SC,29203
+307,307,4.04E+12,visa,12,2030,68 Knutson Hill, ,Huntsville,AL,35805
+308,308,3.56E+15,jcb,9,2026,9688 Clove Parkway, ,Washington,DC,20436
+309,309,6.04E+15,maestro,12,2024,8628 Cambridge Road, ,Provo,UT,84605
+310,310,5.60E+16,china-unionpay,7,2028,224 Vermont Street, ,Memphis,TN,38109
+311,311,5.60E+15,bankcard,2,2026,517 Marcy Place, ,New Hyde Park,NY,11044
+312,312,5.02E+16,maestro,12,2027,89 Meadow Valley Point, ,Las Vegas,NV,89135
+313,313,4.41E+15,visa-electron,1,2020,383 Jay Junction, ,Washington,DC,20535
+314,314,5.22E+15,mastercard,10,2020,9 Brentwood Park, ,Springfield,MO,65898
+315,315,3.57E+15,jcb,9,2028,58775 Warner Parkway, ,Ann Arbor,MI,48107
+316,316,6.33E+15,switch,12,2025,116 Sauthoff Road, ,Austin,TX,78783
+317,317,3.54E+15,jcb,11,2030,71 Jenna Crossing, ,Toledo,OH,43605
+318,318,5.05E+15,mastercard,5,2027,605 Mandrake Crossing, ,Pensacola,FL,32505
+319,319,5.89E+17,maestro,11,2025,3992 Hoffman Trail, ,San Diego,CA,92176
+320,320,3.57E+15,jcb,12,2028,7 Hoffman Avenue, ,Lincoln,NE,68531
+321,321,3.55E+15,jcb,3,2023,7777 Mccormick Terrace, ,Jacksonville,FL,32209
+322,322,5.01E+15,mastercard,4,2023,78907 Messerschmidt Plaza, ,Hampton,VA,23663
+323,323,3.44E+14,americanexpress,2,2028,39568 Vera Terrace, ,Garden Grove,CA,92844
+324,324,3.58E+15,jcb,6,2022,236 Ridgeview Park, ,Albany,GA,31704
+325,325,5.10E+15,mastercard,5,2023,9 Nobel Alley, ,Washington,DC,20470
+326,326,4.29E+15,visa,3,2022,0 Randy Hill, ,Indianapolis,IN,46231
+327,327,3.01E+13,diners-club-carte-blanche,3,2024,8880 Calypso Parkway, ,Las Vegas,NV,89115
+328,328,3.54E+15,jcb,6,2021,48 Bunker Hill Point, ,Sacramento,CA,94245
+329,329,2.02E+14,diners-club-enroute,12,2021,61625 Calypso Center, ,Amarillo,TX,79182
+330,330,6.38E+15,instapayment,2,2023,042 Charing Cross Avenue, ,Austin,TX,78710
+331,331,3.57E+15,jcb,11,2024,464 Sherman Junction, ,Tulsa,OK,74108
+332,332,5.00E+15,mastercard,4,2020,99 Fairview Avenue, ,Kingsport,TN,37665
+333,333,5.61E+15,bankcard,2,2022,973 Sauthoff Junction, ,Mc Keesport,PA,15134
+334,334,5.61E+15,bankcard,12,2025,56858 Burrows Point, ,Albuquerque,NM,87110
+335,335,3.54E+15,jcb,9,2027,698 Mayfield Drive, ,New York City,NY,10029
+336,336,3.58E+15,jcb,6,2022,32 Fairfield Drive, ,Monroe,LA,71213
+337,337,3.57E+15,jcb,2,2021,23 Linden Terrace, ,Saint Louis,MO,63131
+338,338,3.53E+15,jcb,8,2020,20604 Caliangt Place, ,Tuscaloosa,AL,35405
+339,339,3.58E+15,jcb,9,2028,61493 Dexter Parkway, ,Columbus,OH,43215
+340,340,3.55E+15,jcb,12,2021,0 Esch Road, ,Columbus,GA,31904
+341,341,6.76E+16,maestro,8,2021,04 Elmside Junction, ,Saginaw,MI,48609
+342,342,5.57E+15,diners-club-us-ca,9,2020,407 Katie Center, ,Fresno,CA,93709
+343,343,3.57E+15,jcb,11,2021,98 Stuart Court, ,Johnson City,TN,37605
+344,344,4.91E+15,visa-electron,8,2028,2403 Dwight Alley, ,Lansing,MI,48901
+345,345,3.06E+13,diners-club-carte-blanche,12,2022,8 New Castle Way, ,Virginia Beach,VA,23471
+346,346,6.71E+18,laser,6,2024,090 Prairieview Plaza, ,Salt Lake City,UT,84120
+347,347,6.33E+15,switch,7,2023,43994 Golf Street, ,Cleveland,OH,44191
+348,348,2.02E+14,diners-club-enroute,9,2030,73 Kipling Terrace, ,Washington,DC,20319
+349,349,3.56E+15,jcb,10,2023,37 Linden Pass, ,Tampa,FL,33661
+350,350,3.58E+15,jcb,7,2030,340 Waubesa Point, ,Houston,TX,77260
+351,351,6.71E+16,laser,1,2026,972 Russell Park, ,Wichita,KS,67215
+352,352,3.58E+15,jcb,6,2025,34 Eagle Crest Parkway, ,San Antonio,TX,78260
+353,353,3.58E+15,jcb,2,2022,72 Redwing Road, ,El Paso,TX,79945
+354,354,3.57E+15,jcb,6,2021,14 Gale Parkway, ,Tampa,FL,33610
+355,355,3.59E+15,jcb,3,2022,2981 Raven Circle, ,Phoenix,AZ,85035
+356,356,3.43E+14,americanexpress,10,2027,55847 Moose Parkway, ,Washington,DC,20508
+357,357,5.22E+15,mastercard,8,2029,768 Calypso Trail, ,Los Angeles,CA,90025
+358,358,3.54E+15,jcb,11,2023,2 Dexter Hill, ,Birmingham,AL,35205
+359,359,3.58E+15,jcb,7,2025,115 Mitchell Way, ,Charleston,WV,25336
+360,360,6.71E+17,laser,5,2030,9 Arkansas Road, ,El Paso,TX,88525
+361,361,5.00E+15,mastercard,5,2029,578 Holy Cross Center, ,Columbia,SC,29225
+362,362,5.00E+15,mastercard,12,2030,47 Rockefeller Hill, ,Cincinnati,OH,45228
+363,363,3.38E+14,americanexpress,2,2026,4160 Dwight Street, ,Charlottesville,VA,22908
+364,364,3.54E+15,jcb,2,2021,0 Ridge Oak Street, ,Erie,PA,16550
+365,365,3.61E+13,diners-club-international,11,2024,26814 Vera Way, ,Muskegon,MI,49444
+366,366,3.54E+15,jcb,5,2023,27857 Clarendon Drive, ,Lincoln,NE,68517
+367,367,3.75E+14,americanexpress,5,2030,6 Meadow Vale Hill, ,Shawnee Mission,KS,66286
+368,368,3.74E+14,americanexpress,1,2023,410 Northport Alley, ,Detroit,MI,48206
+369,369,3.59E+15,jcb,10,2027,4 4th Park, ,Chicago,IL,60681
+370,370,5.60E+15,bankcard,3,2027,1958 Debs Court, ,Daytona Beach,FL,32118
+371,371,4.90E+17,switch,4,2027,80 Washington Terrace, ,Washington,DC,20392
+372,372,3.54E+15,jcb,1,2023,14853 Summer Ridge Street, ,Waterbury,CT,6726
+373,373,6.05E+15,maestro,12,2026,44488 Anderson Road, ,Washington,DC,20409
+374,374,3.42E+14,americanexpress,3,2024,5 Melvin Point, ,Pasadena,CA,91125
+375,375,5.60E+15,bankcard,11,2023,10698 Dunning Parkway, ,Miami,FL,33111
+376,376,3.58E+15,jcb,6,2027,34 West Lane, ,Roanoke,VA,24020
+377,377,3.55E+15,jcb,2,2023,37 Hudson Point, ,New York City,NY,10249
+378,378,3.58E+15,jcb,4,2026,85888 Green Ridge Hill, ,Washington,DC,20078
+379,379,3.56E+15,jcb,10,2024,3 Express Trail, ,Albany,NY,12227
+380,380,2.02E+14,diners-club-enroute,3,2021,7352 Magdeline Point, ,Boise,ID,83716
+381,381,3.55E+15,jcb,8,2023,20035 Melrose Point, ,Dallas,TX,75392
+382,382,4.04E+12,visa,3,2024,1953 Ilene Road, ,El Paso,TX,79984
+383,383,3.57E+15,jcb,6,2026,6 Forster Center, ,Tacoma,WA,98417
+384,384,2.02E+14,diners-club-enroute,9,2023,7914 Russell Crossing, ,Grand Rapids,MI,49518
+385,385,3.02E+13,diners-club-carte-blanche,9,2029,93968 8th Trail, ,Minneapolis,MN,55458
+386,386,5.60E+18,china-unionpay,9,2029,593 Clove Terrace, ,Fort Worth,TX,76110
+387,387,3.59E+15,jcb,3,2030,17785 Jenna Lane, ,Bronx,NY,10469
+388,388,3.58E+15,jcb,12,2030,300 Fairview Street, ,Omaha,NE,68124
+389,389,3.57E+15,jcb,7,2022,2497 Petterle Court, ,Hollywood,FL,33028
+390,390,3.56E+15,jcb,7,2020,24 Cascade Junction, ,Louisville,KY,40215
+391,391,3.57E+15,jcb,9,2027,15 Bayside Junction, ,Chattanooga,TN,37410
+392,392,3.55E+15,jcb,8,2027,433 Sunbrook Center, ,Akron,OH,44393
+393,393,3.58E+15,jcb,3,2030,812 Memorial Court, ,Oklahoma City,OK,73135
+394,394,3.55E+15,jcb,7,2024,73 Service Park, ,El Paso,TX,88530
+395,395,4.51E+15,visa-electron,4,2024,1 Lunder Park, ,Birmingham,AL,35242
+396,396,5.64E+15,switch,4,2028,197 Glacier Hill Trail, ,Peoria,IL,61629
+397,397,3.58E+15,jcb,8,2024,9 Forster Park, ,Idaho Falls,ID,83405
+398,398,3.58E+15,jcb,4,2028,51 Superior Park, ,Lexington,KY,40510
+399,399,3.54E+15,jcb,1,2025,451 Milwaukee Junction, ,Oxnard,CA,93034
+400,400,3.54E+15,jcb,7,2023,8 Nova Alley, ,Houston,TX,77276
+401,401,3.74E+14,americanexpress,8,2026,05867 Dorton Lane, ,San Diego,CA,92137
+402,402,3.55E+15,jcb,2,2026,0722 Gale Hill, ,Pueblo,CO,81010
+403,403,3.57E+15,jcb,11,2020,75197 Dahle Terrace, ,Birmingham,AL,35231
+404,404,3.54E+15,jcb,9,2022,604 Oakridge Road, ,Hamilton,OH,45020
+405,405,3.54E+15,jcb,8,2027,829 Claremont Center, ,Manassas,VA,22111
+406,406,3.53E+15,jcb,4,2029,58549 Corscot Court, ,New York City,NY,10014
+407,407,3.57E+15,jcb,3,2024,63670 Thierer Lane, ,Indianapolis,IN,46239
+408,408,5.60E+16,china-unionpay,2,2024,834 Caliangt Junction, ,Manchester,NH,3105
+409,409,2.02E+14,diners-club-enroute,5,2024,721 Bartillon Parkway, ,Atlanta,GA,31132
+410,410,6.71E+16,laser,9,2022,39210 Crowley Crossing, ,Columbus,OH,43268
+411,411,6.37E+15,instapayment,12,2027,5 Vermont Alley, ,Baltimore,MD,21229
+412,412,5.02E+17,maestro,4,2025,62862 Hallows Road, ,Charleston,WV,25336
+413,413,3.55E+15,jcb,7,2030,34215 Arapahoe Circle, ,Lansing,MI,48930
+414,414,3.74E+14,americanexpress,6,2028,9 Lighthouse Bay Plaza, ,Little Rock,AR,72209
+415,415,3.56E+15,jcb,11,2025,4671 Hooker Place, ,North Hollywood,CA,91606
+416,416,3.58E+15,jcb,7,2029,564 Annamark Alley, ,Racine,WI,53405
+417,417,6.76E+17,switch,2,2026,51167 Pine View Way, ,Washington,DC,20073
+418,418,3.58E+15,jcb,6,2030,283 Bluejay Point, ,New Orleans,LA,70179
+419,419,3.56E+15,jcb,10,2026,49 Ronald Regan Center, ,Charleston,SC,29403
+420,420,3.57E+15,jcb,8,2021,88292 Eliot Center, ,Ogden,UT,84403
+421,421,3.54E+15,jcb,11,2022,7 Lyons Point, ,Baltimore,MD,21239
+422,422,5.60E+15,bankcard,6,2028,3 Twin Pines Center, ,Whittier,CA,90610
+423,423,5.89E+17,maestro,5,2030,172 Reindahl Lane, ,Baltimore,MD,21265
+424,424,3.56E+15,jcb,4,2020,6 Shasta Terrace, ,Raleigh,NC,27605
+425,425,5.60E+17,china-unionpay,4,2022,66 Hanover Hill, ,Fort Worth,TX,76192
+426,426,6.76E+18,maestro,9,2023,5 Huxley Plaza, ,Detroit,MI,48211
+427,427,5.60E+15,bankcard,8,2030,66871 Elka Plaza, ,Olympia,WA,98516
+428,428,3.58E+15,jcb,5,2022,755 Farmco Way, ,El Paso,TX,79994
+429,429,3.53E+15,jcb,1,2024,41528 Lighthouse Bay Way, ,Washington,DC,20397
+430,430,5.04E+16,maestro,6,2027,6 Hudson Hill, ,Maple Plain,MN,55572
+431,431,5.60E+15,bankcard,6,2021,70 Jenna Trail, ,Annapolis,MD,21405
+432,432,5.01E+15,mastercard,12,2020,815 Warner Point, ,Knoxville,TN,37924
+433,433,3.57E+15,jcb,2,2021,9672 High Crossing Terrace, ,Las Vegas,NV,89130
+434,434,3.59E+15,jcb,3,2024,0651 Lotheville Park, ,Chattanooga,TN,37450
+435,435,2.02E+14,diners-club-enroute,3,2021,50 Myrtle Junction, ,Birmingham,AL,35263
+436,436,5.05E+15,mastercard,2,2024,47 Lerdahl Avenue, ,New Brunswick,NJ,8922
+437,437,3.47E+14,americanexpress,2,2026,6283 Delladonna Alley, ,Atlanta,GA,30380
+438,438,6.04E+15,maestro,6,2020,55 Commercial Way, ,Tampa,FL,33661
+439,439,4.94E+15,switch,10,2027,7779 Reinke Center, ,Atlanta,GA,30323
+440,440,3.53E+15,jcb,5,2030,14393 Westport Road, ,Huntington,WV,25705
+441,441,5.44E+15,mastercard,6,2029,4 Monica Park, ,Wilmington,DE,19886
+442,442,3.58E+15,jcb,2,2023,0 Manufacturers Circle, ,Killeen,TX,76544
+443,443,5.11E+15,mastercard,6,2021,05467 High Crossing Pass, ,Pittsburgh,PA,15205
+444,444,3.58E+15,jcb,2,2023,9984 Becker Road, ,Washington,DC,20067
+445,445,5.14E+15,mastercard,11,2026,658 Fisk Way, ,Wilkes Barre,PA,18706
+446,446,4.84E+15,visa-electron,7,2027,7 Coleman Street, ,Kansas City,MO,64193
+447,447,6.05E+17,maestro,5,2024,713 Oak Valley Place, ,Macon,GA,31205
+448,448,3.05E+13,diners-club-carte-blanche,9,2029,76 Packers Junction, ,Dallas,TX,75310
+449,449,4.92E+15,visa-electron,1,2024,569 Lillian Plaza, ,Harrisburg,PA,17121
+450,450,4.04E+15,visa,7,2024,8 Heffernan Plaza, ,Fort Worth,TX,76162
+451,451,6.76E+16,maestro,10,2021,1095 Tennyson Park, ,Kansas City,KS,66105
+452,452,3.02E+13,diners-club-carte-blanche,9,2029,9 Darwin Crossing, ,Boise,ID,83711
+453,453,5.60E+18,china-unionpay,2,2027,38740 Di Loreto Terrace, ,Monticello,MN,55585
+454,454,2.01E+14,diners-club-enroute,10,2028,2 Kenwood Plaza, ,Tampa,FL,33615
+455,455,3.53E+15,jcb,5,2023,22 Onsgard Parkway, ,Santa Barbara,CA,93150
+456,456,5.32E+15,mastercard,8,2024,8217 Bayside Avenue, ,Cincinnati,OH,45213
+457,457,3.59E+15,jcb,4,2027,28 Mitchell Pass, ,Vero Beach,FL,32969
+458,458,3.55E+15,jcb,10,2024,35 Riverside Terrace, ,Columbus,OH,43240
+459,459,3.75E+14,americanexpress,11,2022,218 Ludington Center, ,Newport News,VA,23612
+460,460,3.57E+15,jcb,10,2027,75 Mosinee Court, ,Evansville,IN,47719
+461,461,3.06E+13,diners-club-carte-blanche,11,2028,271 Almo Park, ,Norman,OK,73071
+462,462,3.58E+15,jcb,1,2023,5044 4th Place, ,Portland,OR,97240
+463,463,5.64E+17,switch,10,2025,0 Division Lane, ,Santa Clara,CA,95054
+464,464,6.30E+18,maestro,5,2028,0 Merrick Crossing, ,Greeley,CO,80638
+465,465,3.57E+15,jcb,6,2024,95 Drewry Circle, ,Reading,PA,19610
+466,466,5.60E+17,china-unionpay,12,2020,24 Bultman Place, ,Fort Myers,FL,33994
+467,467,3.54E+15,jcb,1,2021,96056 Lunder Terrace, ,Portland,ME,4109
+468,468,5.05E+15,mastercard,10,2022,1688 Anzinger Alley, ,Indianapolis,IN,46254
+469,469,3.04E+13,diners-club-carte-blanche,3,2022,723 Center Terrace, ,Newton,MA,2458
+470,470,4.51E+15,visa-electron,9,2026,09 Victoria Crossing, ,Saint Louis,MO,63196
+471,471,5.60E+18,china-unionpay,3,2029,4 Norway Maple Place, ,Denver,CO,80262
+472,472,3.53E+15,jcb,11,2022,1874 Almo Park, ,Yonkers,NY,10705
+473,473,3.58E+15,jcb,6,2020,2476 Barby Center, ,Erie,PA,16522
+474,474,4.94E+15,switch,9,2023,1 Hoard Crossing, ,Minneapolis,MN,55458
+475,475,4.18E+15,visa-electron,5,2024,911 Sauthoff Lane, ,San Diego,CA,92137
+476,476,3.59E+15,jcb,3,2030,89 Randy Plaza, ,Nashville,TN,37250
+477,477,4.85E+15,visa,1,2021,7 Maple Wood Court, ,Newark,DE,19714
+478,478,3.55E+15,jcb,8,2030,90 Clemons Park, ,Omaha,NE,68105
+479,479,3.56E+15,jcb,8,2020,37796 Division Junction, ,Long Beach,CA,90847
+480,480,6.30E+18,laser,9,2027,0743 Stone Corner Trail, ,Des Moines,IA,50310
+481,481,3.75E+14,americanexpress,7,2023,7 Chive Alley, ,Sacramento,CA,94230
+482,482,5.60E+15,bankcard,5,2023,59 Grover Crossing, ,Tacoma,WA,98405
+483,483,3.56E+15,jcb,3,2028,155 Harper Parkway, ,Billings,MT,59105
+484,484,3.54E+15,jcb,4,2023,7 Stuart Lane, ,Austin,TX,78710
+485,485,6.33E+18,switch,9,2025,4 Westport Way, ,Clearwater,FL,33763
+486,486,5.64E+15,switch,8,2027,1590 Spaight Center, ,Jacksonville,FL,32244
+487,487,3.53E+15,jcb,5,2023,01547 North Lane, ,Colorado Springs,CO,80910
+488,488,5.60E+15,bankcard,2,2021,74931 Hoard Circle, ,Fort Worth,TX,76105
+489,489,3.56E+15,jcb,11,2028,952 6th Park, ,West Palm Beach,FL,33421
+490,490,5.05E+15,mastercard,9,2025,8047 Merchant Trail, ,San Antonio,TX,78265
+491,491,3.55E+15,jcb,8,2023,882 Sloan Hill, ,Brooksville,FL,34605
+492,492,5.21E+15,mastercard,6,2027,42 Bellgrove Terrace, ,Evansville,IN,47705
+493,493,5.60E+15,bankcard,5,2024,9350 Oakridge Hill, ,New York City,NY,10029
+494,494,5.01E+15,mastercard,9,2023,92 Sutherland Court, ,Saint Petersburg,FL,33710
+495,495,3.74E+14,americanexpress,2,2028,0516 Summit Plaza, ,Stockton,CA,95298
+496,496,3.53E+15,jcb,6,2022,8713 Bartelt Hill, ,Fort Wayne,IN,46896
+497,497,3.59E+15,jcb,9,2021,18 Waywood Hill, ,Pasadena,CA,91131
+498,498,5.01E+15,mastercard,9,2020,58765 Kenwood Parkway, ,Baton Rouge,LA,70883
+499,499,4.03E+15,visa-electron,4,2020,950 Texas Center, ,Brooklyn,NY,11220
+500,500,5.05E+15,mastercard,12,2028,40 Rockefeller Road, ,Dallas,TX,75323
