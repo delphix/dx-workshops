@@ -7,7 +7,8 @@
 4.  [Links](#links)
 5.  [Contribute](#contribute)
 6.  [Reporting Issues](#reporting-issues)
-7.  [License](#license)
+7.  [Support](#support)
+8.  [License](#license)
 
 ## <a id="description"></a>Description
 
@@ -141,7 +142,14 @@ Include useful links to references or more advanced guides.
 
 ## <a id="contribute"></a>Contribute
 
-Please note that this project is released with a [Contributor Code of Conduct](./code-of-conduct.md). By participating in this project you agree to abide by its terms.
+All contributors are required to sign the Delphix Contributor Agreement prior to contributing code to an open source
+repository. This process is handled automatically by [cla-assistant](https://cla-assistant.io/). Simply open a pull
+request and a bot will automatically check to see if you have signed the latest agreement. If not, you will be prompted
+to do so as part of the pull request process.
+
+Please note that this project is released with a
+[Contributor Code of Conduct](https://delphix.github.io/code-of-conduct.html). By participating in this project you
+agree to abide by its terms.
 
 #### Workflow
 
@@ -155,6 +163,12 @@ Contributions must be signed as `User Name <user@email.com>`. Make sure to [set 
 ## <a id="reporting_issues"></a>Reporting Issues
 
 Issues should be reported in the repo's issue tab.
+
+## <a id="support"></a>Statement of Support
+
+This software is provided as-is, without warranty of any kind or commercial support through Delphix. See the associated
+license for additional details. Questions, issues, feature requests, and contributions should be directed to the
+community as outlined in the [Delphix Community Guidelines](https://delphix.github.io/community-guidelines.html).
 
 ## <a id="license"></a>License
 
