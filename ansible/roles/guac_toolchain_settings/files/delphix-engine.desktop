@@ -1,8 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Type=Application
-Terminal=false
-Exec=/usr/bin/google-chrome-stable http://delphixengine
-Name=Delphix Engine
-Comment=Access the Internet
-Icon=google-chrome

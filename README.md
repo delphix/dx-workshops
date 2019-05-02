@@ -1,98 +1,98 @@
-# Packer Template for CentOS 6.9 with Oracle 11.2.0.4 installed and prepared for Delphix
+# Various Pack Templates for images ready for use with the Delphix Dynamic Data Platform <!-- omit in toc -->
 
-#### Table of Contents
-1.  [Description](#description)
-2.  [Installation](#installation)
-3.  [Usage](#usage)
-4.  [Links](#links)
-5.  [Contribute](#contribute)
-6.  [Reporting Issues](#reporting-issues)
-7.  [Support](#support)
-8.  [License](#license)
+- [Description](#description)
+- [Workshops](#workshops)
+  - [Toolchain Workshop](#toolchain-workshop)
+- [Base Templates](#base-templates)
+  - [Usage](#usage)
+    - [Configuring](#configuring)
+    - [User Variables](#user-variables)
+    - [Building](#building)
+- [Links](#links)
+- [Contribute](#contribute)
+  - [Workflow](#workflow)
+- [Reporting Issues](#reporting-issues)
+- [Statement of Support](#statement-of-support)
+- [License](#license)
 
-## <a id="description"></a>Description
+## Description
 
-These are working Packer templates that will create AWS images that consists of:
-- CentOS 6.9 w/ Oracle 11.2.0.4
-- CentOS 7 w/ Oracle 11.2.0.4
-- CentOS 7 w/ Postgres 9.6
-- Delphix prerequisites installed and configured for use.
+This repo consists of some standard OS + Database templates configured ready to use with Delphix (located in the base-templates folder):
 
-There are also some demo-specific Packer Templates
-- Ubunutu Bionic w/Guacamole
-- CentOS 7 configured for the RDS demo
-- CentOS 7 configured as a source for the Delphix Automation Framework Demo
+- delphix-centos6.9-oracle11.2.0.4.json
+- delphix-centos7-ansible-base.json
+- delphix-centos7-oracle-11.2.0.4.json
+- delphix-centos7-oracle-12.2.0.1.json
+- delphix-centos7-postrges-9.6.json
+- delphix-ubuntu-bionic-guacamole.json
 
+There are also some bespoke Packer templates used for specific scenarios:
 
-The Oracle templates require the provisioned system to be able to access p13390677_112040_Linux-x86-64_1of7.zip and p13390677_112040_Linux-x86-64_2of7.zip via an unauthenticated http location (like an s3 bucket). 
+- delphix-centos7-daf-app.json
+- delphix-centos7-kitchen_sink.json
+- delphix-centos7-tooling-base.json
+- delphix-tcw-jumpbox.json
+- delphix-tcw-oracle12-source.json
+- delphix-tcw-oracle12-target.json
+- delphix-tcw-tooling-oracle.json
+- delphix-toolchain-dafdb-pgsql-source.json
 
-## <a id="installation"></a>Installation
+The Oracle templates requires access to the Oracle binaries placed in an AWS s3 bucket.
 
-### <a id="installation-via-docker"></a>Via Docker (the easiest) ###
+## Workshops
+
+### Toolchain Workshop
+
+Please see the documentation for the [Toolchain Workshop](demo-workshops/tcw/docs/building.md)
+
+## Base Templates
+
 1. Clone this repository
-2. Navigate into the cloned directory
-3. Copy the .example.docker to .environment.env
-
-```bash
-git clone https://github.com/delphix/packer-templates
-cd packer-templates
-cp .example.docker .example.env
-```
-
-### <a id="installation-without-docker"></a>Without Docker (the second easiest) ###
-1. Clone this repository
-2. Navigate into the cloned directory
+2. Navigate into the cloned directory in a terminal
 3. Copy the .example.env to .environment.env
-4. Certain packer templates have additional variables. Make copies of those example files, as in step 3
 
-This template depends on packer and ansible existing in your path. If you are running a Mac, then the easiest way is to install via homebrew.
-After cloning this repo, install the required ansible dependencies.
+These templates depend on Packer and Ansible existing in your path. If you are running a Mac, then the easiest way is to install via homebrew.
+After cloning this repo, install the required Ansible dependencies.
 
 ```bash
+brew install ansible packer git
 git clone https://github.com/delphix/packer-templates
-cd packer-templates
-brew install ansible packer
+cd base-templates
 cp .example.env .example.env
-ansible-galaxy install -r roles/requirements.yml
+ansible-galaxy install -r roles/X_requirements.yml
 ```
 
-## <a id="usage"></a>Usage
-### Configuring
-1. Edit the .environment.env file ###(HERE)### in the root directory of the cloned repo
-### user variables
+### Usage
+
+#### Configuring
+
+1. Edit the .environment.env file in the root directory of the cloned repo
+
+#### User Variables
+
 1. AWS_ACCESS_KEY_ID - The AWS_ACCESS_KEY_ID environment variable
 2. AWS_SECRET_ACCESS_KEY - The AWS_SECRET_ACCESS_KEY environment variable
-3. AWS_BUILD_REGION - The region packer will build the temporary infrastructure for the AMI
-4. AWS_DESTINATION_REGIONS - A comma-delimited list of regions for packer to copy the AMI
-5. ORACLE_BINARIES_ROOT_URL - The URL where the AWS instance can retrieve the Oracle binaries during the packer build
-6. AWS_VPC_ID - The VPC ID from the region that packer will use
-7. AWS_SUBNET_ID - The subnet ID from the VPC that packer will use
-#The below values are arbitrary, and only for tagging resources
-8. AWS_EXPIRATION - The date this AMI is expired, i.e. "2037-07-01" or "never"
-9. AWS_OWNER - The name of the person who owns the AMI, i.e. "Adam Bowen"
-10. AWS_PROJECT - The name of the project that the AMI belongs, or came, from
-11. AWS_COSTCENTER - The name of the cost center, if applicable
+3. AWS_REGION - The region packer will build the temporary infrastructure for the AMI
+4. ORACLE_BINARIES_ROOT_URL - The URL where the AWS instance can retrieve the Oracle binaries during the packer build (For Oracle templates, only)
+5. AWS_VPC_ID - The VPC ID from the region that packer will use
+6. AWS_SUBNET_ID - The subnet ID from the VPC that packer will use
 
-### Building
-#### Via Docker
-1. (Optional) Pull the cloudsurgeon/rds_demo docker image
-2. Run the container against the packer template you want to use.
+The below values are arbitrary, and only for tagging resources
 
-```bash
-docker pull cloudsurgeon/packer-ansible
-docker run --env-file .environment.env -v $(pwd):/build -i -t cloudsurgeon/packer-ansible:latest build delphix-centos7-rds.json
-```
+1. AWS_EXPIRATION - The date this AMI is expired, i.e. "2037-07-01" or "never"
+2. AWS_OWNER - The name of the person who owns the AMI, i.e. "Adam Bowen"
+3. AWS_PROJECT - The name of the project that the AMI belongs, or came, from
+4. AWS_COSTCENTER - The name of the cost center, if applicable
 
-#### Without Docker
-1. source the .example.env file
+#### Building
+
+1. source the .environment.env file
 2. run packer against the template you want to use:
+
 ```bash
 source .example.env
 packer build delphix-centOS6.9-oracle11.2.0.4.json
 ```
-
-
-
 
 ```bash
 packer build delphix-centOS6.9-oracle11.2.0.4.json 
@@ -112,13 +112,11 @@ cent69-Oracle11204 output will be in this color.
 ```
 
 Second Example:
+
 ```bash
 source .dafdb-source
 packer build delphix-toolchain-dafdb-source.json
 ```
-
-
-
 
 ```bash
 packer build delphix-toolchain-dafdb-source.json
@@ -134,13 +132,14 @@ delphix-toolchain-dafdb-source output will be in this color.
     delphix-toolchain-dafdb-source: Adding tag: "dlpx:CostCenter": "305000 - Development Engineering"
 ```
 
-## <a id="links"></a>Links
+## Links
 
 Include useful links to references or more advanced guides.
-*   [Packer Intro](https://www.packer.io/intro)
-*   [Building AMIs with Packer](https://www.packer.io/intro/getting-started/build-image.html)
 
-## <a id="contribute"></a>Contribute
+- [Packer Intro](https://www.packer.io/intro)
+- [Building AMIs with Packer](https://www.packer.io/intro/getting-started/build-image.html)
+
+## Contribute
 
 All contributors are required to sign the Delphix Contributor Agreement prior to contributing code to an open source
 repository. This process is handled automatically by [cla-assistant](https://cla-assistant.io/). Simply open a pull
@@ -151,25 +150,25 @@ Please note that this project is released with a
 [Contributor Code of Conduct](https://delphix.github.io/code-of-conduct.html). By participating in this project you
 agree to abide by its terms.
 
-#### Workflow
+### Workflow
 
-1.  Fork the project.
-2.  Make your bug fix or new feature.
-3.  Add tests for your code.
-4.  Send a pull request.
+1. Fork the project.
+2. Make your bug fix or new feature.
+3. Add tests for your code.
+4. Send a pull request.
 
 Contributions must be signed as `User Name <user@email.com>`. Make sure to [set up Git with user name and email address](https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup). Bug fixes should branch from the current stable branch. New feature should be based on the `master` branch.
 
-## <a id="reporting_issues"></a>Reporting Issues
+## Reporting Issues
 
 Issues should be reported in the repo's issue tab.
 
-## <a id="support"></a>Statement of Support
+## Statement of Support
 
 This software is provided as-is, without warranty of any kind or commercial support through Delphix. See the associated
 license for additional details. Questions, issues, feature requests, and contributions should be directed to the
 community as outlined in the [Delphix Community Guidelines](https://delphix.github.io/community-guidelines.html).
 
-## <a id="license"></a>License
+## License
 
 This is code is licensed under the Apache License 2.0. Full license is available [here](./LICENSE).

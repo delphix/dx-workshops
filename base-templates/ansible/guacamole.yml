@@ -1,0 +1,14 @@
+---
+- name: Guacamole playbook
+  hosts: all
+  become: true
+
+  vars:
+    guacamole_version: 0.9.14
+    guacamole_db_user: guacamole
+    guacamole_db_password: "{{ lookup('env','GUACAMOLE_DB_PASSWORD') }}"
+    guacamole_db_name: guacamole
+    guacamole_app_name: labs
+  
+  roles:
+    - { role: alexfeig.guacamole }

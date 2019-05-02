@@ -1,0 +1,13 @@
+version: '3'
+services:
+  tcw:
+    build:
+      context: .
+      dockerfile: demo-workshops/tcw/image-builder/Dockerfile
+      args:
+        DEMO_PATH: demo-workshops
+        DEMO_NAME: tcw
+    # command: packer_build.sh
+    volumes:
+      - .:/build
+    env_file: .docker.env 

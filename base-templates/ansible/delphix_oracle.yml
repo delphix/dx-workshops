@@ -1,0 +1,15 @@
+---
+
+- name: delphix_oracle
+  hosts: "all"
+  become: yes
+  roles:
+    - delphix_oracle
+  vars:
+    oracle_db_home: ora_1
+    oracle_version: 12.2.0.1
+    oracle_base: /u01/app/oracle
+    oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}"
+    toolkit_dir: /u01/app/toolkit
+    delphix_group: delphix
+    delphix_mount: /mnt/provision

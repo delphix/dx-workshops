@@ -1,0 +1,9 @@
+---
+- name: Mariadb playbook
+  hosts: all
+  become: true
+
+  vars:
+    mariadb_root_password: "{{ lookup('env','MARIADB_ROOT_PASSWORD') }}"
+  roles:
+    - { role: carloslongarela.mariadb }

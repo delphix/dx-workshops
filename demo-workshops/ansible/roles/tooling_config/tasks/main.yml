@@ -1,0 +1,222 @@
+---
+- name: Install required packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+    update_cache: true
+  vars:
+    packages:
+      - unzip
+      - device-mapper-persistent-data
+      - lvm2
+      - maven
+      - python2-pip
+      - zip
+  register: task_result
+  until: task_result is success
+  retries: 3
+  delay: 2
+
+- name: Install required pip modules
+  pip:
+    name: "{{ modules }}"
+    state: latest
+  vars:
+    modules:
+      - pip
+      - setuptools
+      - docker
+      - requests
+      - docopt
+      - delphixpy
+  register: task_result
+  until: task_result is success
+  retries: 3
+  delay: 2
+
+- name: get cli.packageManager value
+  command: ng config -g cli.packageManager
+  register: packageManager
+  failed_when: packageManager.rc >= 2 or (packageManager.rc == 1 and "No config found" not in packageManager.stderr)
+  environment:
+    PATH: '/usr/local/lib/npm/bin:{{ ansible_env.PATH }}'
+  changed_when: false
+
+- name: Configure angular to use yarn
+  command: ng config -g cli.packageManager yarn
+  when: packageManager.stdout != "yarn"
+  environment:
+    PATH: '/usr/local/lib/npm/bin:{{ ansible_env.PATH }}'
+
+- name: get cli.versionMismatch value
+  command: ng config -g cli.versionMismatch
+  register: versionMismatch
+  failed_when: versionMismatch.rc >= 2 or (versionMismatch.rc == 1 and "Value cannot be found" not in versionMismatch.stderr)
+  environment:
+    PATH: '/usr/local/lib/npm/bin:{{ ansible_env.PATH }}'
+  changed_when: false
+
+# Think this can come out
+- name: install terraform
+  unarchive:
+    src: https://releases.hashicorp.com/terraform/0.11.11/terraform_0.11.11_linux_amd64.zip
+    dest: /usr/bin/
+    remote_src: yes
+
+- name: Add users to groups
+  user:
+    name: "{{ item.name }}"
+    groups: "{{ item.groups }}"
+  with_items:
+    - {name: "{{ ansible_user }}", groups: "docker, jenkins"}
+    - {name: "jenkins", groups: "docker"}
+
+# - name: Get selenium hub container
+#   docker_container:
+#     name: selenium
+#     image: selenium/standalone-chrome
+#     ports:
+#      - "4444:4444"
+#     state: present
+
+# - name: Create selenium.service
+#   copy: 
+#     src: selenium.service
+#     dest: "/etc/systemd/system/selenium.service"
+#     mode: "755"
+
+# - name: enable selenium
+#   service:
+#     name: selenium
+#     enabled: true
+
+- name: Config params.json for bugzilla
+  template: 
+    src: params.json.j2
+    dest: "/etc/params.json"
+
+- name: Get bugzilla hub container
+  docker_container:
+    name: bugz
+    image: cloudsurgeon/landshark-bugzilla
+    ports:
+     - "5900:5900"
+     - "80:80"
+    state: present
+    volumes:
+      - "/etc/params.json:/var/www/html/bugzilla/data/params.json"
+  tags:
+    - bugz
+
+- name: Create bugz.service
+  copy: 
+    src: bugz.service
+    dest: "/etc/systemd/system/bugz.service"
+    mode: "755"
+
+- name: enable bugz
+  service:
+    name: bugz
+    enabled: true
+
+- name: Get DAF container
+  docker_container:
+    name: daf
+    image: delphix/automation-framework
+    state: present
+
+- name: Create ansible.cfg
+  copy: 
+    src: ansible.cfg
+    dest: "/etc/ansible/ansible.cfg"
+    mode: "755"
+
+- name: Get delphix-engine-configurator
+  get_url:
+    url: "https://github.com/CloudSurgeon/delphix-engine-configurator/releases/download/latest/delphix-engine-configurator.linux_x64"
+    dest: /usr/local/bin/delphix-engine-configurator
+    mode: "a+x"
+  retries: 3
+  delay: 2
+
+- name: Get snap_prod_refresh_mm
+  get_url:
+    url: "https://github.com/CloudSurgeon/snap_prod_refresh_mm/releases/download/latest/snap_prod_refresh_mm.linux_x64"
+    dest: /usr/local/bin/snap_prod_refresh_mm
+    mode: "a+x"
+  retries: 3
+  delay: 2
+
+- name: Does PatientsPipeline already exist
+  shell: |
+    java -jar /opt/jenkins-cli.jar -s http://localhost:8080 -auth admin:admin get-job PatientsPipeline
+  register: job_exists
+  ignore_errors: yes
+  tags:
+    - pipeline
+  changed_when: false
+
+- name: Copy pipeline job
+  copy: 
+    src: pipeline.xml
+    dest: "/tmp/pipeline.xml"
+  when: "job_exists.stdout == ''"
+    
+- name: Install Pipeline Job into Jenkins
+  shell: |
+    java -jar /opt/jenkins-cli.jar -auth admin:admin -s http://localhost:8080 create-job PatientsPipeline < /tmp/pipeline.xml
+  args:
+    chdir: /tmp
+  when: "job_exists.stdout == ''"
+
+- name: Concurrency support for maven - File 1
+  get_url:
+    url: "{{item.url}}"
+    dest: "{{item.dest}}"
+    mode: "a+wrx"
+  retries: 3
+  delay: 2
+  with_items:
+    - {url: "http://repo1.maven.org/maven2/io/takari/aether/takari-local-repository/0.10.4/takari-local-repository-0.10.4.jar", dest: "/usr/share/maven/lib/ext/takari-local-repository-0.10.4.jar" }
+    - {url: "http://repo1.maven.org/maven2/io/takari/takari-filemanager/0.8.2/takari-filemanager-0.8.2.jar", dest: "/usr/share/maven/lib/ext/takari-filemanager-0.8.2.jar"}
+  tags:
+    - mvn
+
+- name: Copy bz_create_bug.py
+  copy: 
+    src: bz_create_bug.py
+    dest: "/usr/local/bin/bz_create_bug.py"
+    mode: "a+x"
+  tags:
+    - bz_create_bug
+
+- name: Create scriptApproval.xml
+  copy: 
+    src: scriptApproval.xml
+    dest: "/var/lib/jenkins/scriptApproval.xml"
+    owner: jenkins
+    group: jenkins
+  become: true
+  tags:
+    - script
+
+- name: Get js_bookmark.py
+  get_url:
+    url: "https://raw.githubusercontent.com/delphix/delphixpy-examples/master/dx_jetstream_container.py"
+    dest: /usr/local/bin/dx_jetstream_container.py
+    mode: "a+x"
+  retries: 3
+  delay: 2
+  tags:
+    - book
+
+- name: Place dxtools.conf
+  copy: 
+    src: dxtools.conf
+    dest: "/var/lib/jenkins/dxtools.conf"
+    mode: "a+r"
+    owner: jenkins
+    group: jenkins
+  become: yes
+  tags:
+    - book

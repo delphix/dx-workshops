@@ -1,0 +1,63 @@
+---
+- name: Extract patcdb bundle
+  unarchive:
+    src: patcdb.tgz
+    dest: "/home/oracle"
+- name: Execute patcdb.sh
+  shell: |
+    export ORACLE_BASE={{ oracle_base }}
+    export ORACLE_HOME={{ oracle_home }}
+    ./patcdb.sh 2>/tmp/stderr.err >/tmp/stdout.out &
+    sleep 30
+    while true
+    do 
+      c=$(ps -ef | grep -v grep | grep [p]atcdb.sh | wc -l)
+      [ $c -eq 0 ] && break
+      sleep 10
+    done
+  args:
+    executable: /bin/bash
+    chdir: /home/oracle/patcdb
+    creates: /u01/app/oracle/oradata/patcdb/users01.dbf
+- name: Add /etc/oratab entry
+  lineinfile:
+    path: /etc/oratab
+    regexp: '^patcdb'
+    line: 'patcdb:/u01/app/oracle/product/12.2.0.1/ora_1:Y'
+  become_user: root
+- name: Execute create_patients.sh
+  shell: |
+    export ORACLE_BASE={{ oracle_base }}
+    export ORACLE_HOME={{ oracle_home }}
+    mv patients ../.
+    cd ../patients
+    ./create_patients.sh  2>/tmp/create_patients.err >/tmp/create_patients.out &
+    sleep 30
+    while true
+    do 
+      c=$(ps -ef | grep -v grep | grep [c]reate_patients.sh | wc -l)
+      [ $c -eq 0 ] && break
+      sleep 10
+    done
+  args:
+    executable: /bin/bash
+    chdir: /home/oracle/patcdb
+    creates: /home/oracle/patients/billings_loader.log
+- name: Cleanup directory
+  file:
+    state: absent
+    path: /home/oracle/patcdb
+- name: Add to DE as proddb
+  lineinfile:
+    path: /home/centos/conf.txt
+    regexp: '^environment_address'
+    line: 'environment_address=proddb'
+  become_user: root
+- name: Creates the reboot crontab for self_enroll 
+  cron:
+    name: "Enroll into Delphix on boot"
+    special_time: reboot
+    job: "until [[ \"$RESULT\" == \"yes\" ]] ; do RESULT=$(curl guacamole:8181 2>/dev/null| jq -r '.environments.ready');echo waiting for ready &>>/tmp/enroll.log; sleep 10; done; sudo /home/{{ ansible_user }}/self_enroll -c conf.txt &>> /tmp/enroll.log"
+  become: no
+  tags:
+    - cron

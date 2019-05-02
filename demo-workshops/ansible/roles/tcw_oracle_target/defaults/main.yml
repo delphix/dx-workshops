@@ -1,0 +1,21 @@
+# oracle_pv: /dev/xvdb
+# oracle_installer_path: /tmp
+# oracle_pass: delphixdb
+# oracle_db_syspass: delphixdb
+# oracle_hostname: "{{ ansible_hostname }}"
+# oracle_edition: EE
+oracle_db_home: ora_1
+oracle_version: 12.2.0.1
+# oracle_images:
+#   - { image: "{{ oracle_installer_path }}/V839960-01.zip", version: "12.2.0.1" }
+oracle_base: /u01/app/oracle
+oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}"
+# oracle_bin_fs: "{{ oracle_base }}"
+# install_mode: INSTALL_DB_SWONLY
+# toolkit_dir: /u01/app/toolkit
+# toolkit_path: "{{ toolkit_dir }}"
+# filename: "/home/{{ environment_user }}/.ssh/authorized_keys"
+# environment_user: delphix
+# firewall_allowed_tcp_ports:
+#   - "22"
+#   - "1521"

@@ -1,5 +1,0 @@
-apache_instances:
-  default:
-    page_title: "RDS Replica - Only for Viewing"
-    button_title: "RDS Replica Instance"
-    button_description: "Click the button below to launch the Employee Web Application associated with the database that is functioning as the target in Amazon DMS replication from the source database running in Amazon RDS."

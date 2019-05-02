@@ -1,0 +1,22 @@
+---
+- name: Install required packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+    update_cache: true
+  vars:
+    packages:
+      - httpd
+  register: task_result
+  until: task_result is success
+  retries: 3
+  delay: 2
+- name: create service for app-api
+  template: 
+    src: app-api.service.j2
+    dest: /etc/systemd/system/app-api.service
+- name: enable app-api
+  systemd:
+    enabled: yes
+    name: app-api
+    daemon_reload: yes

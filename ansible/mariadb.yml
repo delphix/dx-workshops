@@ -1,9 +1,0 @@
----
-- name: Mariadb playbook
-  hosts: all
-  become: true
-
-  vars:
-    mariadb_root_password: changeme
-  roles:
-    - { role: carloslongarela.mariadb }

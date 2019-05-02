@@ -1,0 +1,10 @@
+---
+- name: Guacamole User Setup
+  hosts: all
+  vars:
+    guacadmin_password: "{{ lookup('env','GUACADMIN_PASSWORD') }}"
+    guac_user_password: "{{ lookup('env','GUAC_USER_PASSWORD') }}"
+    vnc_password: "{{ lookup('env','VNC_DEFAULT_PASSWORD') }}"
+    delphix_admin_password: "{{ lookup('env','DELPHIX_ADMIN_PASSWORD') }}"
+  roles:
+    - { role: guac_toolchain_settings }

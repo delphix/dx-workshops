@@ -1,0 +1,34 @@
+---
+- name: Stop instance and Create AMI
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  vars:
+    branch: "{{ lookup('env','GIT_BRANCH') }}"
+    commit: "{{ lookup('env','GIT_COMMIT') }}"
+    dlpxCostCenter: "{{ lookup('env','AWS_COSTCENTER') }}"
+    dlpxExpiration: "{{ lookup('env','AWS_EXPIRATION') }}"
+    dlpxOwner: "{{ lookup('env','AWS_OWNER') }}"
+    dlpxProject: "{{ lookup('env','AWS_PROJECT') }}"
+  tasks:
+    - name: Stop instances
+      ec2:
+        state: 'stopped'
+        wait: yes
+        instance_ids: "{{ instance_id }}"
+    - debug:
+        msg: "{{ ami_name }}-{{ ansible_date_time.iso8601_basic_short }}"
+    - name: Create the AMI
+      ec2_ami:
+        instance_id: "{{ instance_id }}"
+        wait: yes
+        name: "{{ ami_name }}-{{ ansible_date_time.iso8601_basic_short }}"
+        no_reboot: no
+        tags:
+          'branch': "{{ branch }}"
+          'commit': "{{ commit }}"
+          'dlpx:CostCenter': "{{ dlpxCostCenter }}"
+          'dlpx:Expiration': "{{ dlpxExpiration }}"
+          'dlpx:Owner': "{{ dlpxOwner }}"
+          'dlpx:Project': "{{ dlpxProject }}"
+      

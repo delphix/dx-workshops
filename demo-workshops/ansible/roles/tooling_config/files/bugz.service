@@ -1,0 +1,11 @@
+[Unit]
+Wants=docker.service
+After=docker.service
+ 
+[Service]
+RemainAfterExit=yes
+ExecStart=/usr/bin/docker start bugz
+ExecStop=/usr/bin/docker stop bugz
+ 
+[Install]
+WantedBy=multi-user.target

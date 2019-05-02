@@ -1,0 +1,5 @@
+- src: delphix.target-host
+- src: https://github.com/delphix/delphix.self-enroller
+  name: delphix.self-enroll
+- src: https://github.com/delphix/oracle_install
+- src: geerlingguy.firewall

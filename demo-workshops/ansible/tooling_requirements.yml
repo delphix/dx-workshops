@@ -1,0 +1,5 @@
+- src: geerlingguy.jenkins
+- src: geerlingguy.docker
+- src: geerlingguy.git
+- src: geerlingguy.nodejs
+- src: ocha.yarn

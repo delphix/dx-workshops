@@ -1,0 +1,11 @@
+[Unit]
+Wants=docker.service
+After=docker.service
+ 
+[Service]
+RemainAfterExit=yes
+ExecStart=/usr/bin/docker start selenium
+ExecStop=/usr/bin/docker stop selenium
+ 
+[Install]
+WantedBy=multi-user.target

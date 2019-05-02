@@ -1,6 +1,0 @@
-delphix_user: delphix
-oracle_base: /u01/app/oracle
-oracle_home: "{{ oracle_base }}/product/11.2.0.4/ora_1"
-oracle_inventory_group: "oinstall"
-osdba_group: "dba"
-toolkit_dir: /u01/app/toolkit

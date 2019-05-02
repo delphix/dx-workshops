@@ -2,5 +2,13 @@
 *.bak
 facts.yml
 *.DS_Store
-.environment.env
 *.ignore
+*.env
+certs
+*.log
+*.pem
+*.tfvars
+*.tfstate*
+.terraform
+TODO
+demo-workshops/rds

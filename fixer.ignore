@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+#
+# Copyright (c) 2019 by Delphix. All rights reserved.
+#
+set -e
+
+[[ -z $1 ]] && echo you must provide a directory that contains the json && exit 1
+
+MDSUMFILE='md5sum.json'
+
+cd $1
+rm -f *_md5sum.json
+
+for each in *.json; do
+    if [[ "$each" != "md5sum.json" ]]; then
+        echo Working on $each
+		echo Generating md5sum
+		cat > ${each%.json}_md5sum.json <<-EOF
+			{
+			"md5sum": "$(md5sum $each|awk '{print $1}')"
+			} 
+		EOF
+        echo Validating...
+        packer validate $each
+        echo Fixing...
+        cp ${each} ${each}.ignore
+        packer fix ${each}.ignore > ${each}
+        rm ${each}.ignore
+        echo Done
+    fi
+done

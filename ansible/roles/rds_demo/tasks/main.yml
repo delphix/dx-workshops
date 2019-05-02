@@ -1,7 +1,0 @@
----
-- name: Configure Landing Page
-  template:
-    src: index.html.j2
-    dest: /usr/share/nginx/html/index.html
-  tags:
-    - index

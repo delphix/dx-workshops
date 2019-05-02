@@ -1,0 +1,11 @@
+Clone this repo
+
+Create a terraform.tfvars file in this directory like the below example
+ex.
+access_key="AKIAIVR4PQIUU7XXXXXX"
+secret_key="hTj/rmShT6gkPikG8ngaI6vZUOUXSi+QoiXXXXXX"
+key_name="BOWEN-CTO-WEST-2"
+project = "Flonkerton"
+how_many = 1
+aws_region = "us-west-2"
+availability_zone = "us-west-2a"

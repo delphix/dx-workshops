@@ -1,0 +1,5 @@
+- src: delphix.target-host
+- src: geerlingguy.java
+- src: https://github.com/delphix/oracle_install
+- src: geerlingguy.firewall
+- src: geerlingguy.nginx

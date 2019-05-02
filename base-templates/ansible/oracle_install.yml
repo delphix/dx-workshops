@@ -1,0 +1,82 @@
+---
+
+- name: install oracle
+  hosts: "all"
+  pre_tasks:
+    - name: Install required packages
+      yum:
+        name: "{{ packages }}"
+        state: present
+        update_cache: true
+      vars:
+        packages:
+          - python-botocore
+          - python-boto3
+    - block:
+      - name: make .aws directory
+        file:
+          path: "/home/{{ ansible_user }}/.aws"
+          mode: 0700
+          state: directory
+        become: no
+      - name: create credentials
+        shell: |
+          echo "[default]" > /home/{{ ansible_user }}/.aws/credentials
+          echo "aws_access_key_id = {{ aws_access_key_id }}" >> /home/{{ ansible_user }}/.aws/credentials
+          echo "aws_secret_access_key = {{ aws_secret_key }}" >> /home/{{ ansible_user }}/.aws/credentials
+        args:
+          creates: "/home/{{ ansible_user }}/.aws/credentials"
+        become: no
+      - name: Simple GET operation
+        aws_s3:
+          bucket: "{{ s3_bucket }}"
+          object: "{{ s3_object_path }}/{{ item }}"
+          dest: "/tmp/{{ item }}"
+          mode: get
+          retries: 3
+        with_items:
+          - p13390677_112040_Linux-x86-64_1of7.zip
+          - p13390677_112040_Linux-x86-64_2of7.zip
+        become: no
+      always:
+      - name: remove .aws directory
+        file:
+          path: "/home/{{ ansible_user }}/.aws"
+          state: absent
+        become: no
+  roles:
+    - role: geerlingguy.java
+      become: yes
+    - role: delphix.target-host
+      become: true
+    - delphix.self-enroll
+    - role: oracle_install
+      become: yes
+    - role: delphix_oracle
+      become: yes
+    - role: geerlingguy.firewall
+      become: yes
+  vars:
+    aws_access_key_id: "{{ lookup('env','S3_AWS_ACCESS_KEY_ID') }}"
+    aws_secret_key: "{{ lookup('env','S3_AWS_SECRET_ACCESS_KEY') }}"
+    s3_bucket: "{{ lookup('env','S3_BUCKET') }}"
+    s3_object_path: "{{ lookup('env','S3_OBJECT_PATH') }}"
+    oracle_pv: /dev/xvdb
+    oracle_installer_path: /tmp
+    oracle_pass: delphixdb
+    oracle_db_syspass: delphixdb
+    oracle_hostname: "{{ ansible_hostname }}"
+    oracle_edition: EE
+    oracle_db_home: ora_1
+    oracle_version: 11.2.0.4
+    oracle_base: /u01/app/oracle
+    oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}"
+    oracle_bin_fs: "{{ oracle_base }}"
+    install_mode: INSTALL_DB_SWONLY
+    toolkit_dir: /u01/app/toolkit
+    toolkit_path: "{{ toolkit_dir }}"
+    filename: "/home/{{ environment_user }}/.ssh/authorized_keys"
+    environment_user: delphix
+    firewall_allowed_tcp_ports:
+      - "22"
+      - "1521"

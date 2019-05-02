@@ -1,0 +1,8 @@
+---
+  - name: Configure TCW Oracle Target
+    hosts: all
+    become: yes
+    become_user: oracle
+    vars:
+    roles:
+      - role: tcw_oracle_target

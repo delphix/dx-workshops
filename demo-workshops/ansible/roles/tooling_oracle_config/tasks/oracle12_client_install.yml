@@ -1,0 +1,53 @@
+---
+- name: Install required packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+    update_cache: true
+  vars:
+    packages:
+      - python-botocore
+      - python-boto3
+      - xauth
+      - libstdc++-devel
+      - compat-libcap1
+      - sysstat
+      - gcc-c++
+      - ksh
+      - glibc-devel
+      - libaio-devel
+- block:
+  - name: make .aws directory
+    file:
+      path: "/home/{{ ansible_user }}/.aws"
+      mode: 0700
+      state: directory
+    become: no
+  - name: create credentials
+    shell: |
+      echo "[default]" > /home/{{ ansible_user }}/.aws/credentials
+      echo "aws_access_key_id = {{ aws_access_key_id }}" >> /home/{{ ansible_user }}/.aws/credentials
+      echo "aws_secret_access_key = {{ aws_secret_key }}" >> /home/{{ ansible_user }}/.aws/credentials
+    args:
+      creates: "/home/{{ ansible_user }}/.aws/credentials"
+    become: no
+  - name: Simple GET operation
+    aws_s3:
+      bucket: "{{ s3_bucket }}"
+      object: "{{ s3_object_path }}/{{ item }}"
+      dest: "/tmp/{{ item }}"
+      mode: get
+      retries: 3
+    with_items: "{{ oracle_binaries }}"
+    become: no
+  always:
+  - name: remove .aws directory
+    file:
+      path: "/home/{{ ansible_user }}/.aws"
+      state: absent
+    become: no
+- name: Install Oracle Instant Client packages
+  yum:
+    name: "{{ oracle_binaries | map('regex_replace', '(^.*)', '/tmp/\\1') | list }}"
+    state: present
+    update_cache: true

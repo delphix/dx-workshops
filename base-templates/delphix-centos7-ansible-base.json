@@ -1,0 +1,112 @@
+{
+  "builders": [
+    {
+      "access_key": "{{user `aws_access_key`}}",
+      "ami_name": "delphix-centos7-ansible-base-{{isotime \"20060102030405\"}}",
+      "ami_regions": "{{user `region`}}",
+      "associate_public_ip_address": true,
+      "force_deregister": true,
+      "instance_type": "t2.large",
+      "launch_block_device_mappings": [
+        {
+          "delete_on_termination": true,
+          "device_name": "/dev/sda1",
+          "volume_size": 8,
+          "volume_type": "gp2"
+        }
+      ],
+      "name": "delphix-centos7-ansible-base",
+      "region": "{{user `region`}}",
+      "run_tags": {
+        "branch": "{{ user `branch`}}",
+        "commit": "{{ user `commit`}}",
+        "dlpx:CostCenter": "{{user `dlpx:CostCenter`}}",
+        "dlpx:Expiration": "{{isotime \"2006-01-02\"}}",
+        "dlpx:Owner": "{{user `dlpx:Owner`}}",
+        "dlpx:Project": "{{user `dlpx:Project`}}"
+      },
+      "run_volume_tags": {
+        "branch": "{{ user `branch`}}",
+        "commit": "{{ user `commit`}}",
+        "dlpx:CostCenter": "{{user `dlpx:CostCenter`}}",
+        "dlpx:Expiration": "{{isotime \"2006-01-02\"}}",
+        "dlpx:Owner": "{{user `dlpx:Owner`}}",
+        "dlpx:Project": "{{user `dlpx:Project`}}"
+      },
+      "secret_key": "{{user `aws_secret_key`}}",
+      "source_ami_filter": {
+        "filters": {
+          "name": "CentOS Linux 7 x86_64 HVM EBS*"
+        },
+        "most_recent": true,
+        "owners": [
+          "679593333241"
+        ]
+      },
+      "ssh_username": "centos",
+      "subnet_id": "{{user `subnet_id`}}",
+      "tags": {
+        "branch": "{{ user `branch`}}",
+        "commit": "{{ user `commit`}}",
+        "dlpx:CostCenter": "{{user `dlpx:CostCenter`}}",
+        "dlpx:Expiration": "{{user `dlpx:Expiration`}}",
+        "dlpx:Owner": "{{user `dlpx:Owner`}}",
+        "dlpx:Project": "{{user `dlpx:Project`}}",
+        "md5sum": "{{user `md5sum`}}"
+      },
+      "type": "amazon-ebs",
+      "vpc_id": "{{user `vpc_id`}}"
+    }
+  ],
+  "min_packer_version": "1.3.5",
+  "post-processors": [],
+  "provisioners": [
+    {
+      "inline": [
+        "sudo yum update -y",
+        "sudo yum install -y epel-release",
+        "echo \"comment: python-netaddr for ipcalculations. \n jq for json parsing in hooks\"",
+        "sudo yum install -y ansible python-netaddr jq git"
+      ],
+      "type": "shell"
+    },
+    {
+      "ansible_env_vars": [
+        "ANSIBLE_HOST_KEY_CHECKING=False"
+      ],
+      "playbook_file": "ansible/workshop-base.yml",
+      "type": "ansible",
+      "user": "centos"
+    },
+    {
+      "inline": [
+        "sudo rm -Rf /tmp/*"
+      ],
+      "type": "shell"
+    },
+    {
+      "inline": [
+        "cat /dev/null > .ssh/authorized_keys"
+      ],
+      "type": "shell"
+    }
+  ],
+  "sensitive-variables": [
+    "aws_access_key",
+    "aws_secret_key"
+  ],
+  "variables": {
+    "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+    "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+    "commit": "{{env `GIT_COMMIT`}}",
+    "dlpx:CostCenter": "{{env `AWS_COSTCENTER`}}",
+    "dlpx:Expiration": "{{env `AWS_EXPIRATION`}}",
+    "dlpx:Owner": "{{env `AWS_OWNER`}}",
+    "dlpx:Project": "{{env `AWS_PROJECT`}}",
+    "md5sum": "",
+    "region": "{{env `AWS_REGION`}}",
+    "subnet_id": "{{env `AWS_SUBNET_ID`}}",
+    "vpc_id": "{{env `AWS_VPC_ID`}}"
+  }
+}
+

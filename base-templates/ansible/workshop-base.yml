@@ -1,0 +1,5 @@
+---
+- name: Workshop Base | Configure workshop systems
+  hosts: all
+  roles:
+    - { role: delphix.configure-workshop-hosts }

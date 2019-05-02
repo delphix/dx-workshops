@@ -1,0 +1,134 @@
+{
+  "builders": [
+    {
+      "access_key": "{{user `aws_access_key`}}",
+      "ami_name": "delphix-tcw-jumpbox-unstaged-{{isotime \"20060102030405\"}}",
+      "ami_regions": "{{user `region`}}",
+      "associate_public_ip_address": true,
+      "force_deregister": true,
+      "instance_type": "m4.large",
+      "launch_block_device_mappings": [
+        {
+          "delete_on_termination": true,
+          "device_name": "/dev/sda1",
+          "volume_type": "gp2"
+        }
+      ],
+      "name": "delphix-tcw-jumpbox",
+      "region": "{{user `region`}}",
+      "run_tags": {
+        "branch": "{{ user `branch`}}",
+        "commit": "{{ user `commit`}}",
+        "dlpx:CostCenter": "{{user `dlpx:CostCenter`}}",
+        "dlpx:Expiration": "{{isotime \"2006-01-02\"}}",
+        "dlpx:Owner": "{{user `dlpx:Owner`}}",
+        "dlpx:Project": "{{user `dlpx:Project`}}"
+      },
+      "run_volume_tags": {
+        "branch": "{{ user `branch`}}",
+        "commit": "{{ user `commit`}}",
+        "dlpx:CostCenter": "{{user `dlpx:CostCenter`}}",
+        "dlpx:Expiration": "{{isotime \"2006-01-02\"}}",
+        "dlpx:Owner": "{{user `dlpx:Owner`}}",
+        "dlpx:Project": "{{user `dlpx:Project`}}"
+      },
+      "secret_key": "{{user `aws_secret_key`}}",
+      "source_ami_filter": {
+        "filters": {
+          "name": "delphix-ubuntu-bionic-guacamole-*"
+        },
+        "most_recent": true,
+        "owners": [
+          "self"
+        ]
+      },
+      "ssh_username": "ubuntu",
+      "subnet_id": "{{user `subnet_id`}}",
+      "tags": {
+        "branch": "{{ user `branch`}}",
+        "commit": "{{ user `commit`}}",
+        "dlpx:CostCenter": "{{user `dlpx:CostCenter`}}",
+        "dlpx:Expiration": "{{user `dlpx:Expiration`}}",
+        "dlpx:Owner": "{{user `dlpx:Owner`}}",
+        "dlpx:Project": "{{user `dlpx:Project`}}",
+        "md5sum": "{{user `md5sum`}}",
+        "source": "{{user `source`}}"
+      },
+      "type": "amazon-ebs",
+      "vpc_id": "{{user `vpc_id`}}"
+    }
+  ],
+  "post-processors": [],
+  "provisioners": [
+    {
+      "inline": [
+        "sudo systemctl mask unattended-upgrades.service",
+        "sudo systemctl stop unattended-upgrades.service",
+        "while systemctl is-active --quiet unattended-upgrades.service; do sleep 1; echo sleep;done"
+      ],
+      "type": "shell"
+    },
+    {
+      "destination": "/home/ubuntu/.ssh/ansible",
+      "source": "../../../certs/ansible",
+      "type": "file"
+    },
+    {
+      "inline": [
+        "sudo chmod 400 .ssh/ansible"
+      ],
+      "type": "shell"
+    },
+    {
+      "ansible_env_vars": [
+        "ANSIBLE_HOST_KEY_CHECKING=False"
+      ],
+      "playbook_file": "../../ansible/guac_toolchain_settings.yml",
+      "type": "ansible",
+      "user": "ubuntu"
+    },
+    {
+      "inline": [
+        "sudo systemctl unmask unattended-upgrades.service",
+        "sudo systemctl start unattended-upgrades.service",
+        "sudo sed -i -e '/.*'`hostname -s`'.*/d' /etc/hosts"
+      ],
+      "type": "shell"
+    },
+    {
+      "inline": [
+        "sudo rm -Rf /tmp/*"
+      ],
+      "type": "shell"
+    },
+    {
+      "inline": [
+        "cat /dev/null > .ssh/authorized_keys",
+        "echo {{user `ansible_pub_key`}}>> .ssh/authorized_keys"
+      ],
+      "type": "shell"
+    }
+  ],
+  "sensitive-variables": [
+    "ansible_pub_key",
+    "aws_access_key",
+    "aws_secret_key"
+  ],
+  "variables": {
+    "ansible_pub_key": "{{env `ANSIBLE_PUB_KEY`}}",
+    "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+    "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+    "branch": "{{env `GIT_BRANCH`}}",
+    "commit": "{{env `GIT_COMMIT`}}",
+    "dlpx:CostCenter": "{{env `AWS_COSTCENTER`}}",
+    "dlpx:Expiration": "{{env `AWS_EXPIRATION`}}",
+    "dlpx:Owner": "{{env `AWS_OWNER`}}",
+    "dlpx:Project": "{{env `AWS_PROJECT`}}",
+    "md5sum": "",
+    "region": "{{env `AWS_REGION`}}",
+    "source": "delphix-ubuntu-bionic-guacamole.json",
+    "subnet_id": "{{env `AWS_SUBNET_ID`}}",
+    "vpc_id": "{{env `AWS_VPC_ID`}}"
+  }
+}
+

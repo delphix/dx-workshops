@@ -1,0 +1,153 @@
+---
+  - name: Install Desktop tools
+    apt:
+      name: "{{ packages }}"
+      state: present
+    become: true
+    vars:
+      packages:
+        - putty
+        - remmina
+        - postgresql-client-common
+        - postgresql-client
+    register: task_result
+    until: task_result is success
+    retries: 5
+    delay: 30
+  - name: Install google-chrome-stable
+    apt:
+      deb: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+      state: present
+    become: true
+  - name: Create Chrome shortcut
+    copy:
+      src: "delphix-engine.desktop"
+      dest: "/home/{{ ansible_user }}/Desktop/delphix-engine.desktop"
+      mode: "u+x,g+x"
+  - name: Create Putty shortcut
+    copy: 
+      src: putty.desktop
+      dest: "/home/{{ ansible_user }}/Desktop/putty.desktop"
+      mode: "u+x,g+x"
+  - name: Create RDP shortcut
+    copy:
+      src: rdp.desktop
+      dest: "/home/{{ ansible_user }}/Desktop/rdp.desktop"
+      mode: "u+x,g+x"
+  - name: Create vscode shortcut
+    copy:
+      src: vscode.desktop
+      dest: "/home/{{ ansible_user }}/Desktop/vscode.desktop"
+      mode: "u+x,g+x"
+    tags:
+      - code
+  - name: Create config sql
+    template: 
+      src: guac_settings_import.sql.j2
+      dest: "/tmp/guac_settings_import.sql"
+  - name: Setup Guacamole users, passwords, and connections
+    become: True
+    mysql_db:
+      name: guacamole
+      state: import
+      target: /tmp/guac_settings_import.sql
+  - name: Extract xfce settings
+    unarchive:
+      src: xfce_config.tgz
+      dest: "/home/{{ ansible_user }}"
+  - name: Create app_repo_local.tgz
+    copy:
+      src: app_repo_local.tgz
+      dest: "/home/{{ ansible_user }}"
+      mode: "u+rwx"
+    tags:
+      - test
+  - name: Create provision_workshop.sh
+    copy:
+      src: provision_workshop.sh
+      dest: "/home/{{ ansible_user }}/provision_workshop.sh"
+      mode: "u+x,g+x"
+    tags:
+      - prov
+  - name: Creates the reboot crontab for provision_workshop.sh 
+    cron:
+      name: "Run provision_workshop on reboot"
+      special_time: reboot
+      job: "{{ ansible_env.HOME }}/provision_workshop.sh"
+    become: no
+    tags:
+      - prov
+  - name: Create tw_ddp_ready
+    copy: 
+      src: tw_ddp_ready
+      dest: "/home/{{ ansible_user }}/tw_ddp_ready"
+      mode: "u+x,g+x"
+  - name: Create tw_provision files
+    copy: 
+      src: "{{ item }}"
+      dest: "/home/{{ ansible_user }}/{{ item }}"
+      mode: "u+x,g+x"
+    with_items:
+      - tw_provision
+      - global_objects.json
+      - masking_job.json
+  - name: Create tw_provision_config.txt
+    template: 
+      src: tw_provision_config.txt.j2
+      dest: "/home/{{ ansible_user }}/tw_provision_config.txt"
+  - name: Create reset_workshop.sh
+    copy: 
+      src: reset_workshop.sh
+      dest: "/home/{{ ansible_user }}/reset_workshop.sh"
+      mode: "u+x,g+x"
+  - name: Create conf.txt
+    template: 
+      src: tw_prep_conf.txt.j2
+      dest: "/home/{{ ansible_user }}/tw_prep_conf.txt"
+  - name: Add hosts to .ssh/config
+    blockinfile:
+      path: "/home/{{ ansible_user }}/.ssh/config"
+      block: |
+        host {{ item }}
+          IdentityFile ~/.ssh/ansible
+          StrictHostKeyChecking no
+      marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item }}"
+      create: yes
+    loop: "{{ lab_systems }}"
+  - name: Add an apt key by id from a url
+    apt_key:
+      url: https://packages.microsoft.com/keys/microsoft.asc
+    become: true
+  - apt_repository:
+      repo: deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main
+      state: present
+      filename: vscode
+    become: true
+  - name: Install VSCode tools
+    apt:
+      name: "{{ packages }}"
+      state: present
+      update_cache: yes
+    become: true
+    vars:
+      packages:
+        - code
+  - name: Create notes_changes
+    unarchive:
+      src: notes_changes.tgz
+      dest: "/home/{{ ansible_user }}"
+    tags:
+      - notes
+    become: no
+  - name: Create Chrome bookmarks
+    copy:
+      src: "Bookmarks"
+      dest: "/home/{{ ansible_user }}/.config/google-chrome/Default/Bookmarks"
+      mode: "u+rwx"
+    become: no
+  - name: Deploy Chrome Preferences
+    copy:
+      src: "Preferences"
+      dest: "/home/{{ ansible_user }}/.config/google-chrome/Default/Preferences"
+      mode: "u+rwx"
+    become: no

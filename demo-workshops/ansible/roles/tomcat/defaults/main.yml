@@ -1,0 +1,15 @@
+---
+  install_dir: "/opt/apache-tomcat-{{ tomcat_version }}"
+  service_name: "tomcat"
+  tomcat_user: "tomcat"
+  tomcat_group: "tomcat"
+  tomcat_version: "7.0.42"
+  tomcat_mem_size: "256m"
+  java_home: "/usr/lib/jvm/jre"
+  catalina_home: "/usr/share/tomcat"
+  catalina_base: "{{ catalina_home }}"
+  tomcat_admin_username: "delphix"
+  tomcat_admin_password: "delphix"
+  http_port: 8080
+  shutdown_port: 8005
+  ajp_port: 8009
