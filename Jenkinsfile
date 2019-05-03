@@ -1,4 +1,4 @@
-@Library('environment-lib@tcw') _
+@Library('environment-lib') _
 
 pipeline {
     options {
