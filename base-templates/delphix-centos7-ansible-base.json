@@ -36,11 +36,11 @@
       "secret_key": "{{user `aws_secret_key`}}",
       "source_ami_filter": {
         "filters": {
-          "name": "CentOS Linux 7 x86_64 HVM EBS*"
+          "product-code": "aw0evgkw8e5c1q413zgy5pjce"
         },
         "most_recent": true,
         "owners": [
-          "679593333241"
+          "aws-marketplace"
         ]
       },
       "ssh_username": "centos",

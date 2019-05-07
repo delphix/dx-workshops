@@ -36,11 +36,11 @@
       "secret_key": "{{user `aws_secret_key`}}",
       "source_ami_filter": {
         "filters": {
-          "name": "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server*"
+          "product-code": "csv6h7oyg29b7epjzg7qdr7no"
         },
         "most_recent": true,
         "owners": [
-          "099720109477"
+          "aws-marketplace"
         ]
       },
       "ssh_username": "ubuntu",
