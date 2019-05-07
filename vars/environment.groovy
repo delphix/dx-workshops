@@ -7,9 +7,6 @@ def packerBuild() {
       cd  \$(RETURN_DIRECTORY ${env.STAGE_NAME})
       echo "Changing instance_type to t2.2xlarge (37 cents/hour/machine) to minimize build time."
       sed -i -e 's|\\(.*instance_type\\"\\: \\"\\)\\(.*\\)\\(\\",\\)|\\1t2.2xlarge\\3|' ${env.STAGE_NAME}
-      for each in `ls ${env.WORKSPACE}/ansible/roles`; do
-        ln -s ${env.WORKSPACE}/ansible/roles/\$each ansible/roles/\$each
-      done
       PACKER_BUILD ${env.STAGE_NAME}
     """
   )

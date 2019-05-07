@@ -21,9 +21,11 @@
     become: true
   - name: Create Chrome shortcut
     copy:
-      src: "delphix-engine.desktop"
-      dest: "/home/{{ ansible_user }}/Desktop/delphix-engine.desktop"
+      src: "google-chrome.desktop"
+      dest: "/home/{{ ansible_user }}/Desktop/google-chrome.desktop"
       mode: "u+x,g+x"
+    tags:
+      - chrome
   - name: Create Putty shortcut
     copy: 
       src: putty.desktop
@@ -55,6 +57,8 @@
     unarchive:
       src: xfce_config.tgz
       dest: "/home/{{ ansible_user }}"
+    tags:
+      - xfce
   - name: Create app_repo_local.tgz
     copy:
       src: app_repo_local.tgz

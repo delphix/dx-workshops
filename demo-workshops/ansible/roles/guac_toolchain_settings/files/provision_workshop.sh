@@ -84,8 +84,8 @@ function PREPARE_PROD {
 
 	curl -v --retry 12 --retry-delay 5  --retry-connrefused http://prodweb:8080/auth/sign-up -H 'Content-Type: application/json' -H 'cache-control:
 	no-cache' -d '{
-			"username": "delphix_admin",
-			"firstname": "Delphix",
+			"username": "patients_admin",
+			"firstname": "Patients",
 			"lastname": "Admin",
 			"password": "delphix"
 	}'
@@ -134,7 +134,6 @@ function PREPARE_LOCAL {
 
 	rsync -arv ~/notes_changes/* ~/git/app_repo/
 	git add -A
-	git commit -m "Addng Notes Field"
 	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
 
 }

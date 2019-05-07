@@ -36,7 +36,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n\t\"username\": \"delphix_admin\",\n\t\"firstname\": \"Delphix\",\n\t\"lastname\": \"Admin\",\n\t\"password\": \"delphix\"\n}"
+									"raw": "{\n\t\"username\": \"patients_admin\",\n\t\"firstname\": \"Delphix\",\n\t\"lastname\": \"Admin\",\n\t\"password\": \"delphix\"\n}"
 								},
 								"url": {
 									"raw": "{{url}}/auth/sign-up",
@@ -62,7 +62,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n\t\"username\": \"delphix_admin\",\n\t\"firstname\": \"Delphix\",\n\t\"lastname\": \"Admin\",\n\t\"password\": \"delphix\"\n}"
+											"raw": "{\n\t\"username\": \"patients_admin\",\n\t\"firstname\": \"Delphix\",\n\t\"lastname\": \"Admin\",\n\t\"password\": \"delphix\"\n}"
 										},
 										"url": {
 											"raw": "{{url}}/auth/sign-up",
@@ -145,7 +145,7 @@
 											"key": "JSESSIONID"
 										}
 									],
-									"body": "{\"createdAt\":\"2018-09-11T15:14:41.275+0000\",\"updatedAt\":\"2018-09-11T15:14:41.275+0000\",\"id\":16,\"username\":\"delphix_admin\",\"firstname\":\"Delphix\",\"lastname\":\"Admin\",\"password\":\"$2a$10$aEE0.3nHglabNXCa7Bkb8.n0/3/2sjDfG5.GfO1ZTn2mmZZjZclye\"}"
+									"body": "{\"createdAt\":\"2018-09-11T15:14:41.275+0000\",\"updatedAt\":\"2018-09-11T15:14:41.275+0000\",\"id\":16,\"username\":\"patients_admin\",\"firstname\":\"Delphix\",\"lastname\":\"Admin\",\"password\":\"$2a$10$aEE0.3nHglabNXCa7Bkb8.n0/3/2sjDfG5.GfO1ZTn2mmZZjZclye\"}"
 								}
 							]
 						},
@@ -173,7 +173,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n\t\"username\": \"delphix_admin\",\n\t\"password\": \"delphix\"\n}"
+									"raw": "{\n\t\"username\": \"patients_admin\",\n\t\"password\": \"delphix\"\n}"
 								},
 								"url": {
 									"raw": "{{url}}/auth/login",
@@ -199,7 +199,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n\t\"username\": \"delphix_admin\",\n\t\"password\": \"delphix\"\n}"
+											"raw": "{\n\t\"username\": \"patients_admin\",\n\t\"password\": \"delphix\"\n}"
 										},
 										"url": {
 											"raw": "{{url}}/auth/login",

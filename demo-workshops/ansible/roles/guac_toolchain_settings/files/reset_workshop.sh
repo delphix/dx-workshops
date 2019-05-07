@@ -55,8 +55,8 @@ rm -Rf ~/Desktop/READY ~/Desktop/WAIT ~/Desktop/ERROR
 
 	curl -v --retry 22 --retry-delay 5  --retry-connrefused http://prodweb:8080/auth/sign-up -H 'Content-Type: application/json' -H 'cache-control:
 	no-cache' -d '{
-			"username": "delphix_admin",
-			"firstname": "Delphix",
+			"username": "patients_admin",
+			"firstname": "Patients",
 			"lastname": "Admin",
 			"password": "delphix"
 	}' 
@@ -87,7 +87,6 @@ rm -Rf ~/Desktop/READY ~/Desktop/WAIT ~/Desktop/ERROR
 
 	rsync -arv ~/notes_changes/* ~/git/app_repo/
 	git add -A
-	git commit -m "Addng Notes Field"
 	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
 
 	READY

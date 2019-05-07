@@ -1,4 +1,8 @@
 # FROM hashicorp/packer:light
+#
+# Copyright (c) 2019 by Delphix. All rights reserved.
+#
+
 FROM golang:alpine
 MAINTAINER "The Delphix Team"
 
