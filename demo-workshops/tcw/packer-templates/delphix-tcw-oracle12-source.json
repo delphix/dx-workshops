@@ -112,6 +112,7 @@
     "dlpx:Project": "{{env `AWS_PROJECT`}}",
     "md5sum": "",
     "region": "{{env `AWS_REGION`}}",
+    "seed": "f1d7999",
     "source": "delphix-centos7-oracle-12.2.0.1.json",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",
     "vpc_id": "{{env `AWS_VPC_ID`}}"
