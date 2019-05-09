@@ -34,9 +34,14 @@ function STAGED {
 	ssh -t centos@tooling "rm -Rf /tmp/dev /tmp/test /tmp/prod && git clone /var/lib/jenkins/app_repo.git /tmp/dev && git clone /var/lib/jenkins/app_repo.git /tmp/test && git clone /var/lib/jenkins/app_repo.git /tmp/prod"
 	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
 
+	ssh -t centos@tooling snap_prod_refresh_mm --config snap_conf.txt &
+
 	ssh -t centos@tooling ansible-playbook /tmp/prod/ansible/deploy.yaml -e git_branch=origin/production -e git_commit=x -e sdlc_env=PROD --limit prodweb
+	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
 	ssh -t centos@tooling ansible-playbook /tmp/test/ansible/deploy.yaml -e git_branch=origin/master -e git_commit=x -e sdlc_env=QA --limit testweb
+	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
 	ssh -t centos@tooling ansible-playbook /tmp/dev/ansible/deploy.yaml -e git_branch=origin/develop -e git_commit=x -e sdlc_env=DEV --limit devweb
+	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
 
 	for job in `jobs -p`
 	do
@@ -98,6 +103,13 @@ function PREPARE_PROD {
 }
 
 function PREPARE_LOWER {
+	echo "Checking that Jenkins is running on tooling"
+	until ssh -t centos@tooling "systemctl is-active --quiet jenkins"; do
+		echo "Starting Jenkins on tooling"
+		ssh -t centos@tooling "sudo systemctl start jenkins"
+		sleep 5
+	done
+	
 	ssh -t centos@tooling /var/lib/jenkins/app_repo.git/hooks/post-update
 	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
 
