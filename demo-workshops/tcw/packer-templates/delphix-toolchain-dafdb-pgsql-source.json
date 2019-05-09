@@ -118,6 +118,7 @@
     "dlpx:Project": "{{env `AWS_PROJECT`}}",
     "md5sum": "",
     "region": "{{env `AWS_REGION`}}",
+    "seed": "e055490",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",
     "vpc_id": "{{env `AWS_VPC_ID`}}"
   }
