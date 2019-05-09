@@ -14,18 +14,18 @@ rm -f *_md5sum.json
 for each in *.json; do
     if [[ "$each" != "md5sum.json" ]]; then
         echo Working on $each
-		echo Generating md5sum
-		cat > ${each%.json}_md5sum.json <<-EOF
-			{
-			"md5sum": "$(md5sum $each|awk '{print $1}')"
-			} 
-		EOF
         echo Validating...
         packer validate $each
         echo Fixing...
         cp ${each} ${each}.ignore
         packer fix ${each}.ignore > ${each}
         rm ${each}.ignore
+		echo Generating md5sum
+		cat > ${each%.json}_md5sum.json <<-EOF
+			{
+			"md5sum": "$(md5sum $each|awk '{print $1}')"
+			} 
+		EOF
         echo Done
     fi
 done
