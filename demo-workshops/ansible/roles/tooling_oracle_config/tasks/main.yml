@@ -30,7 +30,9 @@
       - /var/lib/jenkins/snap_conf.txt
   tags:
     - conf
+- name: setup data pipeline repo
+  include: data-pipeline.yml
 - name: setup local git repo
-  include: git-setup.yml
+  include: app-repo.yml
 - name: install datical tools
   include: datical_tools.yml

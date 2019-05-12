@@ -1,0 +1,106 @@
+---
+- name: Create the data pipeline git repo directory
+  file:
+    path: /var/lib/jenkins/data-pipeline.git
+    state: directory
+    mode: "u+rwx,g+rwx"
+    owner: centos
+    group: jenkins
+  become: yes
+  register: dp_repo
+  tags:
+    - dp_repo
+
+- name: Init data pipeline git repo directory as a bare git repo
+  shell: |
+    git init --bare /var/lib/jenkins/data-pipeline.git
+  args:
+    creates: /var/lib/jenkins/data-pipeline.git/.git
+  become: no
+  when: "dp_repo.changed"
+  tags:
+    - dp_repo
+
+#Get a weird error using the git module for this due to it being an empty repo
+- name: Clone the bare dp_repo
+  shell: |
+    git clone /var/lib/jenkins/data-pipeline.git
+  args:
+     chdir: /tmp
+     creates: /tmp/data-pipeline
+  retries: 3
+  delay: 2
+  become: no
+  tags:
+    - dp_repo
+
+- name: Add the Data Pipeline Jenkinsfile
+  copy:
+    src: Jenkinsfile
+    dest: /tmp/data-pipeline/Jenkinsfile
+  become: no
+  tags:
+    - dp_repo
+
+- name: Add the Data Pipeline delphix.yaml
+  copy:
+    src: dp-delphix.yaml
+    dest: /tmp/data-pipeline/delphix.yaml
+  become: no
+  tags:
+    - dp_repo
+
+- name: Are there things to add to git?
+  shell: |
+    git status
+  args:
+    chdir: /tmp/data-pipeline
+  register: git_status
+  changed_when: false
+  tags:
+    - dp_repo
+
+- name: Commit and push the master, production, and develop branch
+  shell: |
+    git add -A
+    git commit -m "init"
+    git push origin master
+  args:
+    chdir: /tmp/data-pipeline
+  become: no
+  when: "'git add' in git_status.stdout"
+  tags:
+    - dp_repo
+
+- name: tar up dp_repo for restore
+  shell: | 
+    tar cvzf dp_repo.tgz dp_repo.git
+  args:
+    chdir: /var/lib/jenkins
+  become: yes
+
+- name: Does Data Pipeline already exist
+  shell: |
+    java -jar /opt/jenkins-cli.jar -s http://localhost:8080 -auth admin:admin get-job 'Data Pipeline'
+  register: job_exists
+  ignore_errors: yes
+  changed_when: false
+  tags:
+    - dp_job
+
+- name: Copy data-pipeline job
+  copy: 
+    src: data-pipeline.xml
+    dest: "/tmp/data-pipeline.xml"
+  when: "job_exists.stdout == ''"
+  tags:
+    - dp_job
+    
+- name: Install Data Pipeline Job into Jenkins
+  shell: |
+    java -jar /opt/jenkins-cli.jar -auth admin:admin -s http://localhost:8080 create-job 'Data Pipeline' < /tmp/data-pipeline.xml
+  args:
+    chdir: /tmp
+  when: "job_exists.stdout == ''"
+  tags:
+    - dp_job
