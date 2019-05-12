@@ -74,7 +74,7 @@
 
 - name: tar up dp_repo for restore
   shell: | 
-    tar cvzf dp_repo.tgz dp_repo.git
+    tar cvzf data-pipeline.tgz data-pipeline.git
   args:
     chdir: /var/lib/jenkins
   become: yes
