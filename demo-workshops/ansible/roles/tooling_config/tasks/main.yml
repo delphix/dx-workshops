@@ -200,23 +200,35 @@
   tags:
     - script
 
-- name: Get js_bookmark.py
-  get_url:
-    url: "https://raw.githubusercontent.com/delphix/delphixpy-examples/master/dx_jetstream_container.py"
-    dest: /usr/local/bin/dx_jetstream_container.py
-    mode: "a+x"
+- name: Create the /opt/delphixpy-examples directory
+  file:
+    path: /opt/delphixpy-examples
+    state: directory
+    mode: 0755
+    owner: jenkins
+    group: jenkins
+  tags:
+    - delphixpy
+
+- name: Clone the delphixpy-examples repo
+  git:
+    dest: /opt/delphixpy-examples
+    repo: https://github.com/delphix/delphixpy-examples.git
+    version: master
   retries: 3
   delay: 2
+  become: yes
+  become_user: jenkins
   tags:
-    - book
+    - delphixpy
 
 - name: Place dxtools.conf
   copy: 
     src: dxtools.conf
-    dest: "/var/lib/jenkins/dxtools.conf"
+    dest: "/opt/delphixpy-examples/dxtools.conf"
     mode: "a+r"
     owner: jenkins
     group: jenkins
   become: yes
   tags:
-    - book
+    - delphixpy
