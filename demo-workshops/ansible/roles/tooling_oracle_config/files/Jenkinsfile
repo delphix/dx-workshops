@@ -5,7 +5,7 @@ pipeline {
     agent any
     environment {
         CAT_ADD_TEMPLATE_ONLY = '/opt/delphixpy-examples/js_bookmark.py \
-                        --config /var/lib/jenkins/dxtools.conf \
+                        --config /opt/delphixpy-examples/dxtools.conf \
                         --create_bookmark \"\${ENTRY_NAME}\" \
                         --data_layout \"Patients\" \
                         --tags "\${DATE},\${DATASET}%,\${BUILD_TAG}"'
