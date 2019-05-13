@@ -36,3 +36,8 @@ variable "env_name" {
 variable "last_octet" {
   description = "The last octet of the system's IP address"
 }
+
+variable "associate_public_ip_address" {
+  description = "Associate public IP Address to every instance in the workshop"
+  default = "false"
+}

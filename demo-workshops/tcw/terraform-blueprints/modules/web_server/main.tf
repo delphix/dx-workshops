@@ -13,6 +13,8 @@ resource "aws_instance" "web_server" {
   instance_type = "t2.micro"
   key_name = "${var.key_name}"
 
+  associate_public_ip_address = "${var.associate_public_ip_address == "false" ? false : true}"
+
   vpc_security_group_ids = ["${var.security_group_id}"]
   subnet_id = "${element(var.subnet_id, count.index)}"
   private_ip = "10.0.${count.index + 1}.${var.last_octet}"

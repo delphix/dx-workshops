@@ -12,7 +12,7 @@ resource "aws_instance" "target" {
   ami = "${data.aws_ami.delphix-ready-ami.id}"
   instance_type = "m4.xlarge"
   key_name = "${var.key_name}"
-
+  associate_public_ip_address = "${var.associate_public_ip_address == "false" ? false : true}"
   vpc_security_group_ids = ["${var.security_group_id}"]
   subnet_id = "${element(var.subnet_id, count.index)}"
   private_ip = "10.0.${count.index + 1}.${var.last_octet}"

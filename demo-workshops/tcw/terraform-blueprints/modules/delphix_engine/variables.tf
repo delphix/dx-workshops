@@ -35,3 +35,8 @@ variable "ami_name" {
 variable "staged" {
   default = "false"
 }
+
+variable "associate_public_ip_address" {
+  description = "Associate public IP Address to every instance in the workshop"
+  default = "false"
+}

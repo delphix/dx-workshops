@@ -31,3 +31,8 @@ variable "last_octet" {
 variable "ami_name" {
   description = "Name of the congigured target AMI."
 }
+
+variable "associate_public_ip_address" {
+  description = "Associate public IP Address to every instance in the workshop"
+  default = "false"
+}

@@ -67,3 +67,8 @@ variable "addtl_firewall_ingress_cidr_blocks" {
   description = "Specify any additional cidr block to allow inbound:any, i.e. '0.0.0.0/0' to allow all (not recommended)"
   default = []
 }
+
+variable "associate_public_ip_address" {
+  description = "Associate public IP Address to every instance in the workshop"
+  default = "false"
+}

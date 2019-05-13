@@ -18,6 +18,7 @@ resource "aws_instance" "delphix_engine" {
   count = "${var.how_many}"
 
   key_name = "${var.key_name}"
+  associate_public_ip_address = "${var.associate_public_ip_address == "false" ? false : true}"
 
   # Our Security group to allow HTTP and SSH access
   vpc_security_group_ids = ["${var.security_group_id}"]
