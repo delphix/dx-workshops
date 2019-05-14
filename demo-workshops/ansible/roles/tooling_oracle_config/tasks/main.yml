@@ -36,3 +36,35 @@
   include: app-repo.yml
 - name: install datical tools
   include: datical_tools.yml
+
+- name: Create the /opt/delphixpy-examples directory
+  file:
+    path: /opt/delphixpy-examples
+    state: directory
+    mode: 0755
+    owner: jenkins
+    group: jenkins
+  tags:
+    - delphixpy
+
+- name: Clone the delphixpy-examples repo
+  git:
+    dest: /opt/delphixpy-examples
+    repo: https://github.com/delphix/delphixpy-examples.git
+    version: master
+  retries: 3
+  delay: 2
+  become: yes
+  become_user: jenkins
+
+- name: Place dxtools.conf
+  template: 
+      src: dxtools.conf.j2
+      dest: "/opt/delphixpy-examples/dxtools.conf"
+      mode: "a+r"
+      owner: jenkins
+      group: jenkins
+  become_user: jenkins
+  become: yes
+  tags:
+    - delphixpy
