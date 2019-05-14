@@ -9,6 +9,7 @@ module "delphix_engine" {
   last_octet = "10"
   staged = "${var.staged}"
   ami_name = "${var.staged == "false" ? "${var.delphix_engine_version}" : "delphix-tcw-delphixengine-staged-*"}"
+  associate_public_ip_address = "${var.associate_public_ip_address}"
 }
 
 output "Delphix Engine" {

@@ -9,6 +9,7 @@ module "test_web_server" {
   ami_name = "delphix-centos7-daf-app-*"
   last_octet = "73"
   env_name = "nonprod"
+  associate_public_ip_address = "${var.associate_public_ip_address}"
   }
 
 output "testweb_public_ip" {

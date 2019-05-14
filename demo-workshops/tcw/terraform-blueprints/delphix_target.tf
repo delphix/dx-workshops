@@ -9,6 +9,7 @@ module "delphix_target" {
   default_tags = "${local.default_tags}"
   env_name = "TARGET"
   last_octet = "30"
+  associate_public_ip_address = "${var.associate_public_ip_address}"
 }
 
 output "Oracle Target" {

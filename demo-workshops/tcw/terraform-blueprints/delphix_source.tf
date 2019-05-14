@@ -9,6 +9,7 @@ module "delphix_source" {
   default_tags = "${local.default_tags}"
   env_name = "SOURCE"
   last_octet = "20"
+  associate_public_ip_address = "${var.associate_public_ip_address}"
 }
 
 output "Oracle Source" {
