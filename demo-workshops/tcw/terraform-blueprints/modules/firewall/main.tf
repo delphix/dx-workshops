@@ -11,7 +11,6 @@ locals {
   cidr_addr = "${chomp("${data.http.your_ip.body}")}/32"
   
   default_firewall_ingress_cidr_blocks = [
-    "10.0.0.0/16",
     "${local.cidr_addr}"
   ]
 }
@@ -26,6 +25,14 @@ resource "aws_security_group" "landshark" {
       protocol = "tcp"
       #Remove the ', "0.0.0.0/0"' from the list below, to eliminate "Any In"
       cidr_blocks = ["${concat(local.default_firewall_ingress_cidr_blocks,var.addtl_firewall_ingress_cidr_blocks)}"]
+  }
+
+  ingress {
+      from_port = 0
+      to_port = 0
+      protocol = "-1"
+      
+      cidr_blocks = ["10.0.0.0/16"]
   }
 
   egress {
