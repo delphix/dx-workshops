@@ -8,7 +8,6 @@ module "tooling" {
   default_tags = "${local.default_tags}"
   last_octet = "6"
   ami_name = "delphix-tcw-tooling-oracle-${var.staged == "false" ? "unstaged" : "staged"}-*"
-  associate_public_ip_address = "${var.associate_public_ip_address}"
 }
 
 output "TOOLING" {

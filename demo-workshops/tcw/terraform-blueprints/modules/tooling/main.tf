@@ -21,7 +21,7 @@ resource "aws_instance" "tooling" {
     timeout = "3m"
   }
 
-  associate_public_ip_address = "${var.associate_public_ip_address == "false" ? false : true}"
+  associate_public_ip_address = true
   
   root_block_device {
     volume_type           = "gp2"
