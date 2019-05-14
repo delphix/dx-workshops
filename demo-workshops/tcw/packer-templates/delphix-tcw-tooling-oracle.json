@@ -106,7 +106,7 @@
     "dlpx:Project": "{{env `AWS_PROJECT`}}",
     "md5sum": "",
     "region": "{{env `AWS_REGION`}}",
-    "seed": "90d86f5",
+    "seed": "33b04f5",
     "source": "delphix-centos7-tooling-base.json",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",
     "vpc_id": "{{env `AWS_VPC_ID`}}"
