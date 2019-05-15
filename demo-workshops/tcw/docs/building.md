@@ -25,7 +25,7 @@ These have been prepared for Mac/Linux-based installations.
     5. [oracle-instantclient12.2-tools-12.2.0.1.0-1.x86_64.rpm](https://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html)
     6. [oracle-instantclient12.2-jdbc-12.2.0.1.0-1.x86_64.rpm](https://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html)
     7. [oracle-instantclient12.2-sqlplus-12.2.0.1.0-1.x86_64.rpm](https://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html)
-4. AWS access keys with permissions to read the s3 bucket from #2
+4. AWS access keys with permissions to read the s3 bucket from #3
 5. AWS access keys to create and destroy EC2 objects (VPCs, subnets, SGs, ami's, instances, etc)
 
 ### Instructions
