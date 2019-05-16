@@ -31,9 +31,9 @@ pipeline {
         stage('Stage 1 Packer Builds'){
             parallel {
                 stage('delphix-centos7-ansible-base.json'){
-                    when {
-                        expression {return environment.ami_checker(false) == 0}
-                    }
+                    // when {
+                    //     expression {return environment.ami_checker(false) == 0}
+                    // }
                     steps{
                         script{
                             environment.packerBuild()
