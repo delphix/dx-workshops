@@ -1,13 +1,20 @@
 def packerBuild() {
+  // sh (
+  //   script: """#!/bin/bash
+  //     { set +x; } 2>/dev/null
+  //     source ${env.IMAGEBUILDER_LIB}
+  //     source /var/lib/jenkins/.packer_templates.env
+  //     cd  \$(RETURN_DIRECTORY ${env.STAGE_NAME})
+  //     echo "Changing instance_type to t2.2xlarge (37 cents/hour/machine) to minimize build time."
+  //     sed -i -e 's|\\(.*instance_type\\"\\: \\"\\)\\(.*\\)\\(\\",\\)|\\1m4.2xlarge\\3|' ${env.STAGE_NAME}
+  //     PACKER_BUILD ${env.STAGE_NAME}
+  //   """
+  // )
   sh (
     script: """#!/bin/bash
       { set +x; } 2>/dev/null
-      source ${env.IMAGEBUILDER_LIB}
-      source /var/lib/jenkins/.packer_templates.env
-      cd  \$(RETURN_DIRECTORY ${env.STAGE_NAME})
-      echo "Changing instance_type to t2.2xlarge (37 cents/hour/machine) to minimize build time."
-      sed -i -e 's|\\(.*instance_type\\"\\: \\"\\)\\(.*\\)\\(\\",\\)|\\1m4.2xlarge\\3|' ${env.STAGE_NAME}
-      PACKER_BUILD ${env.STAGE_NAME}
+      cp /var/lib/jenkins/.docker.env .
+      docker-compose run tcw build
     """
   )
 }
