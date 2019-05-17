@@ -30,6 +30,8 @@ pipeline {
                 sh "cp /var/lib/jenkins/.docker.env ."
                 echo "Copying s3 backend file"
                 sh "cp /var/lib/jenkins/terraform_dev_backend.tf ${env.TF_DIR}/."
+                echo "Copying firewall rules"
+                sh "cp p /var/lib/jenkins/firewall.tf ${env.TF_DIR}/modules/firewall/main.tf"
                 echo "Building Container"
                 sh "docker-compose build --no-cache" 
             }
