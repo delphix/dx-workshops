@@ -61,7 +61,7 @@ def terraformBuild(staged){
   // """
   sh """#!/bin/bash
     { set -x; } 2>/dev/null
-    docker-compose run tcw build
+    docker-compose run tcw deploy
   """
 }
 
