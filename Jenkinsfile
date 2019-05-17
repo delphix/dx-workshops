@@ -35,16 +35,11 @@ pipeline {
             }
         }
         stage('Stage 1 Packer Builds'){
-            stage('delphix-centos7-ansible-base.json'){
-                // when {
-                //     expression {return environment.ami_checker(false) == 0}
-                // }
-                steps{
-                    script{
-                        environment.packerBuild()
-                        CHANGE = true
-                        }
-                }
+            steps{
+                script{
+                    environment.packerBuild()
+                    CHANGE = true
+                    }
             }
         }
         stage('Build Unstaged Integrated Test Environment'){
