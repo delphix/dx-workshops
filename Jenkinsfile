@@ -130,7 +130,6 @@ pipeline {
     post{
         always{
             script{environment.terraformDestroy()}
-            sh "sudo rm -Rf .terraform"
         }
     }
 }
