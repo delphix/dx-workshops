@@ -130,9 +130,8 @@ pipeline {
     post{
         always{
             node('master'){
-                dir(env.TF_DIR){
-                    script{environment.terraformDestroy()}
-                }
+                script{environment.terraformDestroy()}
+                sh "sudo rm -Rf .terraform"
             }
         }
     }
