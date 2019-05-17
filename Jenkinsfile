@@ -135,7 +135,7 @@ pipeline {
         }
         cleanup{
             dir(env.TF_DR){
-                steps{
+                script{
                     sh "sudo rm -Rf .terraform"
                 }
             }
