@@ -26,6 +26,7 @@ pipeline {
                 // sh "ansible-galaxy install -r demo-workshops/ansible/all_requirements.yml"
                 echo "Grabbing certs"
                 sh "cp ${env.ANSIBLE_CERT}* certs"
+                sh "docker-compose build --no-cache" 
             }
         }
         stage('Stage 1 Packer Builds'){
@@ -154,68 +155,68 @@ pipeline {
         //         }
         //     }
         // }
-        stage('Build Unstaged Integrated Test Environment'){
-            when {
-                expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
-            }
-            steps{
-                dir(env.TF_DIR){
-                    script{environment.terraformBuild("false")}
-                }
-            }
-        }
-        stage('Unstaged Integration Testing'){
-            when {
-                expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
-            }
-            steps{
-                dir(env.TF_DIR){
-                    script{environment.environmentTest()}
-                }
-            }
-        }
-        stage('Create Staged AMIs'){
-            when {
-                expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
-            }
-            parallel{
-                stage('delphix-tcw-jumpbox'){
-                    steps{
-                        dir(env.TF_DIR){
-                            script{environment.amiify()}
-                        }
-                    }
-                }
-                stage('delphix-tcw-oracle12-source'){
-                    steps{
-                        dir(env.TF_DIR){
-                            script{environment.amiify()}
-                        }
-                    }
-                }
-                stage('delphix-tcw-oracle12-target'){
-                    steps{
-                        dir(env.TF_DIR){
-                            script{environment.amiify()}
-                        }
-                    }
-                }
-                stage('delphix-tcw-tooling-oracle'){
-                    steps{
-                        dir(env.TF_DIR){
-                            script{environment.amiify()}
-                        }
-                    }
-                }
-                stage('delphix-tcw-delphixengine'){
-                    steps{
-                        dir(env.TF_DIR){
-                            script{environment.amiify()}
-                        }
-                    }
-                }
-            }
-        }
+        // stage('Build Unstaged Integrated Test Environment'){
+        //     when {
+        //         expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
+        //     }
+        //     steps{
+        //         dir(env.TF_DIR){
+        //             script{environment.terraformBuild("false")}
+        //         }
+        //     }
+        // }
+        // stage('Unstaged Integration Testing'){
+        //     when {
+        //         expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
+        //     }
+        //     steps{
+        //         dir(env.TF_DIR){
+        //             script{environment.environmentTest()}
+        //         }
+        //     }
+        // }
+        // stage('Create Staged AMIs'){
+        //     when {
+        //         expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
+        //     }
+        //     parallel{
+        //         stage('delphix-tcw-jumpbox'){
+        //             steps{
+        //                 dir(env.TF_DIR){
+        //                     script{environment.amiify()}
+        //                 }
+        //             }
+        //         }
+        //         stage('delphix-tcw-oracle12-source'){
+        //             steps{
+        //                 dir(env.TF_DIR){
+        //                     script{environment.amiify()}
+        //                 }
+        //             }
+        //         }
+        //         stage('delphix-tcw-oracle12-target'){
+        //             steps{
+        //                 dir(env.TF_DIR){
+        //                     script{environment.amiify()}
+        //                 }
+        //             }
+        //         }
+        //         stage('delphix-tcw-tooling-oracle'){
+        //             steps{
+        //                 dir(env.TF_DIR){
+        //                     script{environment.amiify()}
+        //                 }
+        //             }
+        //         }
+        //         stage('delphix-tcw-delphixengine'){
+        //             steps{
+        //                 dir(env.TF_DIR){
+        //                     script{environment.amiify()}
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
         // stage('Build Staged Integrated Test Environment'){
         //     when {
         //         expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
