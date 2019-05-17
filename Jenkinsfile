@@ -129,8 +129,10 @@ pipeline {
     }
     post{
         always{
-            dir(env.TF_DIR){
-                script{environment.terraformDestroy()}
+            node('master'){
+                dir(env.TF_DIR){
+                    script{environment.terraformDestroy()}
+                }
             }
         }
     }
