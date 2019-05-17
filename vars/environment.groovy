@@ -61,8 +61,6 @@ def terraformBuild(staged){
   // """
   sh """#!/bin/bash
     { set -x; } 2>/dev/null
-    cp /var/lib/jenkins/terraform_dev_backend.tf .
-    cd ${env.WORKSPACE}
     docker-compose run tcw build
   """
 }
@@ -70,7 +68,7 @@ def terraformBuild(staged){
 def terraformDestroy(){
   sh """#!/bin/bash
     { set -x; } 2>/dev/null
-    terraform destroy -var-file=${env.TF_VARS} --auto-approve || true
+    docker-compose run tcw build teardown || true
   """
 }
 

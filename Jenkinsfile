@@ -28,198 +28,87 @@ pipeline {
                 sh "cp ${env.ANSIBLE_CERT}* certs"
                 echo "Copying env file"
                 sh "cp /var/lib/jenkins/.docker.env ."
+                echo "Copying s3 backend file"
+                sh "cp /var/lib/jenkins/terraform_dev_backend.tf ${env.TF_DIR}/."
                 echo "Building Container"
                 sh "docker-compose build --no-cache" 
             }
         }
         stage('Stage 1 Packer Builds'){
-            parallel {
-                stage('delphix-centos7-ansible-base.json'){
-                    // when {
-                    //     expression {return environment.ami_checker(false) == 0}
-                    // }
-                    steps{
-                        script{
-                            environment.packerBuild()
-                            CHANGE = true
-                            }
-                    }
-                }
-                // stage('delphix-ubuntu-bionic-guacamole.json'){
-                //     when {
-                //         expression {return environment.ami_checker(false) == 0}
-                //     }
-                //     steps{
-                //         script{
-                //             environment.packerBuild()
-                //             CHANGE = true
-                //         }  
-                //     }
+            stage('delphix-centos7-ansible-base.json'){
+                // when {
+                //     expression {return environment.ami_checker(false) == 0}
                 // }
+                steps{
+                    script{
+                        environment.packerBuild()
+                        CHANGE = true
+                        }
+                }
             }
         }
-        // stage('Stage 2 Packer Builds'){
-        //     parallel {
-        //         stage('delphix-centos7-daf-app.json'){
-        //             when {
-        //                 expression {return environment.ami_checker(false) == 0}
-        //             }
-        //             steps{
-        //                 script{
-        //                     environment.packerBuild()
-        //                     CHANGE = true
-        //                 }  
-        //             }
-        //         }
-        //         stage('delphix-centos7-oracle-12.2.0.1.json'){
-        //             when {
-        //                 expression {return environment.ami_checker(false) == 0}
-        //             }
-        //             steps{
-        //                 script{
-        //                     environment.packerBuild()
-        //                     CHANGE = true
-        //                 }  
-        //             }
-        //         }
-        //         stage('delphix-centos7-kitchen_sink.json'){
-        //             when {
-        //                 expression {return environment.ami_checker(false) == 0}
-        //             }
-        //             steps{
-        //                 script{
-        //                     environment.packerBuild()
-        //                     CHANGE = true
-        //                 }  
-        //             }
-        //         }
-        //         stage('delphix-tcw-jumpbox.json'){
-        //             when {
-        //                 expression {return environment.ami_checker(false) == 0}
-        //             }
-        //             steps{
-        //                 script{
-        //                     environment.packerBuild()
-        //                     CHANGE = true
-        //                 }  
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Stage 3 Packer Builds'){
-        //     parallel {
-        //         stage('delphix-tcw-oracle12-source.json'){
-        //             when {
-        //                 expression {return environment.ami_checker(false) == 0}
-        //             }
-        //             steps{
-        //                 script{
-        //                     environment.packerBuild()
-        //                     CHANGE = true
-        //                 }  
-        //             }
-        //         }
-        //         stage('delphix-tcw-oracle12-target.json'){
-        //             when {
-        //                 expression {return environment.ami_checker(false) == 0}
-        //             }
-        //             steps{
-        //                 script{
-        //                     environment.packerBuild()
-        //                     CHANGE = true
-        //                 }  
-        //             }
-        //         }
-        //         stage('delphix-centos7-tooling-base.json'){
-        //             when {
-        //                 expression {return environment.ami_checker(false) == 0}
-        //             }
-        //             steps{
-        //                 script{
-        //                     environment.packerBuild()
-        //                     CHANGE = true
-        //                 }  
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Stage 4 Packer Builds'){
-        //     parallel {
-        //         stage('delphix-tcw-tooling-oracle.json'){
-        //             when {
-        //                 expression {return environment.ami_checker(false) == 0}
-        //             }
-        //             steps{
-        //                 script{
-        //                     environment.packerBuild()
-        //                     CHANGE = true
-        //                 }  
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Build Unstaged Integrated Test Environment'){
-        //     when {
-        //         expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
-        //     }
-        //     steps{
-        //         dir(env.TF_DIR){
-        //             script{environment.terraformBuild("false")}
-        //         }
-        //     }
-        // }
-        // stage('Unstaged Integration Testing'){
-        //     when {
-        //         expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
-        //     }
-        //     steps{
-        //         dir(env.TF_DIR){
-        //             script{environment.environmentTest()}
-        //         }
-        //     }
-        // }
-        // stage('Create Staged AMIs'){
-        //     when {
-        //         expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
-        //     }
-        //     parallel{
-        //         stage('delphix-tcw-jumpbox'){
-        //             steps{
-        //                 dir(env.TF_DIR){
-        //                     script{environment.amiify()}
-        //                 }
-        //             }
-        //         }
-        //         stage('delphix-tcw-oracle12-source'){
-        //             steps{
-        //                 dir(env.TF_DIR){
-        //                     script{environment.amiify()}
-        //                 }
-        //             }
-        //         }
-        //         stage('delphix-tcw-oracle12-target'){
-        //             steps{
-        //                 dir(env.TF_DIR){
-        //                     script{environment.amiify()}
-        //                 }
-        //             }
-        //         }
-        //         stage('delphix-tcw-tooling-oracle'){
-        //             steps{
-        //                 dir(env.TF_DIR){
-        //                     script{environment.amiify()}
-        //                 }
-        //             }
-        //         }
-        //         stage('delphix-tcw-delphixengine'){
-        //             steps{
-        //                 dir(env.TF_DIR){
-        //                     script{environment.amiify()}
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Build Unstaged Integrated Test Environment'){
+            when {
+                expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
+            }
+            steps{
+                dir(env.TF_DIR){
+                    script{environment.terraformBuild("false")}
+                }
+            }
+        }
+        stage('Unstaged Integration Testing'){
+            when {
+                expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
+            }
+            steps{
+                dir(env.TF_DIR){
+                    script{environment.environmentTest()}
+                }
+            }
+        }
+        stage('Create Staged AMIs'){
+            when {
+                expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
+            }
+            parallel{
+                stage('delphix-tcw-jumpbox'){
+                    steps{
+                        dir(env.TF_DIR){
+                            script{environment.amiify()}
+                        }
+                    }
+                }
+                stage('delphix-tcw-oracle12-source'){
+                    steps{
+                        dir(env.TF_DIR){
+                            script{environment.amiify()}
+                        }
+                    }
+                }
+                stage('delphix-tcw-oracle12-target'){
+                    steps{
+                        dir(env.TF_DIR){
+                            script{environment.amiify()}
+                        }
+                    }
+                }
+                stage('delphix-tcw-tooling-oracle'){
+                    steps{
+                        dir(env.TF_DIR){
+                            script{environment.amiify()}
+                        }
+                    }
+                }
+                stage('delphix-tcw-delphixengine'){
+                    steps{
+                        dir(env.TF_DIR){
+                            script{environment.amiify()}
+                        }
+                    }
+                }
+            }
+        }
         // stage('Build Staged Integrated Test Environment'){
         //     when {
         //         expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
