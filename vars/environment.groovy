@@ -2,7 +2,7 @@ def packerBuild() {
   sh (
     script: """#!/bin/bash
       { set +x; } 2>/dev/null
-      CURRENT_UID=$(id -u):$(id -g) docker-compose run tcw build
+      CURRENT_UID=\$(id -u):\$(id -g) docker-compose run tcw build
     """
   )
 }
@@ -38,14 +38,14 @@ def environmentTest(){
 def terraformBuild(staged){
   sh """#!/bin/bash
     { set -x; } 2>/dev/null
-    CURRENT_UID=$(id -u):$(id -g) docker-compose run tcw deploy -auto-approve
+    CURRENT_UID=\$(id -u):\$(id -g) docker-compose run tcw deploy -auto-approve
   """
 }
 
 def terraformDestroy(){
   sh """#!/bin/bash
     { set -x; } 2>/dev/null
-    CURRENT_UID=$(id -u):$(id -g) docker-compose run tcw teardown -auto-approve || true
+    CURRENT_UID=\$(id -u):\$(id -g) docker-compose run tcw teardown -auto-approve || true
     sudo rm -Rf ${env.TF_DIR}/.terraform
   """
 }
