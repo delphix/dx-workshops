@@ -14,8 +14,7 @@ def packerBuild() {
     script: """#!/bin/bash
       { set +x; } 2>/dev/null
       cp /var/lib/jenkins/.docker.env .
-      # docker-compose run tcw build
-      docker run hello-world
+      docker-compose run tcw build
     """
   )
 }
@@ -48,18 +47,24 @@ def environmentTest(){
 }
 
 def terraformBuild(staged){
+  // sh """#!/bin/bash
+  //   { set -x; } 2>/dev/null
+  //   echo "Changing all instance_types to t2.2xlarge (37 cents/hour/machine) to minimize build time."
+  //   for each in `grep -R instance_type modules | awk -F: '{print \$1}'`
+  //   do
+  //     echo Updating instance_type in \$each
+  //     sed -i -e \'s|\\(.*instance_type = \\"\\)\\(.*\\)\\(\\"\\)|\\1t2.2xlarge\\3|\' \${each}
+  //   done
+
+  //   cp /var/lib/jenkins/terraform_dev_backend.tf .
+  //   terraform init
+  //   terraform apply -var-file=${env.TF_VARS} --auto-approve -var "staged=${staged}"
+  // """
   sh """#!/bin/bash
     { set -x; } 2>/dev/null
-    echo "Changing all instance_types to t2.2xlarge (37 cents/hour/machine) to minimize build time."
-    for each in `grep -R instance_type modules | awk -F: '{print \$1}'`
-    do
-      echo Updating instance_type in \$each
-      sed -i -e \'s|\\(.*instance_type = \\"\\)\\(.*\\)\\(\\"\\)|\\1t2.2xlarge\\3|\' \${each}
-    done
-
     cp /var/lib/jenkins/terraform_dev_backend.tf .
-    terraform init
-    terraform apply -var-file=${env.TF_VARS} --auto-approve -var "staged=${staged}"
+    cd ${env.WORKSPACE}
+    docker-compose run tcw build
   """
 }
 

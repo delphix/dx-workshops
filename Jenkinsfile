@@ -216,26 +216,26 @@ pipeline {
                 }
             }
         }
-        stage('Build Staged Integrated Test Environment'){
-            when {
-                expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
-            }
-            steps{
-                dir(env.TF_DIR){
-                    script{environment.terraformBuild("true")}
-                }
-            }
-        }
-        stage('Staged Integration Testing'){
-            when {
-                expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
-            }
-            steps{
-                dir(env.TF_DIR){
-                    script{environment.environmentTest()}
-                }
-            }
-        }
+        // stage('Build Staged Integrated Test Environment'){
+        //     when {
+        //         expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
+        //     }
+        //     steps{
+        //         dir(env.TF_DIR){
+        //             script{environment.terraformBuild("true")}
+        //         }
+        //     }
+        // }
+        // stage('Staged Integration Testing'){
+        //     when {
+        //         expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
+        //     }
+        //     steps{
+        //         dir(env.TF_DIR){
+        //             script{environment.environmentTest()}
+        //         }
+        //     }
+        // }
     }
     post{
         success{
