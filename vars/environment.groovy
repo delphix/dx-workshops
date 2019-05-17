@@ -14,7 +14,8 @@ def packerBuild() {
     script: """#!/bin/bash
       { set +x; } 2>/dev/null
       cp /var/lib/jenkins/.docker.env .
-      sudo docker-compose run tcw build
+      # docker-compose run tcw build
+      docker run hello-world
     """
   )
 }
