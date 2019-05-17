@@ -7,7 +7,7 @@ services:
       args:
         DEMO_PATH: demo-workshops
         DEMO_NAME: tcw
-    # command: packer_build.sh
+    user: ${CURRENT_UID}
     volumes:
       - .:/build
     env_file: .docker.env 
