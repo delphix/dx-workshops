@@ -26,6 +26,9 @@ pipeline {
                 // sh "ansible-galaxy install -r demo-workshops/ansible/all_requirements.yml"
                 echo "Grabbing certs"
                 sh "cp ${env.ANSIBLE_CERT}* certs"
+                echo "Copying env file"
+                sh "cp /var/lib/jenkins/.docker.env ."
+                echo "Building Container"
                 sh "docker-compose build --no-cache" 
             }
         }
