@@ -133,11 +133,9 @@ pipeline {
                 script{environment.terraformDestroy()}
             }
         }
-        cleanup{
+        always{
             dir(env.TF_DR){
-                script{
-                    sh "sudo rm -Rf .terraform"
-                }
+                sh "sudo rm -Rf .terraform"
             }
         }
     }
