@@ -22,6 +22,7 @@ def environmentTest(){
   sh """#!/bin/bash
       { set -x; } 2>/dev/null
       GUAC=\$(terraform output delphix-tcw-jumpbox_ip)
+      [[ -z \$GUAC ]] && exit 1
       until ssh -i ${env.ANSIBLE_CERT} -o "StrictHostKeyChecking=no" ubuntu@\${GUAC} 'ls ~/Desktop'|egrep "READY|ERROR"
       do
         ssh -i ${env.ANSIBLE_CERT} -o "StrictHostKeyChecking=no" ubuntu@\${GUAC} 'tail -5 ~/Desktop/WAIT' || true
