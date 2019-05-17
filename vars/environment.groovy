@@ -61,14 +61,14 @@ def terraformBuild(staged){
   // """
   sh """#!/bin/bash
     { set -x; } 2>/dev/null
-    docker-compose run tcw deploy
+    docker-compose run tcw deploy -auto-approve
   """
 }
 
 def terraformDestroy(){
   sh """#!/bin/bash
     { set -x; } 2>/dev/null
-    docker-compose run tcw build teardown || true
+    docker-compose run tcw build teardown -auto-approve || true
   """
 }
 
