@@ -46,7 +46,6 @@ def terraformDestroy(){
   sh """#!/bin/bash
     { set -x; } 2>/dev/null
     CURRENT_UID=\$(id -u):\$(id -g) docker-compose run tcw teardown -auto-approve || true
-    sudo rm -Rf ${env.TF_DIR}/.terraform
   """
 }
 
