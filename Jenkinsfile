@@ -128,14 +128,9 @@ pipeline {
         // }
     }
     post{
-        success{
+        always{
             dir(env.TF_DIR){
                 script{environment.terraformDestroy()}
-            }
-        }
-        always{
-            dir(env.TF_DR){
-                sh "sudo rm -Rf .terraform"
             }
         }
     }
