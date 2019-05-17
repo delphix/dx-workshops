@@ -46,7 +46,7 @@ def terraformDestroy(){
   sh """#!/bin/bash
     { set -x; } 2>/dev/null
     docker-compose run tcw teardown -auto-approve || true
-    sh "sudo rm -Rf ${env.TF_DIR}.terraform"
+    sudo rm -Rf ${env.TF_DIR}/.terraform
   """
 }
 
