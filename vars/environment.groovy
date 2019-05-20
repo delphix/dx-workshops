@@ -38,7 +38,7 @@ def environmentTest(){
 def terraformBuild(staged){
   sh """#!/bin/bash
     { set -x; } 2>/dev/null
-    CURRENT_UID=\$(id -u):\$(id -g) docker-compose run tcw deploy -auto-approve
+    CURRENT_UID=\$(id -u):\$(id -g) docker-compose run tcw deploy -auto-approve -var "staged=${staged}"
   """
 }
 
