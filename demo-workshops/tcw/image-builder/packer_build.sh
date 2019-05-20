@@ -2,8 +2,8 @@
 #
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
-# trap "cleanup" SIGINT
 source $(dirname "${BASH_SOURCE[0]}")/library.sh
+trap "cleanup" SIGINT
 
 STARTTIME=$(date +%s)
 NOW=$(date +"%m-%d-%Y %T")

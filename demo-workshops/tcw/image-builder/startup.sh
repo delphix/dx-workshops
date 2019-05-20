@@ -13,6 +13,7 @@ function help() {
   Available commands are listed below.
 
   build              Build the images from the packer-templates folder
+  cleanup            Cleanup all but the latest AMI's for this workshop
   deploy             Builds or changes Terraform-managed infrastructure
   plan               Generate and show an Terrafrom execution plan
   teardown           Destroy Terraform-managed infrastructure
@@ -40,6 +41,9 @@ show)
   ;;
 env|environment)
   exec /bin/terraform.sh output environment "$@"
+  ;;
+cleanup)
+  exec /bin/cleanup.sh "$@"
   ;;
 *)
   help

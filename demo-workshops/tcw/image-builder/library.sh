@@ -2,7 +2,6 @@
 #
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
-
 trap "cleanup" SIGINT
 
 function cleanup() {
@@ -138,4 +137,34 @@ function PACKER_BUILD() {
 function RETURN_DIRECTORY() {
 	#This function is a placeholder until I figure how I want to reorg folder structure
 	dirname $(find $WORKDIR -name $1)
+}
+
+function GET_CLEANUP_LIST() {
+  for each in "$@"; do
+    # query for an existing AMI with the name and md5sum number, and store that information in a file
+    cd  $(RETURN_DIRECTORY $each)
+    echo "Will deregister the following AMI's for ${each}:"
+    for each in $(aws ec2 --region ${AWS_REGION} describe-images --filters "Name=name,Values=${each%.json}-*" --query "Images[?Tags[?Key=='md5sum']|[?Value!='$(jq -r '.md5sum' ${each%.json}_md5sum.json)']].ImageId" --output text); do
+      echo "${each}"
+      CLEANUP_LIST+="${each} "
+    done
+    GET_OLDER_DUPLICATE_AMIS $each
+  done
+}
+
+function CLEANUP_AMIS() {
+  for each in "$@"; do
+    echo "Deregistering ${each}"
+    aws ec2 --region ${AWS_REGION} deregister-image --image-id ${each}
+  done
+}
+
+function GET_OLDER_DUPLICATE_AMIS() {
+  for each in "$@"; do
+    cd  $(RETURN_DIRECTORY $each)
+    for each in $(aws ec2 --region ${AWS_REGION} describe-images --filters "Name=name,Values=${each%.json}-*" "Name=tag:md5sum,Values=$(jq -r '.md5sum' ${each%.json}_md5sum.json)" --query "sort_by(Images, &CreationDate)[0:-1].ImageId" --output text); do
+      echo "${each}"
+      CLEANUP_LIST+="${each} "
+    done
+  done
 }
