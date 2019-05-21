@@ -125,6 +125,7 @@ function NEED_TO_BUILD_AMI() {
 
 function PACKER_BUILD() {
     ansible-playbook --version
+    ls ~/.ansible
     AMI_INFO "$@"
     for each in "$@"; do
       if NEED_TO_BUILD_AMI $each; then
