@@ -100,7 +100,8 @@
     {
       "inline": [
         "cat /dev/null > .ssh/authorized_keys",
-        "echo {{user `ansible_pub_key`}}>> .ssh/authorized_keys"
+        "echo {{user `ansible_pub_key`}}>> .ssh/authorized_keys",
+        "echo {{user `labalchemy_pub_key`}}>> .ssh/authorized_keys"
       ],
       "type": "shell"
     }
@@ -108,7 +109,8 @@
   "sensitive-variables": [
     "ansible_pub_key",
     "aws_access_key",
-    "aws_secret_key"
+    "aws_secret_key",
+    "labalchemy_pub_key"
   ],
   "variables": {
     "ansible_pub_key": "{{env `ANSIBLE_PUB_KEY`}}",
@@ -120,6 +122,7 @@
     "dlpx:Expiration": "{{env `AWS_EXPIRATION`}}",
     "dlpx:Owner": "{{env `AWS_OWNER`}}",
     "dlpx:Project": "{{env `AWS_PROJECT`}}",
+    "labalchemy_pub_key": "{{env `LABALCHEMY_PUB_KEY`}}",
     "md5sum": "",
     "region": "{{env `AWS_REGION`}}",
     "seed": "e055490",

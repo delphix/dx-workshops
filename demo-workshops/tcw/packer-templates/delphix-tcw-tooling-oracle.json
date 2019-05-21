@@ -84,7 +84,8 @@
     {
       "inline": [
         "cat /dev/null > .ssh/authorized_keys",
-        "echo {{user `ansible_pub_key`}}>> .ssh/authorized_keys"
+        "echo {{user `ansible_pub_key`}}>> .ssh/authorized_keys",
+        "echo {{user `labalchemy_pub_key`}}>> .ssh/authorized_keys"
       ],
       "type": "shell"
     }
