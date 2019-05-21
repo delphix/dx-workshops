@@ -77,5 +77,6 @@ RUN chmod +x /bin/packer_build.sh
 
 COPY ${DEMO_PATH}/${DEMO_NAME}/image-builder/cleanup.sh /bin/cleanup.sh
 RUN chmod +x /bin/cleanup.sh
+RUN chmod -R 777 /.ansible
 
 ENTRYPOINT ["/bin/startup.sh"]
