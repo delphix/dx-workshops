@@ -2,7 +2,7 @@ def packerBuild() {
   sh (
     script: """#!/bin/bash
       { set +x; } 2>/dev/null
-      CURRENT_UID=\$(id -u):\$(id -g) docker-compose run tcw build
+      docker-compose run tcw build
     """
   )
 }
