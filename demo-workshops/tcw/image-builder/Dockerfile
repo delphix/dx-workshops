@@ -14,6 +14,7 @@ WORKDIR /build
 ENV PACKER_VERSION=1.3.5
 ENV PACKER_SHA256SUM=822fe76c2dfe699f187ef8c44537d10453a1545db620e40b345cf6991a690f7d
 ENV ANSIBLE_VERSION=2.7.9
+ENV ANSIBLE_ROLES_PATH=/.ansible
 ENV TERRAFORM_VERSION=0.11.13
 ENV TERRAFORM_SHA256SUM=6b8ce67647a59b2a3f70199c304abca0ddec0e49fd060944c26f666298e23418
 ENV AWSCLI_VERSION=1.16.149
@@ -78,6 +79,6 @@ RUN chmod +x /bin/packer_build.sh
 COPY ${DEMO_PATH}/${DEMO_NAME}/image-builder/cleanup.sh /bin/cleanup.sh
 RUN chmod +x /bin/cleanup.sh
 #this last line is so we can run packer/ansible as another user than root
-RUN mkdir /.ansible && chmod -R 777 /.ansible
+RUN chmod 777 /.ansible
 
 ENTRYPOINT ["/bin/startup.sh"]
