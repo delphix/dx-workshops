@@ -2,6 +2,9 @@
   - name: All the tools playbook
     hosts: all
     become: yes
+    pre_tasks:
+      - name: ca-certificates update command line execution
+        command: /bin/update-ca-trust
     vars:
       java_packages:
         - java-1.8.0
