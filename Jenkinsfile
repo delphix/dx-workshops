@@ -41,7 +41,9 @@ pipeline {
                 script{
                     environment.packerBuild()
                     CHANGE = sh (
-                        script: "[[ -f change.ignore ]] && echo true",
+                        script: """#!/bin/bash
+                                { set +x; } 2>/dev/null
+                                [[ -f change.ignore ]] && echo true""",
                         returnStdout: true
                     ).trim()
                     }
