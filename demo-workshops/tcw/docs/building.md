@@ -18,8 +18,8 @@ These have been prepared for Mac/Linux-based installations.
 2. [Docker Compose](https://docs.docker.com/compose/install)
 (If you cannot use Docker Compose, then you can opt for the [Advanced Install](#advancedinstall))
 3. AWS bucket with:
-    1. [Datical License file](www.datical.com) named datical_admin.lic
-    2. [DaticalDB-linux.gtk.x86_64-5.2.5347.jar](www.datical.com)
+    1. [Datical License file](https://www.datical.com) named datical_admin.lic
+    2. [DaticalDB-linux.gtk.x86_64-5.2.5347.jar](https://www.datical.com)
     3. Oracle 12.2.0.1.0 -> [linuxx64_12201_database.zip](https://www.oracle.com/technetwork/database/enterprise-edition/downloads/oracle12c-linux-12201-3608234.html)
     4. [oracle-instantclient12.2-basic-12.2.0.1.0-1.x86_64.rpm](https://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html)
     5. [oracle-instantclient12.2-tools-12.2.0.1.0-1.x86_64.rpm](https://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html)
