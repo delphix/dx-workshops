@@ -16,7 +16,7 @@ CERT="certs/ansible"
 GUACAMOLE_VERSION="0.9.14"
 VNC_CLIENT_OPTIONS="-geometry 1280x720 -localhost"
 
-rm -f READY.log WAIT.log ERROR.log
+rm -f READY.log WAIT.log ERROR.log change.ignore
 
 function BATCH1() {
 	echo "Starting Batch 1"

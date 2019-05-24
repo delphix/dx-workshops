@@ -127,6 +127,8 @@ function PACKER_BUILD() {
     AMI_INFO "$@"
     for each in "$@"; do
       if NEED_TO_BUILD_AMI $each; then
+        #drop this little file to alert our build server know a new ami was built
+        touch change.ignore
         packer build -var-file ${each%.json}_md5sum.json $each &
       fi
     done
