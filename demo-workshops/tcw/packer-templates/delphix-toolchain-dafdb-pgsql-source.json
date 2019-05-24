@@ -2,7 +2,7 @@
   "builders": [
     {
       "access_key": "{{user `aws_access_key`}}",
-      "ami_name": "delphix-toolchain-dafdb-pgsql-source-{{isotime \"20060102030405\"}}",
+      "ami_name": "delphix-toolchain-dafdb-pgsql{{user `pg_ver`}}-source-{{isotime \"20060102030405\"}}",
       "ami_regions": "{{user `region`}}",
       "associate_public_ip_address": true,
       "force_deregister": true,
@@ -15,7 +15,7 @@
           "volume_type": "gp2"
         }
       ],
-      "name": "delphix-toolchain-dafdb-pgsql-source",
+      "name": "delphix-toolchain-dafdb-pgsql{{user `pg_ver`}}-source",
       "region": "{{user `region`}}",
       "run_tags": {
         "branch": "{{ user `branch`}}",
@@ -37,7 +37,7 @@
       "secret_key": "{{user `aws_secret_key`}}",
       "source_ami_filter": {
         "filters": {
-          "name": "delphix-CentOS7-postgres9.6-*"
+          "name": "delphix-centos7-postgres{{user `pg_ver`}}-*"
         },
         "most_recent": true,
         "owners": [
@@ -67,13 +67,13 @@
     },
     {
       "inline": [
-        "sudo systemctl enable postgresql-9.6",
-        "sudo systemctl start postgresql-9.6",
+        "sudo systemctl enable postgresql-{{user `pg_ver`}}",
+        "sudo systemctl start postgresql-{{user `pg_ver`}}",
         "sudo chown postgres.postgres /tmp/dafsetup/dafbackup.sql",
         "sudo su - postgres -c 'psql -f /tmp/dafsetup/dafbackup.sql -v user={{user `daf_user`}} -v pass={{user `daf_user_pass`}}'",
         "chmod +x /tmp/dafsetup/cleanuplogs.sh",
-        "sudo cp /tmp/dafsetup/cleanuplogs.sh /var/lib/pgsql/.",
-        "sudo chown postgres.postgres /var/lib/pgsql/cleanuplogs.sh",
+        "sed 's/REPLACE/{{user `pg_ver`}}/' /tmp/dafsetup/cleanuplogs.sh | sudo -u postgres tee /var/lib/pgsql/cleanuplogs.sh",
+        "sudo chmod +x /var/lib/pgsql/cleanuplogs.sh",
         "sudo su - postgres -c 'crontab /tmp/dafsetup/cleanupcron'"
       ],
       "type": "shell"
@@ -119,6 +119,7 @@
     "dlpx:Project": "{{env `AWS_PROJECT`}}",
     "labalchemy_pub_key": "{{env `LABALCHEMY_PUB_KEY`}}",
     "md5sum": "",
+    "pg_ver": "{{env `PG_VER`}}",
     "region": "{{env `AWS_REGION`}}",
     "seed": "e055490",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",

@@ -2,7 +2,7 @@
   "builders": [
     {
       "access_key": "{{user `aws_access_key`}}",
-      "ami_name": "delphix-CentOS7-postgres9.6-{{isotime \"20060102030405\"}}",
+      "ami_name": "delphix-centos7-postgres{{user `pg_ver`}}-{{isotime \"20060102030405\"}}",
       "ami_regions": "{{user `region`}}",
       "associate_public_ip_address": true,
       "force_deregister": true,
@@ -15,7 +15,7 @@
           "volume_type": "gp2"
         }
       ],
-      "name": "delphix-CentOS7-postgres9.6",
+      "name": "delphix-centos7-postgres{{user `pg_ver`}}",
       "region": "{{user `region`}}",
       "run_tags": {
         "branch": "{{ user `branch`}}",
@@ -70,7 +70,7 @@
         "sudo yum update -y",
         "sudo yum install -y epel-release",
         "sudo yum install -y ansible",
-        "sudo yum install  https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-redhat96-9.6-3.noarch.rpm -y"
+        "sudo yum install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm -y"
       ],
       "type": "shell"
     },
@@ -78,14 +78,14 @@
       "ansible_env_vars": [
         "ANSIBLE_HOST_KEY_CHECKING=False"
       ],
-      "playbook_file": "ansible/postgres.yml",
+      "playbook_file": "ansible/postgres-{{user `pg_ver`}}.yml",
       "type": "ansible",
       "user": "centos"
     },
     {
       "inline": [
         "sudo chmod +x /tmp/DLPX-62018.sh",
-        "sudo /tmp/DLPX-62018.sh",
+        "sudo /tmp/DLPX-62018.sh /var/lib/pgsql/{{user `pg_ver`}}/data",
         "sudo restorecon -Rv /var/lib/pgsql/.ssh",
         "sudo sed -i -e '/.*'`hostname -s`'.*/d' /etc/hosts"
       ],
@@ -124,6 +124,7 @@
     "dlpx:Project": "{{env `AWS_PROJECT`}}",
     "labalchemy_pub_key": "{{env `LABALCHEMY_PUB_KEY`}}",
     "md5sum": "",
+    "pg_ver": "{{env `PG_VER`}}",
     "region": "{{env `AWS_REGION`}}",
     "seed": "e055490",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",

@@ -2,8 +2,9 @@
 #
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
-PGSQLBIN=/usr/pgsql-9.6/bin
-ARCHIVELOGDIR=/var/lib/pgsql/9.6/backups
+PGVER=REPLACE
+PGSQLBIN=/usr/pgsql-${PGVER}/bin
+ARCHIVELOGDIR=/var/lib/pgsql/${PGVER}/backups
 
 export PATH=${PGSQLBIN}:${PATH}
 
