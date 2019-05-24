@@ -43,7 +43,7 @@ pipeline {
                     CHANGE = sh (
                         script: """#!/bin/bash
                                 { set +x; } 2>/dev/null
-                                [[ -f change.ignore ]] && echo true""",
+                                [[ -f change.ignore ]] && echo "true" || echo "false" """,
                         returnStdout: true
                     ).trim()
                     }
