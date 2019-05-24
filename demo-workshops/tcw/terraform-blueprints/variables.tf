@@ -19,11 +19,6 @@ variable "how_many" {
   default = 1
 }
 
-variable "image_base" {
-  description = "Base image name"
-  default = "landshark-tdc_v5-5.3.0.2-jet_stream_LA"
-}
-
 variable "expiration" {
   default = "24h"
 }
@@ -58,9 +53,9 @@ variable "staged" {
 }
 
 variable "delphix_engine_version" {
-  //Currently tested and working with 5.3.2
-  description = "The name of the Delphix AMI"
-  default = "Delphix Engine 5.3.2.*"
+  //Currently only works with 5.3.2
+  description = "The version of the Delphix AMI"
+  default = "5.3.2.*"
 }
 
 variable "addtl_firewall_ingress_cidr_blocks" {

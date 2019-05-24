@@ -22,7 +22,7 @@ TERRAFORM_BLUEPRINTS="${WORKDIR}/${DEMO_PATH}/${DEMO_NAME}/terraform-blueprints"
 		how_many = 1
 		aws_region= "${AWS_REGION}"
 		availability_zone = "${AWS_AZ}"
-		delphix_engine_version = "Delphix Engine ${DELPHIX_VERSION}"
+		delphix_engine_version = "${DELPHIX_VERSION}"
 	EOF
 	terraform init
 	terraform "$@"

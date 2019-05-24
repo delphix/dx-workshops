@@ -2,6 +2,8 @@
 #
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
+export DELPHIX_VERSION="5.3.2.*"
+
 trap "cleanup" SIGINT
 
 function cleanup() {
