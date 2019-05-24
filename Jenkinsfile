@@ -40,12 +40,12 @@ pipeline {
             steps{
                 script{
                     environment.packerBuild()
+                    CHANGE = sh (
+                        script: "[[ -f change.ignore ]] && echo true",
+                        returnStdout: true
+                    ).trim()
                     }
             }
-            CHANGE = sh (
-                    script: "[[ -f change.ignore ]] && echo true",
-                    returnStdout: true
-                ).trim()
         }
         stage('Build Unstaged Integrated Test Environment'){
             when {
