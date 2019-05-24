@@ -79,4 +79,8 @@ RUN chmod +x /bin/packer_build.sh
 COPY ${DEMO_PATH}/${DEMO_NAME}/image-builder/cleanup.sh /bin/cleanup.sh
 RUN chmod +x /bin/cleanup.sh
 
+COPY ${DEMO_PATH}/${DEMO_NAME}/image-builder/validate.sh /bin/validate.sh
+RUN chmod +x /bin/validate.sh
+
+
 ENTRYPOINT ["/bin/startup.sh"]

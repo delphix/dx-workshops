@@ -18,12 +18,16 @@ function help() {
   plan               Generate and show an Terrafrom execution plan
   teardown           Destroy Terraform-managed infrastructure
   show               Print the terraform state
+  validate           runs a few checks on the prereqs
   env|environment    Print the jumpbox information
   """
 
 }
 
 case ${ARG} in
+validate)
+  exec /bin/validate.sh "$@"
+  ;;
 build)
   exec /bin/packer_build.sh "$@"
   ;;
