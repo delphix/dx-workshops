@@ -148,9 +148,9 @@ function GET_CLEANUP_LIST() {
     # query for an existing AMI with the name and md5sum number, and store that information in a file
     cd  $(RETURN_DIRECTORY $each)
     echo "Will deregister the following AMI's for ${each}:"
-    for each in $(aws ec2 --region ${AWS_REGION} describe-images --filters "Name=name,Values=${each%.json}-*" --query "Images[?Tags[?Key=='md5sum']|[?Value!='$(jq -r '.md5sum' ${each%.json}_md5sum.json)']].ImageId" --output text); do
-      echo "${each}"
-      CLEANUP_LIST+="${each} "
+    for ami in $(aws ec2 --region ${AWS_REGION} describe-images --filters "Name=name,Values=${each%.json}-*" --query "Images[?Tags[?Key=='md5sum']|[?Value!='$(jq -r '.md5sum' ${each%.json}_md5sum.json)']].ImageId" --output text); do
+      echo "${ami}"
+      CLEANUP_LIST+="${ami} "
     done
     GET_OLDER_DUPLICATE_AMIS $each
   done

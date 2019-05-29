@@ -19,7 +19,9 @@ function help() {
   teardown           Destroy Terraform-managed infrastructure
   show               Print the terraform state
   validate           runs a few checks on the prereqs
-  env|environment    Print the jumpbox information
+  env|environment    Print the jumpbox information\
+  start              Start the stopped EC2 instances in an deployed environment
+  stop               Stop the running EC2 instances in an deployed environment 
   """
 
 }
@@ -48,6 +50,12 @@ env|environment)
   ;;
 cleanup)
   exec /bin/cleanup.sh "$@"
+  ;;
+start)
+  exec /bin/updown.sh start "$@"
+  ;;
+stop)
+  exec /bin/updown.sh stop "$@"
   ;;
 *)
   help

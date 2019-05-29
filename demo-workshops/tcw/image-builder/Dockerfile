@@ -82,5 +82,7 @@ RUN chmod +x /bin/cleanup.sh
 COPY ${DEMO_PATH}/${DEMO_NAME}/image-builder/validate.sh /bin/validate.sh
 RUN chmod +x /bin/validate.sh
 
+COPY ${DEMO_PATH}/${DEMO_NAME}/image-builder/updown.sh /bin/updown.sh
+RUN chmod +x /bin/updown.sh
 
 ENTRYPOINT ["/bin/startup.sh"]
