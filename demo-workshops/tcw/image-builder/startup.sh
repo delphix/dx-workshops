@@ -20,8 +20,10 @@ function help() {
   show               Print the terraform state
   validate           runs a few checks on the prereqs
   env|environment    Print the jumpbox information
-  start [wait]       Start the stopped EC2 instances in an deployed environment (specifying wait will wait)
-  stop [wait]        Stop the running EC2 instances in an deployed environment (specifying wait will wait)
+  start [wait]       Start the stopped EC2 instances in an deployed environment
+                     (specifying wait will wait)
+  stop [wait]        Stop the running EC2 instances in an deployed environment
+                     (specifying wait will wait)
   
   ex.
     docker-compose run tcw validate
