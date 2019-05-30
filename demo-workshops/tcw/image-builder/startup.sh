@@ -19,10 +19,19 @@ function help() {
   teardown           Destroy Terraform-managed infrastructure
   show               Print the terraform state
   validate           runs a few checks on the prereqs
-  env|environment    Print the jumpbox information\
-  start              Start the stopped EC2 instances in an deployed environment
-  stop               Stop the running EC2 instances in an deployed environment 
+  env|environment    Print the jumpbox information
+  start [wait]       Start the stopped EC2 instances in an deployed environment (specifying wait will wait)
+  stop [wait]        Stop the running EC2 instances in an deployed environment (specifying wait will wait)
+  
+  ex.
+    docker-compose run tcw validate
+    docker-compose run tcw build
+    docker-compose run tcw deploy
+    docker-compose run tcw env
+    docker-compose run tcw stop wait
+  
   """
+
 
 }
 
@@ -51,10 +60,10 @@ env|environment)
 cleanup)
   exec /bin/cleanup.sh "$@"
   ;;
-start)
+start|up)
   exec /bin/updown.sh start "$@"
   ;;
-stop)
+stop|down)
   exec /bin/updown.sh stop "$@"
   ;;
 *)
