@@ -46,6 +46,7 @@ function WAIT_FOR(){
   start)
     echo "Starting stopped instances"
     aws ec2 --region ${AWS_REGION} start-instances --instance-ids ${SYSTEM_IDS[@]}
+    terraform refresh
     ;;
   stop)
     echo "Stopping running instances"
