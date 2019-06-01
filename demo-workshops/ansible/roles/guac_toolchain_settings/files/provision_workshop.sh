@@ -95,6 +95,22 @@ function PREPARE_PROD {
 			"password": "delphix"
 	}'
 
+	curl -v --retry 12 --retry-delay 5  --retry-connrefused http://prodweb:8080/auth/sign-up -H 'Content-Type: application/json' -H 'cache-control:
+	no-cache' -d '{
+			"username": "colonel",
+			"firstname": "Adam",
+			"lastname": "Bowen",
+			"password": "delphix"
+	}'
+
+	curl -v --retry 12 --retry-delay 5  --retry-connrefused http://prodweb:8080/auth/sign-up -H 'Content-Type: application/json' -H 'cache-control:
+	no-cache' -d '{
+			"username": "mcred",
+			"firstname": "Derek",
+			"lastname": "Smart",
+			"password": "delphix"
+	}'
+
 	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
 
 	ssh -t centos@tooling snap_prod_refresh_mm --config snap_conf.txt
