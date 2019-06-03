@@ -40,9 +40,10 @@ pipeline {
             steps{
                 script{
                     environment.packerBuild()
+                    sh ("ls -lart")
                     CHANGE = sh (
                         script: """#!/bin/bash
-                                { set +x; } 2>/dev/null
+                                { set -x; } 2>/dev/null
                                 [[ -f change.ignore ]] && echo "true" || echo "false" """,
                         returnStdout: true
                     ).trim()
