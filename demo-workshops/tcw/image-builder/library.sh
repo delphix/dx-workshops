@@ -132,6 +132,7 @@ function PACKER_BUILD() {
         #drop this little file to alert our build server know a new ami was built
         pwd
         touch change.ignore
+        ls
         packer build -var-file ${each%.json}_md5sum.json $each &
       fi
     done
