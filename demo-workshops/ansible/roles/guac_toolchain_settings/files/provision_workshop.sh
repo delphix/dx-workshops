@@ -124,7 +124,10 @@ function PREPARE_LOWER {
 		sleep 5
 	done
 	
-	ssh -t centos@tooling /var/lib/jenkins/app_repo.git/hooks/post-update
+	until ssh -t centos@tooling /var/lib/jenkins/app_repo.git/hooks/post-update; do
+		echo "Waiting a few seconds, then trying to trigger Jenkins jobs again"
+		sleep 5
+	done
 	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
 
 	JOB_URL=http://tooling:8080/job/PatientsPipeline/job/
