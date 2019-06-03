@@ -75,7 +75,7 @@
     dest: "/var/lib/jenkins/daf_tests"
     owner: jenkins
     group: jenkins
-    mode: "a+r"
+    mode: "a+rx"
   become: yes
   tags:
     - daf_tests
