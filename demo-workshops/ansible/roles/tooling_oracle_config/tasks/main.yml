@@ -68,3 +68,14 @@
   become: yes
   tags:
     - delphixpy
+
+- name: Copy daf_tests
+  copy: 
+    src: daf_tests
+    dest: "/var/lib/jenkins/daf_tests"
+    owner: jenkins
+    group: jenkins
+    mode: "a+r"
+  become: yes
+  tags:
+    - daf_tests
