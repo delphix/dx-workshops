@@ -66,7 +66,7 @@
         "sudo yum update -y",
         "sudo yum install -y epel-release",
         "echo \"comment: python-netaddr for ipcalculations. \n jq for json parsing in hooks\"",
-        "sudo yum install -y ansible python-netaddr jq git"
+        "sudo yum install -y ansible-2.8.0 python-netaddr jq git"
       ],
       "type": "shell"
     },
