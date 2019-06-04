@@ -10,7 +10,7 @@ def packerBuild() {
 def amiify() {
   sh """#!/bin/bash
     { set -x; } 2>/dev/null
-    source ${env.IMAGEBUILDER_LIB}
+    source ${WORKSPACE}/${env.IMAGEBUILDER_LIB}
     . /var/lib/jenkins/.packer_templates.env
     instance_id=\$(terraform output ${env.STAGE_NAME}_id)
     AMI_NAME=${env.STAGE_NAME}
