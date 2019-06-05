@@ -22,8 +22,6 @@ pipeline {
     stages {
         stage('Prep Environment'){
             steps {
-                // echo "Installing Ansible role requirements"
-                // sh "ansible-galaxy install -r demo-workshops/ansible/all_requirements.yml"
                 echo "Grabbing certs"
                 sh "cp ${env.ANSIBLE_CERT}* certs"
                 echo "Copying env file"
