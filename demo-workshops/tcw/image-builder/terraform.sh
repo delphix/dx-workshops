@@ -25,6 +25,12 @@ TERRAFORM_BLUEPRINTS="${WORKDIR}/${DEMO_PATH}/${DEMO_NAME}/terraform-blueprints"
 		delphix_engine_version = "${DELPHIX_VERSION}"
 	EOF
 	terraform init
-	terraform "$@"
+	if [[ "${1}" == "redeploy" ]]; then
+		shift
+		terraform destroy "$@"
+		terraform apply "$@"
+	else
+		terraform "$@"
+	fi
   ENDTIME
 }

@@ -15,14 +15,15 @@ function help() {
   build              Build the images from the packer-templates folder
   cleanup            Cleanup all but the latest AMI's for this workshop
   deploy             Builds or changes Terraform-managed infrastructure
-  plan               Generate and show an Terrafrom execution plan
+  plan               Generate and show a Terrafrom execution plan
   teardown           Destroy Terraform-managed infrastructure
+  redeploy           Executes teardown and then deploy
   show               Print the terraform state
   validate           runs a few checks on the prereqs
   env|environment    Print the jumpbox information
-  start [wait]       Start the stopped EC2 instances in an deployed environment
+  start [wait]       Start the stopped EC2 instances in a deployed environment
                      (specifying wait will wait)
-  stop [wait]        Stop the running EC2 instances in an deployed environment
+  stop [wait]        Stop the running EC2 instances in a deployed environment
                      (specifying wait will wait)
   
   ex.
@@ -46,6 +47,9 @@ build)
   ;;
 deploy)
   exec /bin/terraform.sh apply "$@"
+  ;;
+redeploy)
+  exec /bin/terraform.sh redeploy "$@"
   ;;
 plan)
   exec /bin/terraform.sh plan "$@"
