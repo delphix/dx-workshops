@@ -47,7 +47,7 @@ pipeline {
                         returnStdout: true
                     ).trim()
                     }
-                    echo $CHANGE
+                    sh "echo ${CHANGE}"
             }
         }
         stage('Build Unstaged Integrated Test Environment'){
