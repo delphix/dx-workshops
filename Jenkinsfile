@@ -6,7 +6,6 @@ pipeline {
     }
     agent any
     environment {
-        // ANSIBLE_ROLES_PATH = "ansible/roles"
         CHANGE = false
         TF_DIR = "demo-workshops/tcw/terraform-blueprints"
         PACKER_BASE = "base-templates"
