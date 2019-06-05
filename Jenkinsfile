@@ -40,19 +40,19 @@ pipeline {
             steps{
                 script{
                     environment.packerBuild()
-                    sh ("ls -lart")
-                    env.CHANGE = sh (
+                    CHANGE = sh (
                         script: """#!/bin/bash
                                 { set -x; } 2>/dev/null
                                 [[ -f change.ignore ]] && echo "true" || echo "false" """,
                         returnStdout: true
                     ).trim()
                     }
+                    echo $CHANGE
             }
         }
         stage('Build Unstaged Integrated Test Environment'){
             when {
-                expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
+                expression { return (params.TESTING == true && CHANGE == "true") || params.FORCE_TESTING == true }
             }
             steps{
                 dir(env.TF_DIR){
@@ -62,7 +62,7 @@ pipeline {
         }
         stage('Unstaged Integration Testing'){
             when {
-                expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
+                expression { return (params.TESTING == true && CHANGE == "true") || params.FORCE_TESTING == true }
             }
             steps{
                 dir(env.TF_DIR){
@@ -72,7 +72,7 @@ pipeline {
         }
         stage('Create Staged AMIs'){
             when {
-                expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
+                expression { return (params.TESTING == true && CHANGE == "true") || params.FORCE_TESTING == true }
             }
             parallel{
                 stage('delphix-tcw-jumpbox'){
@@ -114,7 +114,7 @@ pipeline {
         }
         stage('Build Staged Integrated Test Environment'){
             when {
-                expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
+                expression { return (params.TESTING == true && CHANGE == "true") || params.FORCE_TESTING == true }
             }
             steps{
                 dir(env.TF_DIR){
@@ -124,7 +124,7 @@ pipeline {
         }
         stage('Staged Integration Testing'){
             when {
-                expression { return (params.TESTING == true && CHANGE == true) || params.FORCE_TESTING == true }
+                expression { return (params.TESTING == true && CHANGE == "true") || params.FORCE_TESTING == true }
             }
             steps{
                 dir(env.TF_DIR){
