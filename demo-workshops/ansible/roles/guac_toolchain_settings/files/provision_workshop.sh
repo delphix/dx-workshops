@@ -59,23 +59,10 @@ function PRISTINE {
 	~/tw_provision -c ~/tw_provision_config.txt
 
 	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
-	
-	# MVN_YARN
+
 	PREPARE_PROD
 	PREPARE_LOWER
-	
-}
-
-function MVN_YARN {
-	ssh -t centos@tooling "rm -Rf /tmp/dev /tmp/test /tmp/prod && git clone /var/lib/jenkins/app_repo.git /tmp/dev && git clone /var/lib/jenkins/app_repo.git /tmp/test && git clone /var/lib/jenkins/app_repo.git /tmp/prod"
-	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
-
-	ssh -t centos@tooling "sudo rm -Rf /tmp/jenkins_dev && git clone /var/lib/jenkins/app_repo.git /tmp/jenkins_dev && sudo chown -R jenkins.jenkins /tmp/jenkins_dev && sudo -u jenkins bash -c 'cd /tmp/jenkins_dev && mvn clean && cd client && yarn install'"
-	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
-
-	ssh -t centos@tooling "cd /tmp/dev && mvn clean && cd client && yarn install"
-	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
-
+	PREPARE_LOCAL
 }
 
 function PREPARE_PROD {
@@ -175,8 +162,6 @@ rm -f ~/Desktop/READY ~/Desktop/WAIT ~/Desktop/ERROR
 	else
 		PRISTINE
 	fi
-	
-	PREPARE_LOCAL
 
 	READY
 } 2>&1 | tee ~/Desktop/WAIT
