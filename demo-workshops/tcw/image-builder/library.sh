@@ -3,6 +3,10 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 export DELPHIX_VERSION="5.3.2.*"
+export TEMPLATE_LIST="delphix-centos7-ansible-base.json delphix-ubuntu-bionic-guacamole.json \
+		delphix-centos7-oracle-12.2.0.1.json delphix-centos7-daf-app.json \
+		delphix-centos7-kitchen_sink.json delphix-tcw-jumpbox.json delphix-tcw-oracle12-source.json \
+		delphix-tcw-oracle12-target.json delphix-centos7-tooling-base.json delphix-tcw-tooling-oracle.json"
 
 trap "cleanup" SIGINT
 
