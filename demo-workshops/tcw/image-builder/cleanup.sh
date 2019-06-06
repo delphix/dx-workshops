@@ -9,7 +9,7 @@ NOW=$(date +"%m-%d-%Y %T")
 WORKDIR=$(pwd)
 
 {
-	GET_CLEANUP_LIST ${TEMPLATE_LIST}
+	GET_CLEANUP_LIST ${TEMPLATE_LIST[@]}
 	[[ -z ${CLEANUP_LIST} ]] && echo "No AMI's to cleanup" && exit 0
 	until [[ "${CLEANUP}" == "y" || "${CLEANUP}" == "n" ]]; do
       read -p "This will delete all the AMI's listed above. Are you sure you want to continue? (n) " CLEANUP

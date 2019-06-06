@@ -11,8 +11,6 @@ DEMO_PATH="demo-workshops"
 DEMO_NAME="tcw"
 TERRAFORM_BLUEPRINTS="${WORKDIR}/${DEMO_PATH}/${DEMO_NAME}/terraform-blueprints"
 
-SYSTEMS=(delphix-tcw-delphixengine_id delphix-tcw-jumpbox_id delphix-tcw-oracle12-source_id delphix-tcw-oracle12-target_id delphix-tcw-tooling-oracle_id devweb_id prodweb_id testweb_id)
-
 SYSTEM_IDS=()
 cd ${TERRAFORM_BLUEPRINTS}
 
