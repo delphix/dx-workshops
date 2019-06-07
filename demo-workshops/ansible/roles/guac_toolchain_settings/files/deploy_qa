@@ -12,8 +12,9 @@ function ENDTIME {
         echo "It took $(($ENDTIME - $STARTTIME)) seconds to complete ${SCRIPT}"
 }
 
-{
-        ssh -t centos@tooling "rm -Rf /tmp/app_repo && git clone /var/lib/jenkins/app_repo.git /tmp/app_repo && cd /tmp/app_repo && git checkout HEAD~3"
+{       
+        [[ -z ${1} ]] && echo "You must provide a commit reference, i.e. HEAD~3" && exit 1
+        ssh -t centos@tooling "rm -Rf /tmp/app_repo && git clone /var/lib/jenkins/app_repo.git /tmp/app_repo && cd /tmp/app_repo && git checkout ${1}"
 
         [[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
 

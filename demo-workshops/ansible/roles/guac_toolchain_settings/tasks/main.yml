@@ -149,12 +149,14 @@
       dest: "/home/{{ ansible_user }}/.config/google-chrome/Default/Bookmarks"
       mode: "u+rwx"
     become: no
-  - name: Copy bounce_qa
+  - name: Copy deploy_qa
     copy:
-      src: "bounce_qa"
-      dest: "/usr/local/bin/bounce_qa"
+      src: "deploy_qa"
+      dest: "/usr/local/bin/deploy_qa"
       mode: "a+x"
     become: yes
+    tags:
+      - deploys
   - name: Copy Workshop Documentation Shortcut
     copy:
       src: "WorkshopDocumentation.desktop"
