@@ -157,7 +157,7 @@
     become: yes
   - name: Copy Workshop Documentation Shortcut
     copy:
-      src: "Workshop Documentation.desktop"
-      dest: "/home/{{ ansible_user }}/Desktop/Workshop Documentation.desktop"
+      src: "WorkshopDocumentation.desktop"
+      dest: "/home/{{ ansible_user }}/Desktop/WorkshopDocumentation.desktop"
       mode: "a+x"
     become: no
