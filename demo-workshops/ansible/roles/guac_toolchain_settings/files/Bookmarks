@@ -47,6 +47,15 @@
             "name": "Jenkins",
             "type": "url",
             "url": "http://tooling:8080/blue/pipelines"
+         }, {
+            "date_added": "13198271872797971",
+            "id": "10",
+            "meta_info": {
+               "last_visited_desktop": "13198271872798383"
+            },
+            "name": "Bugzilla",
+            "type": "url",
+            "url": "http://tooling/bugzilla"
          } ],
          "date_added": "13198271372069543",
          "date_modified": "13198271902737182",

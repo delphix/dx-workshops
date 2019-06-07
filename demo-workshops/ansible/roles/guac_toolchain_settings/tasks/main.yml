@@ -143,15 +143,21 @@
     tags:
       - notes
     become: no
-  - name: Create Chrome bookmarks
+  - name: Copy Chrome bookmarks
     copy:
       src: "Bookmarks"
       dest: "/home/{{ ansible_user }}/.config/google-chrome/Default/Bookmarks"
       mode: "u+rwx"
     become: no
-  - name: Deploy Chrome Preferences
+  - name: Copy bounce_qa
     copy:
-      src: "Preferences"
-      dest: "/home/{{ ansible_user }}/.config/google-chrome/Default/Preferences"
-      mode: "u+rwx"
+      src: "bounce_qa"
+      dest: "/usr/local/bin/bounce_qa"
+      mode: "a+x"
+    become: yes
+  - name: Copy Workshop Documentation Shortcut
+    copy:
+      src: "Workshop Documentation.desktop"
+      dest: "/home/{{ ansible_user }}/Desktop/Workshop Documentation.desktop"
+      mode: "a+x"
     become: no
