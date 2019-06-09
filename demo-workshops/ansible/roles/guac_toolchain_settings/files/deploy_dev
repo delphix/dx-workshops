@@ -1,0 +1,26 @@
+#!/bin/bash
+#
+# Copyright (c) 2019 by Delphix. All rights reserved.
+#
+# This file is managed by Ansible. Don't make changes here - they will be overwritten.
+
+STARTTIME=$(date +%s)
+NOW=$(date +"%m-%d-%Y %T")
+
+function ENDTIME {
+        ENDTIME=$(date +%s)
+        echo "It took $(($ENDTIME - $STARTTIME)) seconds to complete ${SCRIPT}"
+}
+
+{       
+        [[ -z ${1} ]] && echo "You must provide a commit reference, i.e. HEAD~3" && exit 1
+        ssh -t centos@tooling "rm -Rf /tmp/app_repo && git clone /var/lib/jenkins/app_repo.git /tmp/app_repo && cd /tmp/app_repo && git checkout ${1}"
+
+        [[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
+
+        ssh -t centos@tooling ansible-playbook /tmp/prod/ansible/deploy.yaml -e git_branch=origin/develop -e git_commit=x -e sdlc_env=DEV --limit devweb
+
+        [[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
+
+        ENDTIME
+}
