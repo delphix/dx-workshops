@@ -112,7 +112,7 @@ pipeline {
             //             }
             //         }
             //     }
-            // }
+            }
         }
         stage('Build Staged Integrated Test Environment'){
             when {
