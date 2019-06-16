@@ -7,7 +7,7 @@ module "tooling" {
   security_group_id = ["${module.aws_security_group.id}"]
   default_tags = "${local.default_tags}"
   last_octet = "6"
-  ami_name = "delphix-tcw-tooling-oracle-${var.staged == "false" ? "unstaged" : "staged"}-*"
+  ami_name = "delphix-tcw-tooling-oracle-${var.staged == "false" ? "unstaged" : "${var.stage_name}"}-*"
 }
 
 output "TOOLING" {

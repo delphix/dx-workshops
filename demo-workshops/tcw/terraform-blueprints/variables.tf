@@ -52,6 +52,10 @@ variable "staged" {
   default = "false"
 }
 
+variable "stage_name" {
+  default = "staged"
+}
+
 variable "delphix_engine_version" {
   //Currently only works with 5.3.2
   description = "The version of the Delphix AMI"

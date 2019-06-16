@@ -7,7 +7,8 @@ TEMPLATE_LIST=(delphix-centos7-ansible-base.json delphix-ubuntu-bionic-guacamole
 		delphix-centos7-oracle-12.2.0.1.json delphix-centos7-daf-app.json \
 		delphix-centos7-kitchen_sink.json delphix-tcw-jumpbox.json delphix-tcw-oracle12-source.json \
 		delphix-tcw-oracle12-target.json delphix-centos7-tooling-base.json delphix-tcw-tooling-oracle.json)
-SYSTEMS=(delphix-tcw-delphixengine_id delphix-tcw-jumpbox_id delphix-tcw-oracle12-source_id delphix-tcw-oracle12-target_id delphix-tcw-tooling-oracle_id devweb_id prodweb_id testweb_id)
+SYSTEMS=(delphix-tcw-delphixengine_id delphix-tcw-jumpbox_id delphix-tcw-oracle12-source_id \
+delphix-tcw-oracle12-target_id delphix-tcw-tooling-oracle_id devweb_id prodweb_id testweb_id)
 
 trap "cleanup" SIGINT
 
@@ -23,6 +24,7 @@ function cleanup() {
 function ENVCHECK() {
 	[[ -z "${S3_AWS_ACCESS_KEY_ID}" ]] && export S3_AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
 	[[ -z "${S3_AWS_SECRET_ACCESS_KEY}" ]] && export S3_AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+  env | grep _KEY
 }
 
 function ENDTIME() {

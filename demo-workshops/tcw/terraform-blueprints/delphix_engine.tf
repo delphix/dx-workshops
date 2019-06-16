@@ -8,7 +8,7 @@ module "delphix_engine" {
   default_tags = "${local.default_tags}"
   last_octet = "10"
   staged = "${var.staged}"
-  ami_name = "${var.staged == "false" ? "Delphix Engine ${var.delphix_engine_version}" : "delphix-tcw-delphixengine-staged-*"}"
+  ami_name = "${var.staged == "false" ? "Delphix Engine ${var.delphix_engine_version}" : "delphix-tcw-delphixengine-${var.stage_name}-*"}"
   associate_public_ip_address = "${var.associate_public_ip_address}"
 }
 

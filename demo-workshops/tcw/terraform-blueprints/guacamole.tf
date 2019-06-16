@@ -7,7 +7,7 @@ module "guacamole" {
   security_group_id = ["${module.aws_security_group.id}", "${module.aws_security_group.jumpbox}"]
   default_tags = "${local.default_tags}"
   last_octet = "5"
-  ami_name = "delphix-tcw-jumpbox-${var.staged == "false" ? "unstaged" : "staged"}-*"
+  ami_name = "delphix-tcw-jumpbox-${var.staged == "false" ? "unstaged" : "${var.stage_name}"}-*"
 }
 
 output "GUACAMOLE" {

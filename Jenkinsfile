@@ -71,43 +71,48 @@ pipeline {
             when {
                 expression { return (params.TESTING == true && CHANGE == "true") || params.FORCE_TESTING == true }
             }
-            parallel{
-                stage('delphix-tcw-jumpbox'){
-                    steps{
-                        dir(env.TF_DIR){
-                            script{environment.amiify()}
-                        }
-                    }
-                }
-                stage('delphix-tcw-oracle12-source'){
-                    steps{
-                        dir(env.TF_DIR){
-                            script{environment.amiify()}
-                        }
-                    }
-                }
-                stage('delphix-tcw-oracle12-target'){
-                    steps{
-                        dir(env.TF_DIR){
-                            script{environment.amiify()}
-                        }
-                    }
-                }
-                stage('delphix-tcw-tooling-oracle'){
-                    steps{
-                        dir(env.TF_DIR){
-                            script{environment.amiify()}
-                        }
-                    }
-                }
-                stage('delphix-tcw-delphixengine'){
-                    steps{
-                        dir(env.TF_DIR){
-                            script{environment.amiify()}
-                        }
-                    }
-                }
+            steps{
+                script{
+                    environment.amiify()
             }
+
+            // parallel{
+            //     stage('delphix-tcw-jumpbox'){
+            //         steps{
+            //             dir(env.TF_DIR){
+            //                 script{environment.amiify()}
+            //             }
+            //         }
+            //     }
+            //     stage('delphix-tcw-oracle12-source'){
+            //         steps{
+            //             dir(env.TF_DIR){
+            //                 script{environment.amiify()}
+            //             }
+            //         }
+            //     }
+            //     stage('delphix-tcw-oracle12-target'){
+            //         steps{
+            //             dir(env.TF_DIR){
+            //                 script{environment.amiify()}
+            //             }
+            //         }
+            //     }
+            //     stage('delphix-tcw-tooling-oracle'){
+            //         steps{
+            //             dir(env.TF_DIR){
+            //                 script{environment.amiify()}
+            //             }
+            //         }
+            //     }
+            //     stage('delphix-tcw-delphixengine'){
+            //         steps{
+            //             dir(env.TF_DIR){
+            //                 script{environment.amiify()}
+            //             }
+            //         }
+            //     }
+            // }
         }
         stage('Build Staged Integrated Test Environment'){
             when {

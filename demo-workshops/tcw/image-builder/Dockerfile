@@ -18,6 +18,9 @@ ENV ANSIBLE_ROLES_PATH=/.ansible
 ENV TERRAFORM_VERSION=0.11.13
 ENV TERRAFORM_SHA256SUM=6b8ce67647a59b2a3f70199c304abca0ddec0e49fd060944c26f666298e23418
 ENV AWSCLI_VERSION=1.16.149
+ENV BOTO_VER=2.49.0
+ENV BOTOCORE_VER=1.12.118
+ENV BOTO3_VER=1.9.118
 
 RUN \
     apk add --no-cache \
@@ -58,7 +61,7 @@ RUN curl -SL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terra
     && rm -f terraform_${TERRAFORM_VERSION}_linux_amd64.zip terraform_${TERRAFORM_VERSION}_SHA256SUMS
 
 RUN pip install -U pip \
-    && pip install -U ansible==${ANSIBLE_VERSION} awscli==${AWSCLI_VERSION}
+    && pip install -U ansible==${ANSIBLE_VERSION} awscli==${AWSCLI_VERSION} boto==${BOTO_VER} botocore==${BOTOCORE_VER} boto3==${BOTO3_VER}
 
 COPY ${DEMO_PATH}/ansible/all_requirements.yml all_requirements.yml 
 RUN ansible-galaxy install -r all_requirements.yml \
@@ -84,5 +87,8 @@ RUN chmod +x /bin/validate.sh
 
 COPY ${DEMO_PATH}/${DEMO_NAME}/image-builder/updown.sh /bin/updown.sh
 RUN chmod +x /bin/updown.sh
+
+COPY ${DEMO_PATH}/${DEMO_NAME}/image-builder/image.sh /bin/image.sh
+RUN chmod +x /bin/image.sh
 
 ENTRYPOINT ["/bin/startup.sh"]

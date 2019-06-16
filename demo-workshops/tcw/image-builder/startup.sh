@@ -12,12 +12,13 @@ function help() {
 
   Available commands are listed below.
 
+  image <name>       Shutdown running instances and create AMI's with name
   build              Build the images from the packer-templates folder
   cleanup            Cleanup all but the latest AMI's for this workshop
-  deploy             Builds or changes Terraform-managed infrastructure
-  plan               Generate and show a Terrafrom execution plan
-  teardown           Destroy Terraform-managed infrastructure
-  redeploy           Executes teardown and then deploy
+  deploy [args]      Builds or changes Terraform-managed infrastructure
+  plan [args]        Generate and show a Terrafrom execution plan
+  teardown [args]    Destroy Terraform-managed infrastructure
+  redeploy [args]    Executes teardown and then deploy
   show               Print the terraform state
   validate           runs a few checks on the prereqs
   env|environment    Print the jumpbox information
@@ -25,13 +26,18 @@ function help() {
                      (specifying wait will wait)
   stop [wait]        Stop the running EC2 instances in a deployed environment
                      (specifying wait will wait)
+  fw|firewall        Execute terraform apply against the firewall modules only (for firewall rule updates)
   
   ex.
     docker-compose run tcw validate
     docker-compose run tcw build
     docker-compose run tcw deploy
+    docker-compose run tcw deploy --auto-approve
+    docker-compose run tcw deploy -var \"staged=true\" -var \"staged_name=staged\"
     docker-compose run tcw env
     docker-compose run tcw stop wait
+    docker-compose run tcw image staged
+    docker-compose run tcw fw
   
   """
 
@@ -71,6 +77,12 @@ start|up)
   ;;
 stop|down)
   exec /bin/updown.sh stop "$@"
+  ;;
+firewall|fw)
+  exec /bin/terraform.sh apply -target="module.aws_security_group.aws_security_group.jumpbox" -target="module.aws_security_group.aws_security_group.landshark" "$@"
+  ;;
+image)
+  exec /bin/image.sh "$@"
   ;;
 *)
   help

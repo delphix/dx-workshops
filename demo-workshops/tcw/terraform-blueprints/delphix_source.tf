@@ -2,7 +2,7 @@ module "delphix_source" {
   source = "./modules/delphix_target"
   project = "${var.project}"
   key_name = "${var.key_name}"
-  ami_name = "delphix-tcw-oracle12-source-${var.staged == "false" ? "unstaged" : "staged"}-*"
+  ami_name = "delphix-tcw-oracle12-source-${var.staged == "false" ? "unstaged" : "${var.stage_name}"}-*"
   how_many = "${var.how_many}"
   subnet_id = "${module.aws_subnet.id}"
   security_group_id = ["${module.aws_security_group.id}"]
