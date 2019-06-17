@@ -1,0 +1,13 @@
+ddp_hostname = delphix-tcw-delphixengine
+username = delphix_admin
+password = example
+skip-validate = 1
+vdb = "Patients Masked Master"
+vdb = "Patients Dev"
+vdb = "Patients Test"
+vdb = "prep1"
+vdb = "prep2"
+vdb = "prep3"
+vdb = "prep4"
+vdb = "prep5"
+vdb = "prep6"

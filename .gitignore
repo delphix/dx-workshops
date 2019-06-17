@@ -13,3 +13,4 @@ certs
 TODO
 demo-workshops/rds
 local-*.tf
+bin/

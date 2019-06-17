@@ -91,4 +91,14 @@ RUN chmod +x /bin/updown.sh
 COPY ${DEMO_PATH}/${DEMO_NAME}/image-builder/image.sh /bin/image.sh
 RUN chmod +x /bin/image.sh
 
+COPY ${DEMO_PATH}/scripts/shutdown_dbs shutdown_dbs
+
+RUN cd shutdown_dbs \
+    && go get -d -v ./... \
+    && env GOOS=linux GOARCH=amd64 go build -o /bin/shutdown_dbs \
+    && chmod +x /bin/image.sh \
+    && cp example_conf.txt ../shutdown_conf.txt \
+    && cd .. \
+    && rm -Rf shutdown_dbs
+
 ENTRYPOINT ["/bin/startup.sh"]
