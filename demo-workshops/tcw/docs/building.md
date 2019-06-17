@@ -2,6 +2,7 @@
 
 These have been prepared for Mac/Linux-based installations.
 
+- [Workshop Walkthrough Documentation](#workshop-walkthrough-documentation)
 - [Simple Installation](#simple-installation)
   - [Requirements](#requirements)
   - [Instructions](#instructions)
@@ -9,6 +10,9 @@ These have been prepared for Mac/Linux-based installations.
 - [Second Simplest Installation](#second-simplest-installation)
   - [Requirements (Advanced Instructions)](#requirements-advanced-instructions)
   - [Instructions (Advanced Instructions)](#instructions-advanced-instructions)
+
+## Workshop Walkthrough Documentation
+You can view the workshop walkthrough [here](http://18.236.74.213/index.html)
 
 ## Simple Installation
 
