@@ -42,6 +42,7 @@ def environmentTest(){
 def terraformBuild(staged){
   sh """#!/bin/bash
     { set -x; } 2>/dev/null
+    echo 'associate_public_ip_address = "true"' > enable_public_ip.auto.tfvars 
     CURRENT_UID=\$(id -u):\$(id -g) docker-compose run tcw deploy -auto-approve -var "staged=${staged}"
   """
 }
