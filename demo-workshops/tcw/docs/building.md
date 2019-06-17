@@ -30,7 +30,7 @@ These have been prepared for Mac/Linux-based installations.
 
 ### Instructions
 
-1. Clone this repo ```git clone https://github.com/delphix/packer-templates.git```
+1. Download and extract the [latest release of this repo](https://github.com/delphix/packer-templates/releases/latest)
 2. Copy the .example.docker file to .docker.env and edit the variables to suit your environment (i.e. AWS keys and region) See #EnvironmentFile below
 3. Open a terminal in the root of this repository
 4. Build the demo AMI's in AWS via the Docker container (this process will take 45-60 minutes ```docker-compose run tcw build```
@@ -97,8 +97,7 @@ For those who cannot use Docker
 
 ### Instructions (Advanced Instructions)
 
-1. Clone this repo
-    ```git clone https://github.com/delphix/packer-templates.git```
+1. Download and extract the [latest release of this repo](https://github.com/delphix/packer-templates/releases/latest)
 2. Copy the .example.env file to .environment.env and edit the variables to suit your environment (i.e. AWS keys and region) See #EnvironmentFile above
 . Open a terminal in the root of this repository
 3. Build the demo AMI's in AWS (this process will take 45-60 minutes)
