@@ -48,6 +48,7 @@ function WAIT_FOR(){
     ;;
   stop)
     echo "Stopping running instances"
+    SHUTDOWN_VDBS
     aws ec2 --region ${AWS_REGION} stop-instances --instance-ids ${SYSTEM_IDS[@]}
     ;;
   esac

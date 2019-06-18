@@ -179,3 +179,16 @@ function GET_OLDER_DUPLICATE_AMIS() {
     done
   done
 }
+
+function SHUTDOWN_VDBS(){
+  cd ${TERRAFORM_BLUEPRINTS}
+  terraform refresh
+  DE=$(terraform output delphix-tcw-delphixengine_ip)
+  if [[ -n $DE ]] ; then
+    sed -e 's|ddp_hostname.*|ddp_hostname = '${DE}'|' \
+      -e 's|password.*|password = '${DELPHIX_ADMIN_PASSWORD}'|' \
+      -e 's|username.*|username = delphix_admin|' \
+      ${WORKDIR}/${DEMO_PATH}/scripts/shutdown_dbs/example_conf.txt > /tmp/shutdown_conf.txt
+    shutdown_dbs -c /tmp/shutdown_conf.txt
+  fi
+}

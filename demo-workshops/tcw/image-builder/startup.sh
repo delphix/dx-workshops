@@ -33,7 +33,7 @@ function help() {
     docker-compose run tcw build
     docker-compose run tcw deploy
     docker-compose run tcw deploy --auto-approve
-    docker-compose run tcw deploy -var \"staged=true\" -var \"staged_name=staged\"
+    docker-compose run tcw deploy -var \"staged=true\" -var \"stage_name=staged\"
     docker-compose run tcw env
     docker-compose run tcw stop wait
     docker-compose run tcw image staged
