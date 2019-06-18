@@ -157,6 +157,14 @@
     become: yes
     tags:
       - deploys
+  - name: Copy deploy_dev
+    copy:
+      src: "deploy_dev"
+      dest: "/usr/local/bin/deploy_dev"
+      mode: "a+x"
+    become: yes
+    tags:
+      - deploys
   - name: Copy Workshop Documentation Shortcut
     copy:
       src: "WorkshopDocumentation.desktop"
