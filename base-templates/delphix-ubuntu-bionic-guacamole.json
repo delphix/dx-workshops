@@ -81,6 +81,15 @@
       "ansible_env_vars": [
         "ANSIBLE_HOST_KEY_CHECKING=False"
       ],
+      "playbook_file": "ansible/vnc_setup.yml",
+      "type": "ansible",
+      "user": "ubuntu",
+      "extra_arguments": [ "-vvvv" ]
+    },
+    {
+      "ansible_env_vars": [
+        "ANSIBLE_HOST_KEY_CHECKING=False"
+      ],
       "playbook_file": "ansible/mariadb.yml",
       "type": "ansible",
       "user": "ubuntu"
@@ -90,14 +99,6 @@
         "ANSIBLE_HOST_KEY_CHECKING=False"
       ],
       "playbook_file": "ansible/guacamole.yml",
-      "type": "ansible",
-      "user": "ubuntu"
-    },
-    {
-      "ansible_env_vars": [
-        "ANSIBLE_HOST_KEY_CHECKING=False"
-      ],
-      "playbook_file": "ansible/vnc_setup.yml",
       "type": "ansible",
       "user": "ubuntu"
     },
@@ -137,7 +138,7 @@
     "labalchemy_pub_key": "{{env `LABALCHEMY_PUB_KEY`}}",
     "md5sum": "",
     "region": "{{env `AWS_REGION`}}",
-    "seed": "e6538f7",
+    "seed": "e6538",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",
     "vpc_id": "{{env `AWS_VPC_ID`}}"
   }

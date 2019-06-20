@@ -6,7 +6,8 @@ source $(dirname "${BASH_SOURCE[0]}")/library.sh
 trap "packer_cleanup" SIGINT
 
 GUACAMOLE_VERSION="0.9.14"
-VNC_CLIENT_OPTIONS="-geometry 1280x720 -localhost"
+: "${VNC_CLIENT_OPTIONS:=-geometry 1280x720 -localhost yes}"
+export VNC_CLIENT_OPTIONS
 
 function packer_cleanup() {
 	echo "Caught CTRL+C. Terminating packer jobs"
