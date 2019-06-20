@@ -22,15 +22,7 @@ TEMPLATE_LIST=(delphix-centos7-ansible-base.json delphix-ubuntu-bionic-guacamole
 SYSTEMS=(delphix-tcw-delphixengine_id delphix-tcw-jumpbox_id delphix-tcw-oracle12-source_id \
 delphix-tcw-oracle12-target_id delphix-tcw-tooling-oracle_id devweb_id prodweb_id testweb_id)
 
-trap "cleanup" SIGINT
-
 function cleanup() {
-	echo "Caught CTRL+C. Terminating packer jobs"
-	for child in $(ps aux| grep '[/]bin/packer build' | awk '{print $1}' ); do
-		echo kill "$child" && kill -s SIGINT "$child"
-	done
-	wait $(jobs -p)
-	echo "You may need to go in and manually terminate instances and delete security groups and keypairs (search for items with 'packer' in the name)"
   ERROR
 }
 

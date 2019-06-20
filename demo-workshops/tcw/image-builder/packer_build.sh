@@ -3,10 +3,20 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 source $(dirname "${BASH_SOURCE[0]}")/library.sh
-trap "cleanup" SIGINT
+trap "packer_cleanup" SIGINT
 
 GUACAMOLE_VERSION="0.9.14"
 VNC_CLIENT_OPTIONS="-geometry 1280x720 -localhost"
+
+function packer_cleanup() {
+	echo "Caught CTRL+C. Terminating packer jobs"
+	for child in $(ps aux| grep '[/]bin/packer build' | awk '{print $1}' ); do
+		echo kill "$child" && kill -s SIGINT "$child"
+	done
+	wait $(jobs -p)
+	echo "You may need to go in and manually terminate instances and delete security groups and keypairs (search for items with 'packer' in the name)"
+  ERROR
+}
 
 rm -f READY.log WAIT.log ERROR.log change.ignore
 
