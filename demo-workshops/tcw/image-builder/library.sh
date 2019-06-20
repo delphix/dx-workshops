@@ -2,7 +2,19 @@
 #
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
+STARTTIME=$(date +%s)
+NOW=$(date +"%m-%d-%Y %T")
+WORKDIR=$(pwd)
+
 export DELPHIX_VERSION="5.3.2.*"
+DEMO_PATH="demo-workshops"
+DEMO_NAME="tcw"
+BASE_TEMPLATES="${WORKDIR}/base-templates"
+DEMO_TEMPLATES="${WORKDIR}/${DEMO_PATH}/${DEMO_NAME}/packer-templates"
+CERT="${WORKDIR}/certs/ansible"
+TERRAFORM_BLUEPRINTS="${WORKDIR}/${DEMO_PATH}/${DEMO_NAME}/terraform-blueprints"
+
+
 TEMPLATE_LIST=(delphix-centos7-ansible-base.json delphix-ubuntu-bionic-guacamole.json \
 		delphix-centos7-oracle-12.2.0.1.json delphix-centos7-daf-app.json \
 		delphix-centos7-kitchen_sink.json delphix-tcw-jumpbox.json delphix-tcw-oracle12-source.json \
@@ -19,6 +31,7 @@ function cleanup() {
 	done
 	wait $(jobs -p)
 	echo "You may need to go in and manually terminate instances and delete security groups and keypairs (search for items with 'packer' in the name)"
+  ERROR
 }
 
 function ENVCHECK() {
@@ -34,7 +47,7 @@ function ENDTIME() {
 
 function ERROR() {
 	ENDTIME
-	mv ${WORKDIR}/WAIT.log ${WORKDIR}/ERROR.log
+	[[ -f ${WORKDIR}/WAIT.log ]] && mv ${WORKDIR}/WAIT.log ${WORKDIR}/ERROR.log
 	exit 1
 }
 

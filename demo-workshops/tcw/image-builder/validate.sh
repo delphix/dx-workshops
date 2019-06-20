@@ -4,9 +4,7 @@
 #
 source $(dirname "${BASH_SOURCE[0]}")/library.sh
 trap "cleanup" SIGINT
-STARTTIME=$(date +%s)
-NOW=$(date +"%m-%d-%Y %T")
-WORKDIR=$(pwd)
+
 S3_BINARIES=(datical_admin.lic DaticalDB-linux.gtk.x86_64-5.2.5347.jar linuxx64_12201_database.zip oracle-instantclient12.2-basic-12.2.0.1.0-1.x86_64.rpm oracle-instantclient12.2-tools-12.2.0.1.0-1.x86_64.rpm oracle-instantclient12.2-jdbc-12.2.0.1.0-1.x86_64.rpm oracle-instantclient12.2-sqlplus-12.2.0.1.0-1.x86_64.rpm)
 
 function HELP() {

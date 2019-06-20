@@ -4,12 +4,6 @@
 #
 source $(dirname "${BASH_SOURCE[0]}")/library.sh
 trap "cleanup" SIGINT
-STARTTIME=$(date +%s)
-NOW=$(date +"%m-%d-%Y %T")
-WORKDIR=$(pwd)
-DEMO_PATH="demo-workshops"
-DEMO_NAME="tcw"
-TERRAFORM_BLUEPRINTS="${WORKDIR}/${DEMO_PATH}/${DEMO_NAME}/terraform-blueprints"
 
 {
   cd ${TERRAFORM_BLUEPRINTS}

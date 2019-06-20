@@ -22,6 +22,7 @@ function help() {
   show               Print the terraform state
   validate           runs a few checks on the prereqs
   env|environment    Print the jumpbox information
+  ready              Is the workshop ready?
   start [wait]       Start the stopped EC2 instances in a deployed environment
                      (specifying wait will wait)
   stop [wait]        Stop the running EC2 instances in a deployed environment
@@ -38,7 +39,7 @@ function help() {
     docker-compose run tcw stop wait
     docker-compose run tcw image staged
     docker-compose run tcw fw
-  
+    docker-compose ready
   """
 
 
@@ -83,6 +84,9 @@ firewall|fw)
   ;;
 image)
   exec /bin/image.sh "$@"
+  ;;
+ready)
+  exec /bin/ws_ready.sh
   ;;
 *)
   help
