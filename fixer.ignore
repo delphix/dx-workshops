@@ -6,6 +6,9 @@ set -e
 
 [[ -z $1 ]] && echo you must provide a directory that contains the json && exit 1
 
+: "${PG_VER:=9.6}"
+
+export PG_VER
 MDSUMFILE='md5sum.json'
 
 cd $1
