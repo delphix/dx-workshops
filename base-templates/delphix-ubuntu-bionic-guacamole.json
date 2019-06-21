@@ -64,8 +64,8 @@
       "inline": [
         "sudo apt-get update",
         "sudo DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -yq",
-        "sudo apt-get install -y python-pip python-netaddr libmariadbclient-dev git",
-        "sudo -H pip install ansible==2.8.0"
+        "i=0; until sudo apt-get install -y python-pip python-netaddr libmariadbclient-dev git; do if [ $i = 5 ]; then echo exiting after 5 attempts; exit 1; fi; i=$((i+1)); sleep 5; echo trying again; sudo apt-get update; done",
+        "i=0; until sudo -H pip install ansible==2.8.0; do if [ $i = 5 ]; then echo exiting after 5 attempts; exit 1; fi; i=$((i+1)); sleep 5; echo trying again; done"
       ],
       "type": "shell"
     },
@@ -83,8 +83,14 @@
       ],
       "playbook_file": "ansible/vnc_setup.yml",
       "type": "ansible",
-      "user": "ubuntu",
-      "extra_arguments": [ "-vvvv" ]
+      "user": "ubuntu"
+    },
+    {
+      "inline": [
+        "echo HERE",
+        "cat .config/systemd/user/vncserver*"
+      ],
+      "type": "shell"
     },
     {
       "ansible_env_vars": [
@@ -138,7 +144,7 @@
     "labalchemy_pub_key": "{{env `LABALCHEMY_PUB_KEY`}}",
     "md5sum": "",
     "region": "{{env `AWS_REGION`}}",
-    "seed": "e6538",
+    "seed": "5552066",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",
     "vpc_id": "{{env `AWS_VPC_ID`}}"
   }
