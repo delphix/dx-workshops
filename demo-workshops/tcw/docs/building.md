@@ -2,14 +2,15 @@
 
 These have been prepared for Mac/Linux-based installations.
 
-- [Workshop Walkthrough Documentation](#workshop-walkthrough-documentation)
-- [Simple Installation](#simple-installation)
-  - [Requirements](#requirements)
-  - [Instructions](#instructions)
-  - [Environment File](#environment-file)
-- [Second Simplest Installation](#second-simplest-installation)
-  - [Requirements (Advanced Instructions)](#requirements-advanced-instructions)
-  - [Instructions (Advanced Instructions)](#instructions-advanced-instructions)
+- [Workshop Walkthrough Documentation](#Workshop-Walkthrough-Documentation)
+- [Simple Installation](#Simple-Installation)
+  - [Requirements](#Requirements)
+  - [Instructions](#Instructions)
+  - [Environment File](#Environment-File)
+- [Image Build Flow](#Image-Build-Flow)
+- [Second Simplest Installation](#Second-Simplest-Installation)
+  - [Requirements (Advanced Instructions)](#Requirements-Advanced-Instructions)
+  - [Instructions (Advanced Instructions)](#Instructions-Advanced-Instructions)
 
 ## Workshop Walkthrough Documentation
 You can view the workshop walkthrough [here](http://18.236.74.213/index.html)
@@ -71,6 +72,10 @@ Leave the following two values commented out, if you will use the same as AWS_AC
     S3_AWS_ACCESS_KEY_ID: AWS Access Key to access S3_BUCKET
     S3_AWS_SECRET_ACCESS_KEY: AWS Secret Key to access S3_BUCKET
     AWS_AZ: AWS availability zone to deploy into (defaults to "${AWS_REGION}a" if left commented out)
+
+## Image Build Flow
+Below is a diagram of the build flow of the images used in this workshop.
+![AMI Flow](image_flow.png)
 
 ## Second Simplest Installation
 
