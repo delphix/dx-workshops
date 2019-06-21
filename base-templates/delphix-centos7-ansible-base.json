@@ -64,10 +64,10 @@
     {
       "inline": [
         "sudo yum update -y",
-        "sudo yum install -y epel-release",
+        "i=0; until sudo yum install -y epel-release; do if [ $i = 5 ]; then echo exiting after 5 attempts; exit 1; fi; i=$((i+1)); sleep 5; echo trying again; done",
         "echo \"comment: python-netaddr for ipcalculations. \n jq for json parsing in hooks\"",
-        "sudo yum install -y python-netaddr python-pip jq git",
-        "sudo -H pip install ansible==2.8.0"
+        "i=0; until sudo yum install -y python-netaddr python-pip jq git; do if [ $i = 5 ]; then echo exiting after 5 attempts; exit 1; fi; i=$((i+1)); sleep 5; echo trying again; done",
+        "i=0; until sudo -H pip install ansible==2.8.0; do if [ $i = 5 ]; then echo exiting after 5 attempts; exit 1; fi; i=$((i+1)); sleep 5; echo trying again; done"
       ],
       "type": "shell"
     },
