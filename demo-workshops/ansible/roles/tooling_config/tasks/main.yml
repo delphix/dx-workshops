@@ -147,6 +147,40 @@
   retries: 3
   delay: 2
 
+- name: Does ansible credential already exist?
+  shell: |
+    java -jar /opt/jenkins-cli.jar -s http://localhost:8080 -auth admin:admin get-credentials-as-xml system::system::jenkins _ ansible
+  register: cred_exists
+  ignore_errors: yes
+  tags:
+    - cred_exists
+  changed_when: false
+
+- name: Get ansible public key
+  shell: |
+    ssh-keygen -y -f ~/.ssh/ansible
+  become: no
+  register: ansible_pub_key
+  tags:
+    - cred_exists
+
+- name: Copy Ansible cred xml
+  template: 
+    src: ansible_cred.j2
+    dest: "/tmp/ansible_cred.xml"
+  when: "cred_exists.stdout == ''"
+  tags:
+    - cred_exists
+    
+- name: Install Ansible private key into Jenkins
+  shell: |
+    java -jar /opt/jenkins-cli.jar -auth admin:admin -s http://localhost:8080 create-credentials-by-xml system::system::jenkins _ < /tmp/ansible_cred.xml
+  args:
+    chdir: /tmp
+  when: "cred_exists.stdout == ''"
+  tags:
+    - cred_exists
+
 - name: Does PatientsPipeline already exist
   shell: |
     java -jar /opt/jenkins-cli.jar -s http://localhost:8080 -auth admin:admin get-job PatientsPipeline
@@ -161,13 +195,17 @@
     src: pipeline.xml
     dest: "/tmp/pipeline.xml"
   when: "job_exists.stdout == ''"
+  tags:
+    - pipeline
     
-- name: Install Pipeline Job into Jenkins
+- name: Install PatientsPipeline Job into Jenkins
   shell: |
     java -jar /opt/jenkins-cli.jar -auth admin:admin -s http://localhost:8080 create-job PatientsPipeline < /tmp/pipeline.xml
   args:
     chdir: /tmp
   when: "job_exists.stdout == ''"
+  tags:
+    - pipeline
 
 - name: Concurrency support for maven - File 1
   get_url:

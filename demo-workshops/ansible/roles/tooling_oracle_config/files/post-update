@@ -1,2 +1,2 @@
 #!/bin/bash
-/usr/bin/curl http://localhost:8080/git/notifyCommit?url=file:///var/lib/jenkins/app_repo.git
+/usr/bin/curl http://localhost:8080/git/notifyCommit?url=git@localhost:/var/lib/jenkins/app_repo.git

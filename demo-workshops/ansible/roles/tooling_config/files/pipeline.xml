@@ -28,8 +28,8 @@
       <jenkins.branch.BranchSource>
         <source class="jenkins.plugins.git.GitSCMSource" plugin="git@4.0.0-rc">
           <id>80e82b01-8c88-49fb-8367-4de81ba877d4</id>
-          <remote>/var/lib/jenkins/app_repo.git</remote>
-          <credentialsId></credentialsId>
+          <remote>git@localhost:/var/lib/jenkins/app_repo.git</remote>
+          <credentialsId>ansible</credentialsId>
           <traits>
             <jenkins.plugins.git.traits.BranchDiscoveryTrait/>
           </traits>

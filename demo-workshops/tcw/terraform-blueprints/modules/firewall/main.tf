@@ -54,7 +54,7 @@ resource "aws_security_group" "landshark" {
       to_port = 0
       protocol = "-1"
       
-      cidr_blocks = ["10.0.0.0/16"]
+      cidr_blocks = ["10.0.0.0/16","${concat(local.default_firewall_ingress_cidr_blocks,var.addtl_firewall_ingress_cidr_blocks)}"]
   }
 
   egress {

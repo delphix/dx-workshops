@@ -1,45 +1,105 @@
 ---
+- name: Add the user 'git' user
+  user:
+    name: git
+    comment: git user
+  tags:
+    - git_new
+- name: Get ansible public key
+  shell: |
+    ssh-keygen -y -f ~/.ssh/ansible
+  become: no
+  register: ansible_pub_key
+  tags:
+    - git_new
+- name: Set authorized key taken from file
+  authorized_key:
+    user: git
+    state: present
+    key: "{{ ansible_pub_key.stdout }}"
+  tags:
+    - git_new
+- name: Add localhost to .ssh/config so we can easily connect with key (for clone)
+  blockinfile:
+    path: ~/.ssh/config
+    block: |
+      host localhost
+        IdentityFile ~/.ssh/ansible
+        StrictHostKeyChecking no
+    marker: "# localhost ANSIBLE MANAGED BLOCK localhost"
+    create: yes
+    mode: u=rw,g=r,o=r
+  become: no
+  tags:
+    - git_new
+- name: Add localhost to /var/lib/jenkins/.ssh/config so we can easily connect with key (for clone)
+  blockinfile:
+    path: /var/lib/jenkins/.ssh/config
+    block: |
+      host localhost
+        IdentityFile ~/.ssh/ansible
+        StrictHostKeyChecking no
+    marker: "# localhost ANSIBLE MANAGED BLOCK localhost"
+    create: yes
+    mode: u=rw,g=r,o=r
+  become: yes
+  become_user: jenkins
+  tags:
+    - git_new
 - name: Create the app_repo directory
   file:
     path: /var/lib/jenkins/app_repo.git
     state: directory
     mode: "u+rwx,g+rwx"
-    owner: centos
-    group: centos
+    owner: git
+    group: git
   register: app_repo
   tags:
-    - git
-- name: Set permissions on the app_repo.git
-  shell: |
-    find app_repo.git -type d -exec chmod g+s '{}' +
-    chown -R centos.jenkins app_repo.git
-    chmod -R g+rwX app_repo.git
-  args:
-      chdir: /var/lib/jenkins
-  become: true
+    - git_new
+# - name: Set permissions on the app_repo.git
+#   shell: |
+#     find app_repo.git -type d -exec chmod g+s '{}' +
+#     chown -R centos.jenkins app_repo.git
+#     chmod -R g+rwX app_repo.git
+#   args:
+#       chdir: /var/lib/jenkins
+#   become: true
 - name: Init app_repo directory as a bare git repo
   shell: |
     git init --bare /var/lib/jenkins/app_repo.git
   args:
     creates: /var/lib/jenkins/app_repo.git/.git
-  become: no
+  become: yes
+  become_user: git
   when: "app_repo.changed"
   tags:
-    - git
+    - git_new
 - name: Clone the app_repo source
   git:
     dest: /tmp/app_repo_source
     repo: https://github.com/delphix/automation-framework-demo.git
     version: demos/tcw
+  become: no
   retries: 3
   delay: 2
-  become: no
   tags:
-    - git
+    - git_new
+# - name: Clone the bare repo
+#   git:
+#     accept_hostkey: yes
+#     key_file: ~/.ssh/ansible
+#     dest: /tmp/app_repo
+#     repo: git@localhost:/var/lib/jenkins/app_repo.git
+#     bare: yes
+#   become: no
+#   retries: 3
+#   delay: 2
+#   tags:
+#     - git_new
 #Get a weird error using the git module for this due to it being an empty repo
 - name: Clone the bare app_repo
   shell: |
-    git clone /var/lib/jenkins/app_repo.git
+    git clone git@localhost:/var/lib/jenkins/app_repo.git
   args:
      chdir: /tmp
      creates: /tmp/app_repo
@@ -47,7 +107,7 @@
   delay: 2
   become: no
   tags:
-    - git
+    - git_new
 - name: Populate the repo
   synchronize:
     src: /tmp/app_repo_source/
@@ -57,7 +117,7 @@
   delegate_to: "{{ inventory_hostname }}"
   become: no
   tags:
-    - git
+    - git_new
 - name: Are there things to add to git?
   shell: |
     git status
@@ -66,7 +126,7 @@
   register: git_status
   changed_when: false
   tags:
-    - git
+    - git_new
 - name: Commit and push the master, production, and develop branch
   shell: |
     git add -A
@@ -81,15 +141,16 @@
   become: no
   when: "'git add' in git_status.stdout"
   tags:
-    - git
+    - git_new
 - name: Place hook
   copy: 
     src: post-update
     dest: "/var/lib/jenkins/app_repo.git/hooks/post-update"
     mode: "a+x"
-  become: no
+  become: yes
+  become_user: git
   tags:
-    - git
+    - git_new
 - name: Get last abbreviated git hash
   shell: |
     git checkout develop &>> /dev/null
@@ -117,4 +178,7 @@
   args:
     chdir: /tmp/app_repo/client
   register: yarn_out
+  become: no
   changed_when: "'Already up-to-date' not in yarn_out.stdout"
+  tags:
+    - git_new

@@ -1,0 +1,11 @@
+<com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey plugin="ssh-credentials@1.17">
+  <scope>GLOBAL</scope>
+  <id>ansible</id>
+  <description></description>
+  <username>git</username>
+  <privateKeySource class="com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey$DirectEntryPrivateKeySource">
+    <privateKey>
+      {{ ansible_pub_key.stdout }}
+    </privateKey>
+  </privateKeySource>
+</com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey>

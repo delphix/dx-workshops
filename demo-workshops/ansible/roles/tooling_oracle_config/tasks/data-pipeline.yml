@@ -4,8 +4,8 @@
     path: /var/lib/jenkins/data-pipeline.git
     state: directory
     mode: "u+rwx,g+rwx"
-    owner: centos
-    group: jenkins
+    owner: git
+    group: git
   become: yes
   register: dp_repo
   tags:
@@ -16,7 +16,8 @@
     git init --bare /var/lib/jenkins/data-pipeline.git
   args:
     creates: /var/lib/jenkins/data-pipeline.git/.git
-  become: no
+  become: yes
+  become_user: git
   when: "dp_repo.changed"
   tags:
     - dp_repo
@@ -24,7 +25,7 @@
 #Get a weird error using the git module for this due to it being an empty repo
 - name: Clone the bare dp_repo
   shell: |
-    git clone /var/lib/jenkins/data-pipeline.git
+    git clone git@localhost:/var/lib/jenkins/data-pipeline.git
   args:
      chdir: /tmp
      creates: /tmp/data-pipeline
