@@ -24,7 +24,7 @@ def amiify() {
 
 def environmentTest(){
   sh """#!/bin/bash
-    CURRENT_UID=\$(id -u):\$(id -g) docker-compose run tcw ready
+      docker-compose run tcw ready
   """
 }
 
