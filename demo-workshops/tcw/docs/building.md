@@ -95,14 +95,14 @@ For those who cannot use Docker
     7. [oracle-instantclient12.2-sqlplus-12.2.0.1.0-1.x86_64.rpm](https://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html)
 4. AWS access keys with permissions to read the s3 bucket from #2
 5. AWS access keys to create and destroy EC2 objects (VPCs, subnets, SGs, ami's, instances, etc)
-6. [Ansible 2.7.9+](https://www.ansible.com/)
-7. [Packer 1.3.5+](https://packer.io)
-8. [Terraform 0.11.X](https://terraform.io) **Not tested with 0.12.X
+6. [Ansible 2.8.2+](https://www.ansible.com/)
+7. [Packer 1.4.2+](https://packer.io)
+8. [Terraform >=0.12.5](https://terraform.io)
 9. [git](https://git-scm.com/downloads)
 10. [jq](https://stedolan.github.io/jq/)
 11. [python 2.7](https://www.python.org)
 12. [netaddr](https://pypi.org/project/netaddr)
-13. [awscli 1.16.149+](https://aws.amazon.com/cli/)
+13. [awscli 1.16.201+](https://aws.amazon.com/cli/)
 
 ### Instructions (Advanced Instructions)
 
