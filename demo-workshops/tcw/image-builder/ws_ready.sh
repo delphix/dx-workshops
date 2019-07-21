@@ -7,7 +7,7 @@ trap "cleanup" SIGINT
 
 {
     cd ${TERRAFORM_BLUEPRINTS}
-    JUMP=$(terraform output delphix-tcw-jumpbox_ip)
+    JUMP=$(terraform output -json delphix-tcw-jumpbox_ip | jq -r '.[]')
     [[ -z $JUMP ]] && exit 1
     until ssh -i ${CERT} -o "StrictHostKeyChecking=no" ubuntu@${JUMP} 'ls ~/Desktop'|egrep "READY|ERROR"
     do

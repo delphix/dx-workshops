@@ -12,7 +12,7 @@ trap "cleanup" SIGINT
   cd ${TERRAFORM_BLUEPRINTS}
   for each in ${SYSTEMS[@]}; do
     if [[ $each == delphix-* ]]; then
-      instance_id=$(terraform output ${each})
+      instance_id=$(terraform output -json ${each} | jq -r '.[]')
       AMI_NAME=${each%_id}-${STAGE}
       echo "${AMI_NAME}:${instance_id}"
       ansible-playbook -i 'localhost,' ${WORKDIR}/${DEMO_PATH}/ansible/ami_maker.yml -e "instance_id=${instance_id}" -e "ami_name=${AMI_NAME}" -e "commit=${GIT_COMMIT}" &

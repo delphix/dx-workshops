@@ -188,7 +188,7 @@ function GET_OLDER_DUPLICATE_AMIS() {
 function SHUTDOWN_VDBS(){
   cd ${TERRAFORM_BLUEPRINTS}
   terraform refresh
-  DE=$(terraform output delphix-tcw-delphixengine_ip)
+  DE=$(terraform output -json delphix-tcw-delphixengine_ip | jq -r '.[]')
   if [[ -n $DE ]] ; then
     sed -e 's|ddp_hostname.*|ddp_hostname = '${DE}'|' \
       -e 's|password.*|password = '${DELPHIX_ADMIN_PASSWORD}'|' \

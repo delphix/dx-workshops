@@ -6,8 +6,7 @@ resource "aws_vpc" "main" {
   tags = "${merge(
     var.default_tags,
     map(
-      "Name", "${var.project}-vpc-${count.index + 1}",
-      "STUDENT","${count.index + 1}"
+      "Name", "${var.project}-vpc}"
       )
   )}"
 }
@@ -25,8 +24,7 @@ resource "aws_internet_gateway" "main" {
   tags = "${merge(
     var.default_tags,
     map(
-      "Name", "${var.project}-ig-${count.index + 1}",
-      "STUDENT","${count.index + 1}"
+      "Name", "${var.project}-ig"
       )
   )}"
 }

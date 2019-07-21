@@ -1,6 +1,6 @@
 def packerBuild() {
   sh (
-    script: """#!/bin/bash
+    """#!/bin/bash
       { set +x; } 2>/dev/null
       docker-compose run tcw build
     """
@@ -8,14 +8,6 @@ def packerBuild() {
 }
 
 def amiify() {
-  // sh """#!/bin/bash
-  //   { set -x; } 2>/dev/null
-  //   source ${WORKSPACE}/${env.IMAGEBUILDER_LIB}
-  //   . /var/lib/jenkins/.packer_templates.env
-  //   instance_id=\$(terraform output ${env.STAGE_NAME}_id)
-  //   AMI_NAME=${env.STAGE_NAME}
-  //   ansible-playbook -i 'localhost,' ${env.WORKSPACE}/demo-workshops/ansible/ami_maker.yml -e "instance_id=\${instance_id}" -e "ami_name=\${AMI_NAME%.json}-staged" -e "commit=${env.GIT_COMMIT}"
-  // """
   sh """#!/bin/bash
     { set -x; } 2>/dev/null
     docker-compose run tcw image staged
@@ -24,7 +16,7 @@ def amiify() {
 
 def environmentTest(){
   sh """#!/bin/bash
-      docker-compose run tcw ready
+    docker-compose run tcw ready
   """
 }
 

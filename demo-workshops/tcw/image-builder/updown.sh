@@ -31,7 +31,7 @@ function WAIT_FOR(){
 
 {
   for each in "${SYSTEMS[@]}"; do
-    SYSTEM_IDS+=($(terraform output ${each}))
+    SYSTEM_IDS+=($(terraform output -json ${each} | jq -r '.[]'))
   done
 
   case ${1} in

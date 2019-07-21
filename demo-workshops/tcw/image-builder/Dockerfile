@@ -11,16 +11,21 @@ ARG DEMO_NAME
 
 WORKDIR /build 
 
-ENV PACKER_VERSION=1.3.5
-ENV PACKER_SHA256SUM=822fe76c2dfe699f187ef8c44537d10453a1545db620e40b345cf6991a690f7d
-ENV ANSIBLE_VERSION=2.8.0
+ENV PACKER_VERSION=1.4.2
+ENV ANSIBLE_VERSION=2.8.2
 ENV ANSIBLE_ROLES_PATH=/.ansible
-ENV TERRAFORM_VERSION=0.11.13
-ENV TERRAFORM_SHA256SUM=6b8ce67647a59b2a3f70199c304abca0ddec0e49fd060944c26f666298e23418
-ENV AWSCLI_VERSION=1.16.149
+ENV TERRAFORM_VERSION=0.12.5
+ENV AWSCLI_VERSION=1.16.201
 ENV BOTO_VER=2.49.0
-ENV BOTOCORE_VER=1.12.118
-ENV BOTO3_VER=1.9.118
+ENV BOTOCORE_VER=1.12.191
+ENV BOTO3_VER=1.9.191
+#DOCUTILS 0.15 breaks awscli
+ENV DOCUTILS_VER=0.14
+ENV FUTURES_VER=3.3.0
+ENV JMESPATH_VER=0.9.4
+ENV RSA_VER=3.4.2
+ENV S3TRANSFER_VER=0.2.1
+ENV URLLIB3_VER=1.25.3
 
 RUN \
     apk add --no-cache \
@@ -60,20 +65,25 @@ RUN curl -SL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terra
     && unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /bin \
     && rm -f terraform_${TERRAFORM_VERSION}_linux_amd64.zip terraform_${TERRAFORM_VERSION}_SHA256SUMS
 
+#ansible, awscli, and the botos
 RUN pip install -U pip \
-    && pip install -U ansible==${ANSIBLE_VERSION} awscli==${AWSCLI_VERSION} boto==${BOTO_VER} botocore==${BOTOCORE_VER} boto3==${BOTO3_VER}
+    && pip install -U ansible==${ANSIBLE_VERSION} awscli==${AWSCLI_VERSION} boto==${BOTO_VER} \
+    botocore==${BOTOCORE_VER} boto3==${BOTO3_VER} docutils==${DOCUTILS_VER} futures==${FUTURES_VER} \
+    jmespath==${JMESPATH_VER} rsa==${RSA_VER} s3transfer==${S3TRANSFER_VER} urllib3==${URLLIB3_VER}
 
+#install the ansible roles
 COPY ${DEMO_PATH}/ansible/all_requirements.yml all_requirements.yml 
 RUN ansible-galaxy install -r all_requirements.yml \
     && rm all_requirements.yml 
 
+#compile the Golang binary used to gracefully shutdown the DDDP VDB's
 COPY ${DEMO_PATH}/scripts/shutdown_dbs shutdown_dbs
-
 RUN cd shutdown_dbs \
     && go get -d -v ./... \
     && env GOOS=linux GOARCH=amd64 go build -o /bin/shutdown_dbs \
     && rm -Rf shutdown_dbs
 
+#place scripts in /bin
 COPY ${DEMO_PATH}/${DEMO_NAME}/image-builder/terraform.sh /bin/terraform.sh
 RUN chmod +x /bin/terraform.sh
 

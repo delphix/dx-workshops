@@ -19,7 +19,7 @@ resource "aws_instance" "guacamole" {
     timeout = "3m"
   }
   # Our Security group to allow HTTP and SSH access
-  vpc_security_group_ids = ["${var.security_group_id}"]
+  vpc_security_group_ids = "${var.security_group_id}"
   subnet_id = "${element(var.subnet_id, count.index)}"
   private_ip = "10.0.${count.index + 1}.${var.last_octet}"
   associate_public_ip_address = true

@@ -2,9 +2,9 @@ data "http" "your_ip" {
   url = "http://ipv4.icanhazip.com"
 
   # Optional request headers
-  request_headers {
-    "Accept" = "application/json"
-  }
+  // request_headers {
+  //   "Accept" = "application/json"
+  // }
 }
 
 locals {
@@ -24,7 +24,7 @@ resource "aws_security_group" "jumpbox" {
       to_port = 8080
       protocol = "tcp"
       #Remove the ', "0.0.0.0/0"' from the list below, to eliminate "Any In"
-      cidr_blocks = ["${concat(local.default_firewall_ingress_cidr_blocks,var.addtl_firewall_ingress_cidr_blocks)}"]
+      cidr_blocks = "${concat(local.default_firewall_ingress_cidr_blocks,var.addtl_firewall_ingress_cidr_blocks)}"
   }
 
   egress {
@@ -38,8 +38,7 @@ resource "aws_security_group" "jumpbox" {
   tags = "${merge(
     var.default_tags,
     map(
-      "Name", "${var.name}",
-      "STUDENT","${count.index + 1}"
+      "Name", "${var.name}"
       )
   )}"
 }
@@ -54,7 +53,7 @@ resource "aws_security_group" "landshark" {
       to_port = 0
       protocol = "-1"
       
-      cidr_blocks = ["10.0.0.0/16","${concat(local.default_firewall_ingress_cidr_blocks,var.addtl_firewall_ingress_cidr_blocks)}"]
+      cidr_blocks = "${concat(["10.0.0.0/16"],local.default_firewall_ingress_cidr_blocks,var.addtl_firewall_ingress_cidr_blocks)}"
   }
 
   egress {
@@ -68,8 +67,7 @@ resource "aws_security_group" "landshark" {
   tags = "${merge(
     var.default_tags,
     map(
-      "Name", "${var.name}",
-      "STUDENT","${count.index + 1}"
+      "Name", "${var.name}"
       )
   )}"
 }
