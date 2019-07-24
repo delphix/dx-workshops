@@ -3,6 +3,7 @@ def packerBuild() {
     """#!/bin/bash
       { set +x; } 2>/dev/null
       docker-compose run tcw build
+      sudo /bin/chownership
     """
   )
 }

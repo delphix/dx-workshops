@@ -1,4 +1,4 @@
-@Library("environment-lib@$BRANCH_NAME") _
+@Library('environment-lib') _
 
 pipeline {
     options {
