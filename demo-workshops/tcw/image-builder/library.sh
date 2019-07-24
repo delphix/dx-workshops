@@ -193,7 +193,7 @@ function SHUTDOWN_VDBS(){
     sed -e 's|ddp_hostname.*|ddp_hostname = '${DE}'|' \
       -e 's|password.*|password = '${DELPHIX_ADMIN_PASSWORD}'|' \
       -e 's|username.*|username = delphix_admin|' \
-      ${WORKDIR}/${DEMO_PATH}/scripts/shutdown_dbs/example_conf.txt > /tmp/shutdown_conf.txt
+      ${GODIR}/shutdown_dbs/example_conf.txt > /tmp/shutdown_conf.txt
     shutdown_dbs -c /tmp/shutdown_conf.txt
   fi
 }
