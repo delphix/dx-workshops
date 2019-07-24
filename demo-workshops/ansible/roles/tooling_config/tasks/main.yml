@@ -139,13 +139,13 @@
   retries: 3
   delay: 2
 
-- name: Get snap_prod_refresh_mm
-  get_url:
-    url: "https://github.com/CloudSurgeon/snap_prod_refresh_mm/releases/download/latest/snap_prod_refresh_mm.linux_x64"
+- name: Copy snap_prod_refresh_mm
+  copy:
+    src: ../../../../go/snap_prod_refresh_mm/bin/linux64/snap_prod_refresh_mm
     dest: /usr/local/bin/snap_prod_refresh_mm
     mode: "a+x"
-  retries: 3
-  delay: 2
+  tags:
+    - test
 
 - name: Does ansible credential already exist?
   shell: |

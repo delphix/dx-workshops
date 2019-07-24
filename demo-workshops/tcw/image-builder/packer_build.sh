@@ -16,7 +16,7 @@ function packer_cleanup() {
 	done
 	wait $(jobs -p)
 	echo "You may need to go in and manually terminate instances and delete security groups and keypairs (search for items with 'packer' in the name)"
-  ERROR
+  	ERROR
 }
 
 rm -f READY.log WAIT.log ERROR.log change.ignore
@@ -51,6 +51,7 @@ function ALL() {
 {
 	ENVCHECK
   CERT_TEST
+  BINARY_BUILD
 	if [[ -z "$1" ]]; then
 		ALL
 	else

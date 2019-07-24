@@ -64,15 +64,13 @@
       src: app_repo_local.tgz
       dest: "/home/{{ ansible_user }}"
       mode: "u+rwx"
-    tags:
-      - test
   - name: Create provision_workshop.sh
     copy:
       src: provision_workshop.sh
       dest: "/home/{{ ansible_user }}/provision_workshop.sh"
       mode: "u+x,g+x"
     tags:
-      - prov
+      - test
   - name: Creates the reboot crontab for provision_workshop.sh 
     cron:
       name: "Run provision_workshop on reboot"
@@ -80,21 +78,31 @@
       job: "{{ ansible_env.HOME }}/provision_workshop.sh"
     become: no
     tags:
-      - prov
-  - name: Create tw_ddp_ready
+      - test
+  - name: Create tw_prep
     copy: 
-      src: tw_ddp_ready
-      dest: "/home/{{ ansible_user }}/tw_ddp_ready"
+      src: ../../../../go/tw_prep/bin/linux64/tw_prep
+      dest: "/home/{{ ansible_user }}/tw_prep"
       mode: "u+x,g+x"
-  - name: Create tw_provision files
+    tags:
+      - test
+  - name: Create tw_provision
+    copy: 
+      src: ../../../../go/tw_provision/bin/linux64/tw_provision
+      dest: "/home/{{ ansible_user }}/tw_provision"
+      mode: "u+x,g+x"
+    tags:
+      - test
+  - name: Copy masking json files
     copy: 
       src: "{{ item }}"
       dest: "/home/{{ ansible_user }}/{{ item }}"
       mode: "u+x,g+x"
     with_items:
-      - tw_provision
       - global_objects.json
       - masking_job.json
+    tags:
+      - test
   - name: Create tw_provision_config.txt
     template: 
       src: tw_provision_config.txt.j2

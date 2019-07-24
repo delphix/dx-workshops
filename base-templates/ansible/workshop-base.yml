@@ -3,3 +3,16 @@
   hosts: all
   roles:
     - { role: delphix.configure-workshop-hosts }
+  vars:
+    lab_systems:
+        - { name: guacamole, last_octet: 5 }
+        - { name: tooling, last_octet: 6 }
+        - { name: delphixengine, last_octet: 10 }
+        - { name: virtualizationengine, last_octet: 10 }
+        - { name: maskingengine, last_octet: 11 }
+        - { name: datical-server, last_octet: 16 }
+        - { name: proddb, last_octet: 20 }
+        - { name: devdb, last_octet: 30 }
+        - { name: devweb, last_octet: 71 }
+        - { name: testweb, last_octet: 73 }
+        - { name: prodweb, last_octet: 72 }

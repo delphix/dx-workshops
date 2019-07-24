@@ -4,7 +4,7 @@
 #
 
 FROM golang:alpine
-MAINTAINER "The Delphix Team"
+LABEL  maintainer="The Delphix Team"
 
 ARG DEMO_PATH
 ARG DEMO_NAME
@@ -77,7 +77,7 @@ RUN ansible-galaxy install -r all_requirements.yml \
     && rm all_requirements.yml 
 
 #compile the Golang binary used to gracefully shutdown the DDDP VDB's
-COPY ${DEMO_PATH}/scripts/shutdown_dbs shutdown_dbs
+COPY ${DEMO_PATH}/go/shutdown_dbs shutdown_dbs
 RUN cd shutdown_dbs \
     && go get -d -v ./... \
     && env GOOS=linux GOARCH=amd64 go build -o /bin/shutdown_dbs \

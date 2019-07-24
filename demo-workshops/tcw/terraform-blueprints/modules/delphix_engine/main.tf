@@ -54,7 +54,7 @@ resource "aws_instance" "delphix_engine" {
   tags = "${merge(
     var.default_tags,
     map(
-      "Name", "${var.project}-DE-${count.index + 1}",
+      "Name", "${var.project}-${var.engine_type}-${count.index + 1}",
       "STUDENT","${count.index + 1}"
       )
   )}"

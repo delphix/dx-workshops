@@ -14,3 +14,7 @@ TODO
 demo-workshops/rds
 local-*.tf
 bin/
+demo-workshops/scripts/tw_prep/conf.txt
+demo-workshops/scripts/tw_provision/conf.txt
+demo-workshops/scripts/tw_provision/masking_job.json
+demo-workshops/scripts/tw_provision/global_objects.json

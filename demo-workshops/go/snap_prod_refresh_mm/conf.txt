@@ -1,0 +1,6 @@
+ddp_hostname = delphixengine
+username = delphix_admin
+password = landshark
+skip-validate = 1
+dsource = "Patients Prod"
+vdb = "Patients Masked Master"

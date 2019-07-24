@@ -27,7 +27,7 @@ function READY {
 
 function STAGED {
 	echo "Running STAGED function"
-	~/tw_ddp_ready -c ~/tw_prep_conf.txt
+	~/tw_prep -c ~/tw_prep_conf.txt
 
 	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
 

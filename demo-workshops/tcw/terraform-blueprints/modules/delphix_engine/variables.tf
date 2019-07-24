@@ -40,3 +40,8 @@ variable "associate_public_ip_address" {
   description = "Associate public IP Address to every instance in the workshop"
   default = "false"
 }
+
+variable "engine_type" {
+  description = "Purely for naming: VE - Virtualization Engine| ME - Masking Engine"
+  default = "VE"
+}

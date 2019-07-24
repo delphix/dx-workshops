@@ -6,20 +6,20 @@ STARTTIME=$(date +%s)
 NOW=$(date +"%m-%d-%Y %T")
 WORKDIR=$(pwd)
 
-export DELPHIX_VERSION="5.3.2.*"
 DEMO_PATH="demo-workshops"
 DEMO_NAME="tcw"
 BASE_TEMPLATES="${WORKDIR}/base-templates"
 DEMO_TEMPLATES="${WORKDIR}/${DEMO_PATH}/${DEMO_NAME}/packer-templates"
 CERT="${WORKDIR}/certs/ansible"
 TERRAFORM_BLUEPRINTS="${WORKDIR}/${DEMO_PATH}/${DEMO_NAME}/terraform-blueprints"
+GODIR="${WORKDIR}/${DEMO_PATH}/go"
 
 
 TEMPLATE_LIST=(delphix-centos7-ansible-base.json delphix-ubuntu-bionic-guacamole.json \
 		delphix-centos7-oracle-12.2.0.1.json delphix-centos7-daf-app.json \
 		delphix-centos7-kitchen_sink.json delphix-tcw-jumpbox.json delphix-tcw-oracle12-source.json \
 		delphix-tcw-oracle12-target.json delphix-centos7-tooling-base.json delphix-tcw-tooling-oracle.json)
-SYSTEMS=(delphix-tcw-delphixengine_id delphix-tcw-jumpbox_id delphix-tcw-oracle12-source_id \
+SYSTEMS=(delphix-tcw-virtualizationengine_id delphix-tcw-maskingengine_id delphix-tcw-jumpbox_id delphix-tcw-oracle12-source_id \
 delphix-tcw-oracle12-target_id delphix-tcw-tooling-oracle_id devweb_id prodweb_id testweb_id)
 
 function cleanup() {
@@ -188,7 +188,7 @@ function GET_OLDER_DUPLICATE_AMIS() {
 function SHUTDOWN_VDBS(){
   cd ${TERRAFORM_BLUEPRINTS}
   terraform refresh
-  DE=$(terraform output -json delphix-tcw-delphixengine_ip | jq -r '.[]')
+  DE=$(terraform output -json delphix-tcw-virtualizationengine_ip | jq -r '.[]')
   if [[ -n $DE ]] ; then
     sed -e 's|ddp_hostname.*|ddp_hostname = '${DE}'|' \
       -e 's|password.*|password = '${DELPHIX_ADMIN_PASSWORD}'|' \
@@ -196,4 +196,12 @@ function SHUTDOWN_VDBS(){
       ${WORKDIR}/${DEMO_PATH}/scripts/shutdown_dbs/example_conf.txt > /tmp/shutdown_conf.txt
     shutdown_dbs -c /tmp/shutdown_conf.txt
   fi
+}
+
+function BINARY_BUILD() {
+  cd $GODIR
+  for each in `ls`; do
+    cd ${GODIR}/${each}
+    env GOOS=linux GOARCH=amd64 go build -o ./bin/linux64/$each
+  done
 }

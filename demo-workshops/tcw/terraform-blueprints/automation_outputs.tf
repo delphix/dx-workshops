@@ -22,12 +22,20 @@ output "delphix-tcw-tooling-oracle_id" {
   value = module.tooling.instance_id
 }
 
-output "delphix-tcw-delphixengine_ip" {
-  value = module.delphix_engine.public_ip
+output "delphix-tcw-virtualizationengine_ip" {
+  value = module.virtualization_engine.public_ip
 }
 
-output "delphix-tcw-delphixengine_id" {
-  value = module.delphix_engine.instance_id
+output "delphix-tcw-virtualizationengine_id" {
+  value = module.virtualization_engine.instance_id
+}
+
+output "delphix-tcw-maskingengine_ip" {
+  value = module.masking_engine.public_ip
+}
+
+output "delphix-tcw-maskingengine_id" {
+  value = module.masking_engine.instance_id
 }
 
 output "delphix-tcw-jumpbox_ip" {
