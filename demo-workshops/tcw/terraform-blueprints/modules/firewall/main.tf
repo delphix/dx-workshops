@@ -37,9 +37,9 @@ resource "aws_security_group" "jumpbox" {
   #Instance tags
   tags = "${merge(
     var.default_tags,
-    map(
-      "Name", "${var.name}"
-      )
+    {
+      "Name" = "${var.name}"
+    }
   )}"
 }
 
@@ -66,9 +66,9 @@ resource "aws_security_group" "landshark" {
   #Instance tags
   tags = "${merge(
     var.default_tags,
-    map(
-      "Name", "${var.name}"
-      )
+    {
+      "Name" = "${var.name}"
+    }
   )}"
 }
 

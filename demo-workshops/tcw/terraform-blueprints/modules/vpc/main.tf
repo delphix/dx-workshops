@@ -5,9 +5,9 @@ resource "aws_vpc" "main" {
   #Instance tags
   tags = "${merge(
     var.default_tags,
-    map(
-      "Name", "${var.project}-vpc}"
-      )
+    {
+      "Name" = "${var.project}-vpc}"
+    }
   )}"
 }
 
@@ -23,9 +23,9 @@ resource "aws_internet_gateway" "main" {
   #Instance tags
   tags = "${merge(
     var.default_tags,
-    map(
-      "Name", "${var.project}-ig"
-      )
+    {
+      "Name" = "${var.project}-ig"
+    }
   )}"
 }
 

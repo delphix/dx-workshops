@@ -16,11 +16,13 @@ GODIR="${WORKDIR}/${DEMO_PATH}/go"
 
 
 TEMPLATE_LIST=(delphix-centos7-ansible-base.json delphix-ubuntu-bionic-guacamole.json \
-		delphix-centos7-oracle-12.2.0.1.json delphix-centos7-daf-app.json \
-		delphix-centos7-kitchen_sink.json delphix-tcw-jumpbox.json delphix-tcw-oracle12-source.json \
-		delphix-tcw-oracle12-target.json delphix-centos7-tooling-base.json delphix-tcw-tooling-oracle.json)
-SYSTEMS=(delphix-tcw-virtualizationengine_id delphix-tcw-maskingengine_id delphix-tcw-jumpbox_id delphix-tcw-oracle12-source_id \
-delphix-tcw-oracle12-target_id delphix-tcw-tooling-oracle_id devweb_id prodweb_id testweb_id)
+	delphix-centos7-oracle-12.2.0.1.json delphix-centos7-daf-app.json \
+	delphix-centos7-kitchen_sink.json delphix-tcw-jumpbox.json delphix-tcw-oracle12-source.json \
+	delphix-tcw-oracle12-target.json delphix-centos7-tooling-base.json delphix-tcw-tooling-oracle.json)
+
+SYSTEMS=(delphix-tcw-virtualizationengine_id delphix-tcw-maskingengine_id delphix-tcw-jumpbox_id \
+  delphix-tcw-oracle12-source_id delphix-tcw-oracle12-target_id delphix-tcw-tooling-oracle_id \
+  devweb_id prodweb_id testweb_id)
 
 function cleanup() {
   ERROR
@@ -96,7 +98,7 @@ function AMI_INFO() {
     for each in "$@"; do
         # query for an existing AMI with the name and md5sum number, and store that information in a file
         cd  $(RETURN_DIRECTORY $each)
-        aws ec2 --region ${AWS_REGION} describe-images --filters "Name=name,Values=${each%.json}-*" "Name=tag:md5sum,Values=$(jq -r '.md5sum' ${each%.json}_md5sum.json)" --query 'sort_by(Images, &CreationDate)[-1]' > /tmp/${each%.json}_info.json
+        aws ec2 --region ${AWS_REGION} describe-images --owner self --filters "Name=name,Values=${each%.json}-*" "Name=tag:md5sum,Values=$(jq -r '.md5sum' ${each%.json}_md5sum.json)" --query 'sort_by(Images, &CreationDate)[-1]' > /tmp/${each%.json}_info.json
     done
     JOB_WAIT
 }
@@ -160,11 +162,11 @@ function GET_CLEANUP_LIST() {
     # query for an existing AMI with the name and md5sum number, and store that information in a file
     cd  $(RETURN_DIRECTORY $each)
     echo "Will deregister the following AMI's for ${each}:"
-    for ami in $(aws ec2 --region ${AWS_REGION} describe-images --filters "Name=name,Values=${each%.json}-*" --query "Images[?Tags[?Key=='md5sum']|[?Value!='$(jq -r '.md5sum' ${each%.json}_md5sum.json)']].ImageId" --output text); do
-      echo "${ami}"
+    for ami in $(aws ec2 --region ${AWS_REGION} describe-images --owner self --filters "Name=name,Values=${each%.json}-unstaged-*" --query "Images[?Tags[?Key=='md5sum']|[?Value!='$(jq -r '.md5sum' ${each%.json}_md5sum.json)']].ImageId" --output text); do
+      echo -e "\t${ami}"
       CLEANUP_LIST+="${ami} "
     done
-    GET_OLDER_DUPLICATE_AMIS $each
+    GET_OLDER_DUPLICATE_AMIS unstaged $each
   done
 }
 
@@ -176,11 +178,33 @@ function CLEANUP_AMIS() {
 }
 
 function GET_OLDER_DUPLICATE_AMIS() {
+  STAGE=${1}
+  shift
+  for each in "$@"; do
+    AMI_NAME=${each%.json}-${STAGE}
+    cd  $(RETURN_DIRECTORY $each)
+    if [[ "${STAGE}" == "unstaged" ]]; then
+      for ami in $(aws ec2 --region ${AWS_REGION} describe-images --owner self --filters "Name=name,Values=${AMI_NAME}-*" "Name=tag:md5sum,Values=$(jq -r '.md5sum' ${each%.json}_md5sum.json)" --query "sort_by(Images, &CreationDate)[0:-1].ImageId" --output text); do
+        echo -e "\t${ami}"
+        CLEANUP_LIST+="${ami} "
+      done
+    else
+      echo "Will deregister the following AMI's for ${AMI_NAME}:" 
+      for ami in $(aws ec2 --region ${AWS_REGION} describe-images --owner self --filters "Name=name,Values=${AMI_NAME}-*" --query "sort_by(Images, &CreationDate)[0:-1].ImageId" --output text); do
+        echo -e "\t${ami}"
+        CLEANUP_LIST+="${ami} "
+      done
+    fi
+  done
+}
+
+function GET_ALL_AMIS() {
   for each in "$@"; do
     cd  $(RETURN_DIRECTORY $each)
-    for each in $(aws ec2 --region ${AWS_REGION} describe-images --filters "Name=name,Values=${each%.json}-*" "Name=tag:md5sum,Values=$(jq -r '.md5sum' ${each%.json}_md5sum.json)" --query "sort_by(Images, &CreationDate)[0:-1].ImageId" --output text); do
-      echo "${each}"
-      CLEANUP_LIST+="${each} "
+    echo "Will deregister the following AMI's for ${each}:"
+    for ami in $(aws ec2 --region ${AWS_REGION} describe-images --owner self --filters "Name=name,Values=${each%.json}-*" --query 'Images[*].ImageId' --output text); do
+      echo -e "\t${ami}"
+      CLEANUP_LIST+="${ami} "
     done
   done
 }

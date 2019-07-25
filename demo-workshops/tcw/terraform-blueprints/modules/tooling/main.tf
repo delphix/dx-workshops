@@ -42,11 +42,13 @@ resource "aws_instance" "tooling" {
 
  #Instance tags
   tags = "${merge(
+    data.aws_ami.tooling_ami.tags,
     var.default_tags,
-    map(
-      "Name", "${var.project}-TOOLING-${count.index + 1}",
-      "STUDENT","${count.index + 1}"
-      )
+    {
+      "Name" = "${var.project}-TOOLING-${count.index + 1}",
+      "STUDENT" = "${count.index + 1}",
+      "source" = "${data.aws_ami.tooling_ami.name}"
+    }
   )}"
 
 }

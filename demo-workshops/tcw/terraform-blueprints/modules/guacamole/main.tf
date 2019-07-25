@@ -29,11 +29,13 @@ resource "aws_instance" "guacamole" {
   }
   #Instance tags
   tags = "${merge(
+    data.aws_ami.guac_ami.tags,
     var.default_tags,
-    map(
-      "Name", "${var.project}-guacamole-${count.index + 1}",
-      "STUDENT","${count.index + 1}"
-      )
+    {
+      "Name" = "${var.project}-guacamole-${count.index + 1}",
+      "STUDENT" = "${count.index + 1}",
+      "source" = "${data.aws_ami.guac_ami.name}"
+    }
   )}"
 }
 

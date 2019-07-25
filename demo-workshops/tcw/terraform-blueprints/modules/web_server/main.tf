@@ -20,11 +20,13 @@ resource "aws_instance" "web_server" {
   private_ip = "10.0.${count.index + 1}.${var.last_octet}"
   #Instance tags
   tags = "${merge(
+    data.aws_ami.delphix-ready-ami.tags,
     var.default_tags,
-    map(
-      "Name", "${var.project}-app-${var.env_name}-${count.index + 1}",
-      "STUDENT","${count.index + 1}"
-      )
+    {
+      "Name" = "${var.project}-app-${var.env_name}-${count.index + 1}",
+      "STUDENT" = "${count.index + 1}",
+      "source" = "${data.aws_ami.delphix-ready-ami.name}"
+    }
   )}"
 }
 

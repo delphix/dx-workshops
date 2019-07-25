@@ -8,10 +8,10 @@ resource "aws_subnet" "aw_sub" {
     #Instance tags
     tags = "${merge(
     var.default_tags,
-    map(
-      "Name", "${var.project}-subnet-${count.index + 1}",
-      "STUDENT","${count.index + 1}"
-      )
+    {
+      "Name" = "${var.project}-subnet-${count.index + 1}",
+      "STUDENT" = "${count.index + 1}"
+    }
   )}"
 }
 

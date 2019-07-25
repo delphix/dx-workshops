@@ -12,15 +12,16 @@ function help() {
 
   Available commands are listed below.
 
+  validate           runs a few checks on the prereqs
   image <name>       Shutdown running instances and create AMI's with name
   build              Build the images from the packer-templates folder
-  cleanup            Cleanup all but the latest AMI's for this workshop
+  cleanup [name]     Cleanup all but the latest AMI's for this workshop stage name <default:unstaged>
   deploy [args]      Builds or changes Terraform-managed infrastructure
   plan [args]        Generate and show a Terrafrom execution plan
   teardown [args]    Destroy Terraform-managed infrastructure
   redeploy [args]    Executes teardown and then deploy
   show               Print the terraform state
-  validate           runs a few checks on the prereqs
+  output [args]      Execute the terraform output command
   env|environment    Print the jumpbox information
   ready              Is the workshop ready?
   start [wait]       Start the stopped EC2 instances in a deployed environment
@@ -66,6 +67,9 @@ teardown)
   ;;
 show)
   exec /bin/terraform.sh show "$@"
+  ;;
+output)
+  exec /bin/terraform.sh output "$@"
   ;;
 env|environment)
   exec /bin/terraform.sh output environment "$@"
