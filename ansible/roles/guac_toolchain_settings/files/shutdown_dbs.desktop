@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false
+Exec=/home/ubuntu/shutdown_dbs -c shutdown_conf.txt
+Name=Shutdown DDDP VDBs
+Comment=Shutdown the VDB's on the DDDP
+Icon=putty
+Terminal=true

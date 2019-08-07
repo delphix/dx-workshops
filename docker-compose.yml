@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: demo-workshops/tcw/image-builder/Dockerfile
       args:
-        DEMO_PATH: demo-workshops
+        WORKSHOP_PATH: demo-workshops
         DEMO_NAME: tcw
     user: ${CURRENT_UID}
     volumes:

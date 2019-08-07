@@ -9,14 +9,24 @@ NOW=$(date +"%m-%d-%Y %T")
 WORKDIR=$(pwd)
 
 {
-  if [[ -z "${1}" || "${1,,}" == "unstaged" ]]; then
-	  GET_CLEANUP_LIST ${TEMPLATE_LIST[@]}
-  elif [[ "${1,,}" == "all" ]]; then
-    echo "WARNING: THIS WILL REMOVE ALL TOOLCHAIN WORKSHOP AMI'S"
-    GET_ALL_AMIS ${TEMPLATE_LIST[@]}
+  if [[ "${1,,}" == "intermediate" || "${1,,}" == "--even-latest" || "${1,,}" == "all" ]]; then
+    echo intermediate
+    if [[ "${1,,}" == "all" ]]; then
+      echo "WARNING: THIS WILL REMOVE ALL TOOLCHAIN WORKSHOP AMI'S"
+      unset SUFFIX
+    fi
+    GET_ALL_AMIS $(GET_SYSTEMS)
   else
-    GET_OLDER_DUPLICATE_AMIS ${1,,} ${TEMPLATE_LIST[@]}
+    SUFFIX=${1:-$SUFFIX}
+    if [[ -n "${2}" || "${2,,}" == "--even-latest" ]]; then
+      echo "suffix with EL"
+      GET_ALL_AMIS $(GET_SYSTEMS)
+    else
+      echo "suffix without EL"
+      GET_CLEANUP_LIST $(GET_SYSTEMS)
+    fi
   fi
+
   [[ -z ${CLEANUP_LIST} ]] && echo "No AMI's to cleanup" && exit 0
 	until [[ "${CLEANUP}" == "y" || "${CLEANUP}" == "n" ]]; do
       read -p "This will delete all the AMI's listed above. Are you sure you want to continue? (n) " CLEANUP

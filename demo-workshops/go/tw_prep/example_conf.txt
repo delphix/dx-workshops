@@ -1,9 +1,0 @@
-ddp_hostname = delphixengine
-username = delphix_admin
-password = Landshark-12
-skip-validate = 1
-dsource = "Patients Prod"
-vdb = "Patients Masked Master"
-vdb = "Patients Dev"
-environment = proddb
-environment = devdb

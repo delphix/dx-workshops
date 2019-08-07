@@ -1,0 +1,54 @@
+ami_suffix: unstaged
+amis:
+- delphix-centos7-ansible-base:
+    packer:
+      batch: 1
+      md5sum: ecc859b55a66660e4bd426d9335dec1a
+      name: delphix-centos7-ansible-base.json
+- delphix-ubuntu-bionic-guacamole:
+    packer:
+      batch: 1
+      md5sum: 53501dca981cde54c8a1d8889b48b5ec
+      name: delphix-ubuntu-bionic-guacamole.json
+- delphix-centos7-oracle-12.2.0.1:
+    packer:
+      batch: 2
+      md5sum: f8893b8bd2ec41883be4928d5dd5f81a
+      name: delphix-centos7-oracle-12.2.0.1.json
+- delphix-tcw-centos7-daf-app:
+    packer:
+      batch: 2
+      md5sum: e4075c97ed2728d7fa2c9de4007399ec
+      name: delphix-tcw-centos7-daf-app.json
+- delphix-tcw-centos7-kitchen_sink:
+    packer:
+      batch: 2
+      md5sum: c0649cab3f4ed2700ed69330de611305
+      name: delphix-tcw-centos7-kitchen_sink.json
+- delphix-tcw-jumpbox:
+    packer:
+      batch: 2
+      md5sum: 095de5ee117579837b165d313d22a1a2
+      name: delphix-tcw-jumpbox.json
+- delphix-tcw-oracle12-source:
+    packer:
+      batch: 3
+      md5sum: d45f08a72d853831e32fbcd507f3b42f
+      name: delphix-tcw-oracle12-source.json
+- delphix-tcw-oracle12-target:
+    packer:
+      batch: 3
+      md5sum: 5d5f0a13af9c32ee99ac2969f6ac66b9
+      name: delphix-tcw-oracle12-target.json
+- delphix-tcw-centos7-tooling-base:
+    packer:
+      batch: 3
+      md5sum: 09816e18429692aa6254bf5b72408bc4
+      name: delphix-tcw-centos7-tooling-base.json
+- delphix-tcw-tooling-oracle:
+    packer:
+      batch: 4
+      md5sum: 588e40a4649e873b4c3b4e68ae5fa781
+      name: delphix-tcw-tooling-oracle.json
+- delphix-tcw-virtualizationengine: {}
+- delphix-tcw-maskingengine: {}

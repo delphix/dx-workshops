@@ -15,7 +15,11 @@ function help() {
   validate           runs a few checks on the prereqs
   image <name>       Shutdown running instances and create AMI's with name
   build              Build the images from the packer-templates folder
-  cleanup [name]     Cleanup all but the latest AMI's for this workshop stage name <default:unstaged>
+  cleanup [<name>]   Delete AMI's for this workshop stage name, keeping the most recent
+    --even-latest    Don't keep the most recent
+                     <default> Remove all ${SUFFIX} AMI's
+                     all: Removes all ami's, implies --even-latest
+                     intermediate: Remove all ${SUFFIX} AMI's, implies --even-latest
   deploy [args]      Builds or changes Terraform-managed infrastructure
   plan [args]        Generate and show a Terrafrom execution plan
   teardown [args]    Destroy Terraform-managed infrastructure

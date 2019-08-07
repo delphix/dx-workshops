@@ -3,14 +3,15 @@
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
 
-FROM golang:alpine
+FROM golang:1.12-alpine
 LABEL  maintainer="The Delphix Team"
 
-ARG DEMO_PATH
+ARG WORKSHOP_PATH
 ARG DEMO_NAME
 
 WORKDIR /build 
 
+ENV DEMO_PATH=${WORKSHOP_PATH}/${DEMO_NAME}
 ENV PACKER_VERSION=1.4.2
 ENV ANSIBLE_VERSION=2.8.2
 ENV ANSIBLE_ROLES_PATH=/.ansible
@@ -35,6 +36,7 @@ RUN \
     git \
     jq \
     libc-dev \
+    make \
     openssh-client \
     python \
     python-dev \
@@ -72,43 +74,46 @@ RUN pip install -U pip \
     jmespath==${JMESPATH_VER} rsa==${RSA_VER} s3transfer==${S3TRANSFER_VER} urllib3==${URLLIB3_VER}
 
 #install the ansible roles
-COPY ${DEMO_PATH}/ansible/all_requirements.yml all_requirements.yml 
+COPY ${WORKDIR}/ansible/all_requirements.yml all_requirements.yml 
 RUN ansible-galaxy install -r all_requirements.yml \
     && rm all_requirements.yml 
 
 #compile the Golang binary used to gracefully shutdown the DDDP VDB's
-COPY ${DEMO_PATH}/go/shutdown_dbs shutdown_dbs
+COPY ${WORKDIR}/go/shutdown_dbs shutdown_dbs
 RUN cd shutdown_dbs \
     && go get -d -v ./... \
     && env GOOS=linux GOARCH=amd64 go build -o /bin/shutdown_dbs \
     && rm -Rf shutdown_dbs
 
 #place scripts in /bin
-COPY ${DEMO_PATH}/${DEMO_NAME}/image-builder/terraform.sh /bin/terraform.sh
+COPY ${DEMO_PATH}/image-builder/terraform.sh /bin/terraform.sh
 RUN chmod +x /bin/terraform.sh
 
-COPY ${DEMO_PATH}/${DEMO_NAME}/image-builder/startup.sh /bin/startup.sh
+COPY ${DEMO_PATH}/image-builder/startup.sh /bin/startup.sh
 RUN chmod +x /bin/startup.sh
 
-COPY ${DEMO_PATH}/${DEMO_NAME}/image-builder/library.sh /bin/library.sh
+COPY ${DEMO_PATH}/image-builder/library.sh /bin/library.sh
 RUN chmod +x /bin/library.sh
 
-COPY ${DEMO_PATH}/${DEMO_NAME}/image-builder/packer_build.sh /bin/packer_build.sh
+COPY ${DEMO_PATH}/image-builder/packer_build.sh /bin/packer_build.sh
 RUN chmod +x /bin/packer_build.sh
 
-COPY ${DEMO_PATH}/${DEMO_NAME}/image-builder/cleanup.sh /bin/cleanup.sh
+COPY ${DEMO_PATH}/image-builder/cleanup.sh /bin/cleanup.sh
 RUN chmod +x /bin/cleanup.sh
 
-COPY ${DEMO_PATH}/${DEMO_NAME}/image-builder/validate.sh /bin/validate.sh
+COPY ${DEMO_PATH}/image-builder/validate.sh /bin/validate.sh
 RUN chmod +x /bin/validate.sh
 
-COPY ${DEMO_PATH}/${DEMO_NAME}/image-builder/updown.sh /bin/updown.sh
+COPY ${DEMO_PATH}/image-builder/updown.sh /bin/updown.sh
 RUN chmod +x /bin/updown.sh
 
-COPY ${DEMO_PATH}/${DEMO_NAME}/image-builder/image.sh /bin/image.sh
+COPY ${DEMO_PATH}/image-builder/image.sh /bin/image.sh
 RUN chmod +x /bin/image.sh
 
-COPY ${DEMO_PATH}/${DEMO_NAME}/image-builder/ws_ready.sh /bin/ws_ready.sh
+COPY ${DEMO_PATH}/image-builder/ws_ready.sh /bin/ws_ready.sh
 RUN chmod +x /bin/ws_ready.sh
+
+RUN curl -SL https://github.com/mikefarah/yq/releases/download/2.4.0/yq_linux_amd64 --output /bin/yq \
+    && chmod +x /bin/yq
 
 ENTRYPOINT ["/bin/startup.sh"]

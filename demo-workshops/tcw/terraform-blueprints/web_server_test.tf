@@ -6,7 +6,7 @@ module "test_web_server" {
   subnet_id                   = module.aws_subnet.id
   security_group_id           = [module.aws_security_group.id]
   default_tags                = local.default_tags
-  ami_name                    = "delphix-centos7-daf-app-${var.staged == "false" ? "unstaged" : var.stage_name}-*"
+  ami_name                    = "delphix-tcw-centos7-daf-app-${var.staged == "false" ? "unstaged" : var.stage_name}-*"
   last_octet                  = "73"
   env_name                    = "nonprod"
   associate_public_ip_address = var.associate_public_ip_address

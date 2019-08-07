@@ -27,18 +27,20 @@ function WAIT_FOR(){
   done
   echo "All instances ${STATE}"
   STATUS
+  [[ "${1}" == "start" ]] && terraform refresh
 }
 
 {
-  for each in "${SYSTEMS[@]}"; do
-    SYSTEM_IDS+=($(terraform output -json ${each} | jq -r '.[]'))
+  for each in $(terraform output  | grep _system | awk '{print $1}') ; do
+    instance_id=$(terraform output -json ${each} | jq -r '.[]')
+    echo "${each}:${instance_id}"
+    SYSTEM_IDS+=( ${instance_id} )
   done
 
   case ${1} in
   start)
     echo "Starting stopped instances"
     aws ec2 --region ${AWS_REGION} start-instances --instance-ids ${SYSTEM_IDS[@]}
-    terraform refresh
     ;;
   stop)
     echo "Stopping running instances"

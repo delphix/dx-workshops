@@ -6,27 +6,23 @@ STARTTIME=$(date +%s)
 NOW=$(date +"%m-%d-%Y %T")
 WORKDIR=$(pwd)
 
-DEMO_PATH="demo-workshops"
+WORKSHOP_PATH="demo-workshops"
 DEMO_NAME="tcw"
-BASE_TEMPLATES="${WORKDIR}/base-templates"
-DEMO_TEMPLATES="${WORKDIR}/${DEMO_PATH}/${DEMO_NAME}/packer-templates"
+DEMO_PATH="${WORKDIR}/${WORKSHOP_PATH}/${DEMO_NAME}"
+PACKER_TEMPLATES="${WORKDIR}/packer-templates"
 CERT="${WORKDIR}/certs/ansible"
-TERRAFORM_BLUEPRINTS="${WORKDIR}/${DEMO_PATH}/${DEMO_NAME}/terraform-blueprints"
-GODIR="${WORKDIR}/${DEMO_PATH}/go"
-
-
-TEMPLATE_LIST=(delphix-centos7-ansible-base.json delphix-ubuntu-bionic-guacamole.json \
-	delphix-centos7-oracle-12.2.0.1.json delphix-centos7-daf-app.json \
-	delphix-centos7-kitchen_sink.json delphix-tcw-jumpbox.json delphix-tcw-oracle12-source.json \
-	delphix-tcw-oracle12-target.json delphix-centos7-tooling-base.json delphix-tcw-tooling-oracle.json)
-
-SYSTEMS=(delphix-tcw-virtualizationengine_id delphix-tcw-maskingengine_id delphix-tcw-jumpbox_id \
-  delphix-tcw-oracle12-source_id delphix-tcw-oracle12-target_id delphix-tcw-tooling-oracle_id \
-  devweb_id prodweb_id testweb_id)
+TERRAFORM_BLUEPRINTS="${DEMO_PATH}/terraform-blueprints"
+GODIR="${WORKDIR}/go"
 
 function cleanup() {
   ERROR
 }
+
+function GET_DEFAULT_AMI_SUFFIX {
+  yq r ${DEMO_PATH}/workshop.yaml ami_suffix
+}
+
+SUFFIX=$(GET_DEFAULT_AMI_SUFFIX)
 
 function ENVCHECK() {
 	[[ -z "${S3_AWS_ACCESS_KEY_ID}" ]] && export S3_AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
@@ -97,15 +93,14 @@ function CERT_TEST() {
 function AMI_INFO() {
     for each in "$@"; do
         # query for an existing AMI with the name and md5sum number, and store that information in a file
-        cd  $(RETURN_DIRECTORY $each)
-        aws ec2 --region ${AWS_REGION} describe-images --owner self --filters "Name=name,Values=${each%.json}-*" "Name=tag:md5sum,Values=$(jq -r '.md5sum' ${each%.json}_md5sum.json)" --query 'sort_by(Images, &CreationDate)[-1]' > /tmp/${each%.json}_info.json
+        aws ec2 --region ${AWS_REGION} describe-images --owner self --filters "Name=name,Values=${each}-*" "Name=tag:md5sum,Values=$(GET_MD5SUM ${each})" --query 'sort_by(Images, &CreationDate)[-1]' > /tmp/${each}_info.json
     done
     JOB_WAIT
 }
 
 function AMI_EXISTS() {
 	# if a an ImageId is present, then the ami exists
-    AMI=$(jq -r '.ImageId' /tmp/${1%.json}_info.json)
+    AMI=$(jq -r '.ImageId' /tmp/${1}_info.json)
 	[[ -n $AMI && $AMI != 'null' ]] 
 }
 
@@ -121,12 +116,11 @@ function AMI_OLDER_THAN_SOURCE() {
 }
 
 function NEED_TO_BUILD_AMI() {
-  cd  $(RETURN_DIRECTORY $1)
   if AMI_EXISTS $1; then
       # If an AMI with a valid name and md5sum exists
       if AMI_OLDER_THAN_SOURCE $1; then
           # Check to see if it is older than it's source AMI. If so, build it
-          echo ${1%.json} exists, but is older than source. Rebuilding.
+          echo ${1} exists, but is older than source. Rebuilding.
           true
       else
           echo Skipping ${1}: a valid ami exists
@@ -134,22 +128,25 @@ function NEED_TO_BUILD_AMI() {
       fi
   else
       # Otherwise, build it
-      echo Building ${1%.json}
+      echo Building ${1}
       true
   fi
 }
 
 function PACKER_BUILD() {
-    AMI_INFO "$@"
-    for each in "$@"; do
+    SYSTEMS=$(GET_BATCH_SYSTEMS ${1})
+    AMI_INFO ${SYSTEMS}
+    for each in ${SYSTEMS}; do
       if NEED_TO_BUILD_AMI $each; then
         #drop this little file to alert our build server know a new ami was built
         touch ${WORKDIR}/change.ignore
-        packer build -var-file ${each%.json}_md5sum.json $each &
+        cd $PACKER_TEMPLATES
+        packer build -var "md5sum=$(GET_MD5SUM $each)" -var "ami_name_prefix=$(RETURN_AMI_NAMES ${each})" $(GET_SYSTEM_PACKER_TEMPLATE ${each}) &
+        cd - &>>/dev/null
       fi
     done
     JOB_WAIT
-    AMI_INFO "$@"
+    AMI_INFO SYSTEMS
 }
 
 function RETURN_DIRECTORY() {
@@ -158,53 +155,47 @@ function RETURN_DIRECTORY() {
 }
 
 function GET_CLEANUP_LIST() {
-  for each in "$@"; do
+  local LIST
+  local FILTER
+  for SYSTEM in "$@"; do
+    unset LIST
+    local AMI_NAME=$(RETURN_AMI_NAMES ${SYSTEM})
+    local AMI_LIST=$(aws ec2 --region ${AWS_REGION} describe-images --owner self --filters "Name=name,Values=${AMI_NAME}-*" )
     # query for an existing AMI with the name and md5sum number, and store that information in a file
-    cd  $(RETURN_DIRECTORY $each)
-    echo "Will deregister the following AMI's for ${each}:"
-    for ami in $(aws ec2 --region ${AWS_REGION} describe-images --owner self --filters "Name=name,Values=${each%.json}-unstaged-*" --query "Images[?Tags[?Key=='md5sum']|[?Value!='$(jq -r '.md5sum' ${each%.json}_md5sum.json)']].ImageId" --output text); do
-      echo -e "\t${ami}"
-      CLEANUP_LIST+="${ami} "
-    done
-    GET_OLDER_DUPLICATE_AMIS unstaged $each
+    echo "Will deregister the following AMI's for ${AMI_NAME}-*:"
+    if [[ "$(yq r ${DEMO_PATH}/workshop.yaml ami_suffix)" == "${SUFFIX}" ]]; then
+      FILTER=".Images[]|select((.Tags[]|select(.Key==\"md5sum\")|.Value) !=\"$(GET_MD5SUM ${SYSTEM})\" )|.ImageId" 
+      for each in $( echo "${AMI_LIST}"| jq -r "${FILTER}" ); do
+        LIST+=( ${each} )
+        CLEANUP_LIST+=( ${each} )
+      done
+      FILTER="[.Images|sort_by(.CreationDate)|.[]|select((.Tags[]|select(.Key==\"md5sum\")|.Value) ==\"$(GET_MD5SUM ${SYSTEM})\")| .ImageId][0:-1]|.[]"
+    else
+      FILTER="[.Images|sort_by(.CreationDate)|.[]| .ImageId][0:-1]|.[]"
+    fi
+    for each in $(echo ${AMI_LIST}| jq -r "${FILTER}"); do
+      LIST+=( ${each} )
+      CLEANUP_LIST+=( ${each} )
+    done 
+    printf "%s\n" "${LIST[@]}" | sort -u
   done
 }
 
 function CLEANUP_AMIS() {
-  for each in "$@"; do
+  for each in $(printf "%s\n" "${CLEANUP_LIST[@]}" | sort -u); do
     echo "Deregistering ${each}"
     aws ec2 --region ${AWS_REGION} deregister-image --image-id ${each}
   done
 }
 
-function GET_OLDER_DUPLICATE_AMIS() {
-  STAGE=${1}
-  shift
-  for each in "$@"; do
-    AMI_NAME=${each%.json}-${STAGE}
-    cd  $(RETURN_DIRECTORY $each)
-    if [[ "${STAGE}" == "unstaged" ]]; then
-      for ami in $(aws ec2 --region ${AWS_REGION} describe-images --owner self --filters "Name=name,Values=${AMI_NAME}-*" "Name=tag:md5sum,Values=$(jq -r '.md5sum' ${each%.json}_md5sum.json)" --query "sort_by(Images, &CreationDate)[0:-1].ImageId" --output text); do
-        echo -e "\t${ami}"
-        CLEANUP_LIST+="${ami} "
-      done
-    else
-      echo "Will deregister the following AMI's for ${AMI_NAME}:" 
-      for ami in $(aws ec2 --region ${AWS_REGION} describe-images --owner self --filters "Name=name,Values=${AMI_NAME}-*" --query "sort_by(Images, &CreationDate)[0:-1].ImageId" --output text); do
-        echo -e "\t${ami}"
-        CLEANUP_LIST+="${ami} "
-      done
-    fi
-  done
-}
-
+#Grab all AMI's that match the name prefix
 function GET_ALL_AMIS() {
   for each in "$@"; do
-    cd  $(RETURN_DIRECTORY $each)
-    echo "Will deregister the following AMI's for ${each}:"
-    for ami in $(aws ec2 --region ${AWS_REGION} describe-images --owner self --filters "Name=name,Values=${each%.json}-*" --query 'Images[*].ImageId' --output text); do
+    AMI_NAME=$(RETURN_AMI_NAMES ${each})
+    echo "Will deregister the following AMI's for ${AMI_NAME}:"
+    for ami in $(aws ec2 --region ${AWS_REGION} describe-images --owner self --filters "Name=name,Values=${AMI_NAME}-*" --query 'Images[*].ImageId' --output text); do
       echo -e "\t${ami}"
-      CLEANUP_LIST+="${ami} "
+      CLEANUP_LIST+=( ${ami} )
     done
   done
 }
@@ -226,6 +217,53 @@ function BINARY_BUILD() {
   cd $GODIR
   for each in `ls`; do
     cd ${GODIR}/${each}
-    env GOOS=linux GOARCH=amd64 go build -o ./bin/linux64/$each
+    make build
   done
+}
+
+function GET_BATCHES() {
+  yq r ${DEMO_PATH}/workshop.yaml --tojson | jq -r  '[.amis[]| select(.[]?.packer.name != null) | .[].packer.batch]|unique|.[]'
+}
+
+function GET_BATCH_SYSTEMS() {
+  [[ -z ${1} ]] && echo "GET_BATCH_SYSTEMS requires a batch number" && ERROR
+  FILTER=".amis[]| select(.[]?.packer.batch == ${1}) | to_entries[].key"
+  yq r ${DEMO_PATH}/workshop.yaml --tojson | jq -r  "${FILTER}"
+}
+
+function GET_SYSTEM_PACKER_TEMPLATE() {
+  [[ -z ${1} ]] && echo "GET_SYSTEM_PACKER_TEMPLATE requires a system name" && ERROR
+  yq r ${DEMO_PATH}/workshop.yaml --tojson | jq -r  ".amis[]|select(.[]?.packer.name != null)|to_entries[]|select(.key == \"${1}\")|.value.packer.name"
+}
+
+function RETURN_TEMPLATES_FROM_BATCH() {
+  unset TEMPLATE_LIST
+  [[ -z ${1} ]] && echo RETURN_TEMPLATES_FROM_BATCH requires the BATCH number && ERROR
+  for SYSTEM in `GET_BATCH_SYSTEMS ${1}`; do
+    TEMPLATE_LIST="${TEMPLATE_LIST} $(GET_SYSTEM_PACKER_TEMPLATE ${SYSTEM})"
+  done
+  echo ${TEMPLATE_LIST}
+}
+
+function GET_SYSTEMS() {
+  FILTER=".amis[] | to_entries[].key"
+  yq r ${DEMO_PATH}/workshop.yaml --tojson | jq -r "${FILTER}"
+}
+
+function GET_MD5SUM() {
+  [[ -z ${1} ]] && echo GET_MD5SUM requires the SYSTEM && ERROR 
+  FILTER=".amis[]|select(.[]?.packer.name != null)|to_entries[]|select(.key == \"${1}\")|.value.packer.md5sum"
+  yq r ${DEMO_PATH}/workshop.yaml --tojson | jq -r  "${FILTER}"
+}
+
+function RETURN_AMI_NAMES {
+  local AMIS
+  if [[ -n ${SUFFIX} ]]; then
+    for SYSTEM in "${@}"; do
+      AMIS+=( ${SYSTEM}-${SUFFIX} )
+    done
+  else
+    AMIS="${@}"
+  fi
+  echo $AMIS
 }
