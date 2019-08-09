@@ -27,6 +27,11 @@
       mode: "u+x,g+x"
     tags:
       - chrome
+  - name: Create Caffeine shortcut
+    copy:
+      src: "Caffeine.desktop"
+      dest: "/home/{{ ansible_user }}/Desktop/Caffeine.desktop"
+      mode: "u+x,g+x"
   - name: Create Putty shortcut
     copy: 
       src: putty.desktop
