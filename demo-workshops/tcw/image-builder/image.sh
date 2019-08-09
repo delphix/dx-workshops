@@ -8,7 +8,7 @@ trap "cleanup" SIGINT
 { 
   [[ -z "$1" ]] && echo "Must provide a stage name to append to AMI. i.e. staged" && exit 1
   STAGE=${1}
-  #SHUTDOWN_VDBS
+  SHUTDOWN_VDBS
   TIMESTAMP=$(date --utc +%FT%T | sed 's|[-:]||g')
   cd ${TERRAFORM_BLUEPRINTS}
   for each in $(terraform output  | grep _image | awk '{print $1}') ; do
