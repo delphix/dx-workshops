@@ -25,14 +25,10 @@ function READY {
 	touch ~/STAGED
 }
 
-function UPDOWN {
-	~/tw_prep -c ~/tw_prep_conf.txt
-	
-	ssh -t centos@prodweb sudo systemctl start httpd &
-	ssh -t centos@testweb sudo systemctl start httpd &
-	ssh -t centos@devweb sudo systemctl start httpd &
-
-	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
+function DEPLOY_APP {
+	ssh -t centos@tooling ansible-playbook /tmp/prod/ansible/deploy.yaml -e git_branch=origin/production -e git_commit=x -e sdlc_env=PROD --limit prodweb &
+	ssh -t centos@tooling ansible-playbook /tmp/test/ansible/deploy.yaml -e git_branch=origin/master -e git_commit=x -e sdlc_env=QA --limit testweb &
+	ssh -t centos@tooling ansible-playbook /tmp/dev/ansible/deploy.yaml -e git_branch=origin/develop -e git_commit=x -e sdlc_env=DEV --limit devweb &
 
 	for job in `jobs -p`
 	do
@@ -41,6 +37,12 @@ function UPDOWN {
 	done
 
 	[[ -n "${FAIL}" ]] && ERROR
+}
+
+function UPDOWN {
+	~/tw_prep -c ~/tw_prep_conf.txt
+	
+	DEPLOY_APP
 }
 
 function STAGED {
@@ -53,21 +55,7 @@ function STAGED {
 	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
 
 	ssh -t centos@tooling snap_prod_refresh_mm --config snap_conf.txt &
-
-	ssh -t centos@tooling ansible-playbook /tmp/prod/ansible/deploy.yaml -e git_branch=origin/production -e git_commit=x -e sdlc_env=PROD --limit prodweb
-	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
-	ssh -t centos@tooling ansible-playbook /tmp/test/ansible/deploy.yaml -e git_branch=origin/master -e git_commit=x -e sdlc_env=QA --limit testweb
-	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
-	ssh -t centos@tooling ansible-playbook /tmp/dev/ansible/deploy.yaml -e git_branch=origin/develop -e git_commit=x -e sdlc_env=DEV --limit devweb
-	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
-
-	for job in `jobs -p`
-	do
-	echo $job
-	wait $job || let "FAIL+=1"
-	done
-
-	[[ -n "${FAIL}" ]] && ERROR
+	DEPLOY_APP
 
 	mv ~/STAGED ~/UPDOWN
 }
