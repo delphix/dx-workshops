@@ -4,7 +4,7 @@
   become: true
 
   vars:
-    guacamole_version: {{ lookup('env','GUACAMOLE_VERSION') }}
+    guacamole_version: "{{ lookup('env','GUACAMOLE_VERSION') }}"
     guacamole_db_user: guacamole
     guacamole_db_password: "{{ lookup('env','GUACAMOLE_DB_PASSWORD') }}"
     guacamole_db_name: guacamole
