@@ -5,8 +5,6 @@
 source $(dirname "${BASH_SOURCE[0]}")/library.sh
 trap "packer_cleanup" SIGINT
 
-GUACAMOLE_VERSION="1.0.0"
-
 : "${VNC_CLIENT_OPTIONS:=-geometry 1280x720 -localhost yes}"
 export VNC_CLIENT_OPTIONS
 

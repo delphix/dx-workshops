@@ -13,6 +13,7 @@ PACKER_TEMPLATES="${WORKDIR}/packer-templates"
 CERT="${WORKDIR}/certs/ansible"
 TERRAFORM_BLUEPRINTS="${DEMO_PATH}/terraform-blueprints"
 GODIR="${WORKDIR}/go"
+export GUACAMOLE_VERSION="1.0.0"
 
 function cleanup() {
   ERROR
