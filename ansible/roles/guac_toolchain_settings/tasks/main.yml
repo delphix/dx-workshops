@@ -207,3 +207,11 @@
       mode: "u+x,g+x"
     tags:
       - shutdown_dbs
+  - name: Add Delphix Guacamole customizations
+    copy:
+      src: delphix_customization.jar
+      dest: "/etc/guacamole/extensions/delphix_customization.jar"
+      mode: "u+x,g+x"
+    become: yes
+    tags:
+      - guac-custom
