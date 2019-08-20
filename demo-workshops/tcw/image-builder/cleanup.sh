@@ -19,10 +19,8 @@ WORKDIR=$(pwd)
   else
     SUFFIX=${1:-$SUFFIX}
     if [[ -n "${2}" || "${2,,}" == "--even-latest" ]]; then
-      echo "suffix with EL"
       GET_ALL_AMIS $(GET_SYSTEMS)
     else
-      echo "suffix without EL"
       GET_CLEANUP_LIST $(GET_SYSTEMS)
     fi
   fi

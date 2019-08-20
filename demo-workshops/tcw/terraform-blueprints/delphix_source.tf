@@ -9,12 +9,12 @@ module "delphix_source" {
   default_tags                = local.default_tags
   env_name                    = "SOURCE"
   last_octet                  = "20"
-  associate_public_ip_address = var.associate_public_ip_address
+  associate_public_ip_address = var.dev_mode
 }
 
 output "OracleSource" {
   value = formatlist(
-    "\nOracle Source - Public IP: %s Private IP: %s\n",
+    "Oracle Source - Public IP: %s Private IP: %s",
     module.delphix_source.public_ip,
     module.delphix_source.private_ip,
   )

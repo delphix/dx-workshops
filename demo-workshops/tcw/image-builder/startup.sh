@@ -2,53 +2,9 @@
 #
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
-set -e
-WORKDIR=$(pwd)
+source $(dirname "${BASH_SOURCE[0]}")/library.sh
 ARG=${1}
 shift
-
-function help() {
-  echo """Usage: docker-compose run tcw <command> [args]
-
-  Available commands are listed below.
-
-  validate           runs a few checks on the prereqs
-  image <name>       Shutdown running instances and create AMI's with name
-  build              Build the images from the packer-templates folder
-  cleanup [<name>]   Delete AMI's for this workshop stage name, keeping the most recent
-    --even-latest    Don't keep the most recent
-                     <default> Remove all ${SUFFIX} AMI's
-                     all: Removes all ami's, implies --even-latest
-                     intermediate: Remove all ${SUFFIX} AMI's, implies --even-latest
-  deploy [args]      Builds or changes Terraform-managed infrastructure
-  plan [args]        Generate and show a Terrafrom execution plan
-  teardown [args]    Destroy Terraform-managed infrastructure
-  redeploy [args]    Executes teardown and then deploy
-  show               Print the terraform state
-  output [args]      Execute the terraform output command
-  env|environment    Print the jumpbox information
-  ready              Is the workshop ready?
-  start [wait]       Start the stopped EC2 instances in a deployed environment
-                     (specifying wait will wait)
-  stop [wait]        Stop the running EC2 instances in a deployed environment
-                     (specifying wait will wait)
-  fw|firewall        Execute terraform apply against the firewall modules only (for firewall rule updates)
-  
-  ex.
-    docker-compose run tcw validate
-    docker-compose run tcw build
-    docker-compose run tcw deploy
-    docker-compose run tcw deploy --auto-approve
-    docker-compose run tcw deploy -var \"staged=true\" -var \"stage_name=staged\"
-    docker-compose run tcw env
-    docker-compose run tcw stop wait
-    docker-compose run tcw image staged
-    docker-compose run tcw fw
-    docker-compose ready
-  """
-
-
-}
 
 case ${ARG} in
 validate)
@@ -96,7 +52,7 @@ image)
 ready)
   exec /bin/ws_ready.sh
   ;;
-*)
+""|*)
   help
   ;;
 esac

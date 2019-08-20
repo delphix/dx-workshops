@@ -9,12 +9,12 @@ module "delphix_target" {
   default_tags                = local.default_tags
   env_name                    = "TARGET"
   last_octet                  = "30"
-  associate_public_ip_address = var.associate_public_ip_address
+  associate_public_ip_address = var.dev_mode
 }
 
 output "OracleTarget" {
   value = formatlist(
-    "\nOracle Target - Public IP: %s Private IP: %s\n",
+    "Oracle Target - Public IP: %s Private IP: %s",
     module.delphix_target.public_ip,
     module.delphix_target.private_ip,
   )

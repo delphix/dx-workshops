@@ -9,7 +9,7 @@ module "test_web_server" {
   ami_name                    = "delphix-tcw-centos7-daf-app-${var.staged == "false" ? "unstaged" : var.stage_name}-*"
   last_octet                  = "73"
   env_name                    = "nonprod"
-  associate_public_ip_address = var.associate_public_ip_address
+  associate_public_ip_address = var.dev_mode
 }
 
 output "testweb_public_ip" {
@@ -22,7 +22,7 @@ output "testweb_private_ip" {
 
 output "TestWebServer" {
   value = formatlist(
-    "\nTest Web Server - Public IP: %s Private IP: %s\n",
+    "Test Web Server - Public IP: %s Private IP: %s",
     module.test_web_server.public_ip,
     module.test_web_server.private_ip,
   )

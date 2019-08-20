@@ -1,6 +1,7 @@
-# Various Pack Templates for images ready for use with the Delphix Dynamic Data Platform <!-- omit in toc -->
+# Various Delphix Dynamic Data Platform Workshops and associated automation artifacts like Packer templates, Terraform blueprints, Golang, etc <!-- omit in toc -->
 
 - [Description](#description)
+- [Go Examples](#go-examples)
 - [Workshops](#workshops)
   - [Toolchain Workshop](#toolchain-workshop)
 - [Base Templates](#base-templates)
@@ -17,13 +18,13 @@
 
 ## Description
 
-This repo consists of some standard OS + Database templates configured ready to use with Delphix (located in the base-templates folder):
+This repo consists of some standard OS + Database templates configured ready to use with Delphix (located in the packer-templates folder):
 
 - delphix-centos6.9-oracle11.2.0.4.json
 - delphix-centos7-ansible-base.json
 - delphix-centos7-oracle-11.2.0.4.json
 - delphix-centos7-oracle-12.2.0.1.json
-- delphix-centos7-postrges-9.6.json
+- delphix-centos7-postgres-9.6.json
 - delphix-ubuntu-bionic-guacamole.json
 
 There are also some bespoke Packer templates used for specific scenarios:
@@ -38,6 +39,10 @@ There are also some bespoke Packer templates used for specific scenarios:
 - delphix-toolchain-dafdb-pgsql-source.json
 
 The Oracle templates requires access to the Oracle binaries placed in an AWS s3 bucket.
+
+## Go Examples
+
+The go directory contains examples of interacting with the Delphix Dynamic Data Platform using golang. The examples in that directory are purpose-built to be used in the workshops contained within this repo.
 
 ## Workshops
 
@@ -56,7 +61,7 @@ After cloning this repo, install the required Ansible dependencies.
 
 ```bash
 brew install ansible packer git
-git clone https://github.com/delphix/packer-templates
+git clone https://github.com/delphix/dx-workshops
 cd base-templates
 cp .example.env .example.env
 ansible-galaxy install -r roles/X_requirements.yml

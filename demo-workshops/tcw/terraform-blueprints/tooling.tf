@@ -12,7 +12,7 @@ module "tooling" {
 
 output "TOOLING" {
   value = formatlist(
-    "\nTooling - Public IP: %s Private IP: %s\n",
+    "Tooling - Public IP: %s Private IP: %s",
     module.tooling.public_ip,
     module.tooling.private_ip,
   )

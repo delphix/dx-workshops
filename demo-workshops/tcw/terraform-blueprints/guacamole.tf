@@ -12,7 +12,7 @@ module "guacamole" {
 
 output "GUACAMOLE" {
   value = formatlist(
-    "\nJumpbox - Public IP: %s Private IP: %s\n    Access via http://%s:8080/labs\n    Username: delphix",
+    "Jumpbox - Public IP: %s Private IP: %s    Access via http://%s:8080/labs    Username: delphix",
     module.guacamole.public_ip,
     module.guacamole.private_ip,
     module.guacamole.public_ip,

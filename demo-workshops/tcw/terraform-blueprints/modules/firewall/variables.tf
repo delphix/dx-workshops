@@ -23,3 +23,8 @@ variable "addtl_firewall_ingress_cidr_blocks" {
   //leave empty to allow external access only from the IP of the machine executing terraform
   default = []
 }
+
+variable "dev_mode" {
+  description = "Flag to enable public IP's and enable direct firewall access for all components"
+  default = "false"
+}

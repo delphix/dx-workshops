@@ -179,12 +179,14 @@
     become: yes
     tags:
       - deploys
-  - name: Copy Workshop Documentation Shortcut
-    copy:
-      src: "WorkshopDocumentation.desktop"
+  - name: Create Workshop Documentation Shortcut
+    template:
+      src: "WorkshopDocumentation.desktop.j2"
       dest: "/home/{{ ansible_user }}/Desktop/WorkshopDocumentation.desktop"
       mode: "a+x"
     become: no
+    tags:
+      - shortcut
   - name: Create shutdown_dbs
     copy: 
       src: ../../../../go/shutdown_dbs/bin/linux64/shutdown_dbs

@@ -71,8 +71,7 @@ variable "addtl_firewall_ingress_cidr_blocks" {
   default     = []
 }
 
-variable "associate_public_ip_address" {
-  description = "Associate public IP Address to every instance in the workshop"
-  default     = "false"
+variable "dev_mode" {
+  description = "Flag to enable public IP's and enable direct firewall access for all components"
+  default = "false"
 }
-

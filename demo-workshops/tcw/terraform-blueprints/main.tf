@@ -1,7 +1,3 @@
-terraform {
-  required_version = ">= 0.11.0"
-}
-
 # Generate random ID (used for tagging devices)
 resource "random_id" "rval" {
   byte_length = 8

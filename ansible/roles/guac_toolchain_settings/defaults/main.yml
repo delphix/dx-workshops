@@ -24,3 +24,7 @@ lab_systems:
   - devweb
   - prodweb
   - testweb
+
+docs_host: "18.236.74.213"
+
+docs_ver: "204"

@@ -9,13 +9,13 @@ module "virtualization_engine" {
   last_octet                  = "10"
   staged                      = var.staged
   ami_name                    = var.staged == "false" ? "Delphix Engine ${var.delphix_engine_version}" : "delphix-tcw-virtualizationengine-${var.stage_name}-*"
-  associate_public_ip_address = var.associate_public_ip_address
+  associate_public_ip_address = var.dev_mode
   engine_type                 = "VE"
 }
 
 output "DDDP-Virtualization" {
   value = formatlist(
-    "\nDelphix Engine - Public IP: %s Private IP: %s\n    Access via browser @ http://%s",
+    "Delphix Engine - Public IP: %s Private IP: %s    Access via browser @ http://%s",
     module.virtualization_engine.public_ip,
     module.virtualization_engine.private_ip,
     module.virtualization_engine.public_ip,

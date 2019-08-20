@@ -18,5 +18,6 @@ module "aws_security_group" {
   vpc_id                             = module.aws_vpc.id
   name                               = "${var.project}-${random_id.rval.hex}"
   addtl_firewall_ingress_cidr_blocks = var.addtl_firewall_ingress_cidr_blocks
+  dev_mode                           = var.dev_mode
 }
 
