@@ -18,7 +18,7 @@ function ENDTIME {
 
         [[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
 
-        ssh -t centos@tooling ansible-playbook /tmp/prod/ansible/deploy.yaml -e git_branch=origin/develop -e git_commit=x -e sdlc_env=DEV --limit devweb
+        ssh -t centos@tooling ansible-playbook /tmp/app_repo/ansible/deploy.yaml -e git_branch=origin/develop -e git_commit=x -e sdlc_env=DEV --limit devweb
 
         [[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
 
