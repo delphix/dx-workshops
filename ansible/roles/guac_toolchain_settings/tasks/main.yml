@@ -179,6 +179,14 @@
     become: yes
     tags:
       - deploys
+  - name: Copy deploy_masktest
+    copy:
+      src: "deploy_masktest"
+      dest: "/usr/local/bin/deploy_masktest"
+      mode: "a+x"
+    become: yes
+    tags:
+      - deploys
   - name: Create Workshop Documentation Shortcut
     template:
       src: "WorkshopDocumentation.desktop.j2"
