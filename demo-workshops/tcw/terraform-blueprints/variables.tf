@@ -63,7 +63,7 @@ variable "stage_name" {
 variable "delphix_engine_version" {
   //Currently only works with 5.3.2
   description = "The version of the Delphix AMI"
-  default     = "5.3.2.*"
+  default     = ""
 }
 
 variable "addtl_firewall_ingress_cidr_blocks" {
