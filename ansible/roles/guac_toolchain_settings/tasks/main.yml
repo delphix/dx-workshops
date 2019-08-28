@@ -11,6 +11,7 @@
         - postgresql-client-common
         - postgresql-client
         - caffeine
+        - imagemagick
     register: task_result
     until: task_result is success
     retries: 5
@@ -225,3 +226,17 @@
     become: yes
     tags:
       - guac-custom
+  - debug:
+      msg: "{{ wp_text }}"
+    tags:
+       - wallpaper
+  - name: Add credentials table to desktop wallpaper
+    shell: |
+      #!/bin/bash
+      XC=450
+      YC=300
+      TEXT=$(echo "{{ wp_text }}"| column -ts "$(printf '\t')")
+      convert -font courier -fill white -pointsize 46 -interline-spacing 15 -draw "text $XC,$YC '$TEXT'" /usr/share/backgrounds/xfce/xfce-teal.jpg /usr/share/backgrounds/xfce/xfce-teal.jpg
+    become: yes
+    tags:
+       - wallpaper
