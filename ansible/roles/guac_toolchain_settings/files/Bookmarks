@@ -8,7 +8,7 @@
             "meta_info": {
                "last_visited_desktop": "13198271892743016"
             },
-            "name": "Dynamic Data Platform Login",
+            "name": "DDDP Virtualization Login",
             "type": "url",
             "url": "http://delphixengine/login/index.html"
          }, {
@@ -56,6 +56,15 @@
             "name": "Bugzilla",
             "type": "url",
             "url": "http://tooling/bugzilla"
+         }, {
+            "date_added": "13198271892742571",
+            "id": "9",
+            "meta_info": {
+               "last_visited_desktop": "13198271892743016"
+            },
+            "name": "DDDP Masking Login",
+            "type": "url",
+            "url": "http://maskingengine/login/index.html"
          } ],
          "date_added": "13198271372069543",
          "date_modified": "13198271902737182",
