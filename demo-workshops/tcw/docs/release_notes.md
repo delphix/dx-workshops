@@ -5,6 +5,8 @@
 ### v2.05
 
 1. (50e2c0c) credentials added to desktop wallpaper
+2. (9290da7) show bookmark bar
+3. (ee57992) added masking engine bookmark
 
 ### v2.04
 
