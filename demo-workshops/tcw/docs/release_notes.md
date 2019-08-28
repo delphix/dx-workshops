@@ -2,6 +2,10 @@
 
 ## What's Changed
 
+### v2.05
+
+1. (50e2c0c) credentials added to desktop wallpaper
+
 ### v2.04
 
 1. Renamed Github Repo
