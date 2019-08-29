@@ -2,6 +2,10 @@
 
 ## What's Changed
 
+### v2.06
+
+1. Workshop environments now support multiple students (HOW_MANY > 1).
+
 ### v2.05
 
 1. (50e2c0c) credentials added to desktop wallpaper
