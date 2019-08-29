@@ -4,7 +4,7 @@
 
 ### v2.06
 
-1. Workshop environments now support multiple students (HOW_MANY > 1).
+1. (f75e1d3) Workshop environments now support multiple students (HOW_MANY > 1).
 
 ### v2.05
 
