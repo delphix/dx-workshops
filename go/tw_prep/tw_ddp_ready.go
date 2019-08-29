@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net"
 
 	"github.com/jessevdk/go-flags"
 	log "github.com/sirupsen/logrus"
@@ -97,6 +98,62 @@ func (c *Client) batchRefreshEnvironmentByName(envList []string) (resultsList []
 	return resultsList
 }
 
+func (c *Client) updateEnvironmentHostByHostName(envName string, wait bool) (results map[string]interface{}) {
+	namespace := "environment"
+	//Find our Environment of interest
+	log.Info("Searching for Environment by name")
+	envObj := c.findObjectByName(namespace, envName)
+	if envObj == nil {
+		log.Fatalf("Could not find Environment named %s", envName)
+	}
+
+	log.Infof("Found %s: %s", envName, envObj["reference"])
+
+	namespace = "host"
+	//Find our Host of interest
+	log.Info("Searching for Host by Environment")
+	hostObj := c.listObjects(namespace, fmt.Sprintf("environment=%s", envObj["reference"]))
+	if hostObj == nil {
+		log.Fatalf("Could not find Host linked to Environment %s", envName)
+	}
+
+	log.Infof("Found %s: %s", envName, envObj["reference"])
+	log.Debug(hostObj)
+
+	//Get IP address of the Environment Name
+	ips, err := net.LookupIP(envName)
+	if err != nil {
+		log.Error(fmt.Errorf("Could not get IPs: %v", err))
+	}
+
+	log.Info(ips[0])
+
+	//Update the Host
+	url := fmt.Sprintf("%s/%s", namespace, hostObj[0].(map[string]interface{})["reference"])
+	hostUpdate := fmt.Sprintf(`{
+		"type": "UnixHost", 
+		"address": "%s"
+		}
+	`, ips[0])
+	action := c.httpPost(url, hostUpdate)
+
+	if wait {
+		c.jobWaiter(action)
+	}
+	return action
+}
+
+func (c *Client) batchUpdateEnvironmentHostByHostName(envList []string) (resultsList []map[string]interface{}) {
+	for _, v := range envList {
+		action := c.updateEnvironmentHostByHostName(v, false)
+		resultsList = append(resultsList, action)
+	}
+
+	c.jobWaiter(resultsList...)
+
+	return resultsList
+}
+
 func (c *Client) findSourceByDatabaseRef(databaseRef string) map[string]interface{} {
 	namespace := "source"
 	//Find our VDB of interest
@@ -160,15 +217,12 @@ func main() {
 	client := NewClient(opts.UserName, opts.Password, fmt.Sprintf("https://%s/resources/json/delphix", opts.DDPName))
 	client.initResty()
 	err = client.waitForEngineReady(10, 600)
-	// err = client.LoadAndValidate()
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Info("Successfully Logged in")
 
-	// for _, v := range opts.EnvironmentList {
-	// 	client.refreshEnvironmentByName(v, true)
-	// }
+	client.batchUpdateEnvironmentHostByHostName(opts.EnvironmentList)
 	client.batchRefreshEnvironmentByName(opts.EnvironmentList)
 	client.batchStartVDBByName(opts.VDBList...)
 
