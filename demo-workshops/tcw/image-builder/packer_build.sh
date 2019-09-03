@@ -5,9 +5,6 @@
 source $(dirname "${BASH_SOURCE[0]}")/library.sh
 trap "packer_cleanup" SIGINT
 
-: "${VNC_CLIENT_OPTIONS:=-geometry 1280x720 -localhost yes}"
-export VNC_CLIENT_OPTIONS
-
 function packer_cleanup() {
 	echo "Caught CTRL+C. Terminating packer jobs"
 	for child in $(ps aux| grep '[/]bin/packer build' | awk '{print $1}' ); do

@@ -15,6 +15,10 @@ TERRAFORM_BLUEPRINTS="${DEMO_PATH}/terraform-blueprints"
 GODIR="${WORKDIR}/go"
 export GUACAMOLE_VERSION="1.0.0"
 
+: "${VNC_CLIENT_OPTIONS:=-geometry 1280x720 -SecurityType VncAuth -localhost yes}"
+export VNC_CLIENT_OPTIONS
+
+
 function cleanup() {
   ERROR
 }
