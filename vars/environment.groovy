@@ -18,6 +18,10 @@ def amiify() {
 def environmentTest(){
   sh """#!/bin/bash
     docker-compose run tcw ready
+    #Adding in the below, to skip the reconfiguration since our environment builds are consistent
+    cd ${env.TF_DIR}
+    JUMP=\$(terraform output -json delphix-tcw-jumpbox_ip | jq -r '.[]')
+    ssh -i ${env.ANSIBLE_CERT} -o StrictHostKeyChecking=no ubuntu@\${JUMP} 'touch UPDOWN'
   """
 }
 
