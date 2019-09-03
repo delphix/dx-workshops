@@ -8,7 +8,7 @@ amis:
 - delphix-ubuntu-bionic-guacamole:
     packer:
       batch: 1
-      md5sum: f321f34440eece9b542b137d52267d6e
+      md5sum: 279feb58364b98f26a8d02e934978eab
       name: delphix-ubuntu-bionic-guacamole.json
 - delphix-centos7-oracle-12.2.0.1:
     packer:
