@@ -2,6 +2,10 @@
 
 ## What's Changed
 
+### v2.07
+
+1. (5f6f8da) workaround for GUAC-414 as found https://github.com/cisagov/pca-gophish-composition-packer/pull/1
+
 ### v2.06
 
 1. (f75e1d3) Workshop environments now support multiple students (HOW_MANY > 1).
@@ -38,4 +42,4 @@
 
 ## Known Issues
 
-1. Frequent disconnect errors from Guacamole. Upstream Dependency [GUACAMOLE-414](https://issues.apache.org/jira/browse/GUACAMOLE-414)
+1. None, at this time.
