@@ -40,6 +40,7 @@ function DEPLOY_APP {
 }
 
 function UPDOWN {
+	echo "Running UPDOWN function"
 	~/tw_prep -c ~/tw_prep_conf.txt
 	
 	DEPLOY_APP
