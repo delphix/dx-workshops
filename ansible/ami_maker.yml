@@ -22,6 +22,7 @@
       ec2_ami:
         instance_id: "{{ instance_id }}"
         wait: yes
+        wait_timeout: 1500
         name: "{{ ami_name }}-{{ timestamp }}"
         no_reboot: no
         tags:
