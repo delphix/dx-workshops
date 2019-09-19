@@ -19,7 +19,7 @@ def environmentTest(){
   sh """#!/bin/bash
     docker-compose run tcw ready
     #Adding in the below, to skip the reconfiguration since our environment builds are consistent
-    JUMP=\$(terraform output -json delphix-tcw-jumpbox_ip | jq -r '.[]')
+    JUMP=\$(docker-compose run tcw output -json delphix-tcw-jumpbox_ip | tail -2 | head -1 | jq -r '.[]')
     ssh -i ${env.ANSIBLE_CERT} -o StrictHostKeyChecking=no ubuntu@\${JUMP} 'touch UPDOWN'
   """
 }
