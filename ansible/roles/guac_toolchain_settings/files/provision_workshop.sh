@@ -26,6 +26,9 @@ function READY {
 }
 
 function DEPLOY_APP {
+	ssh -t centos@tooling "rm -Rf /tmp/dev /tmp/test /tmp/prod && git clone /var/lib/jenkins/app_repo.git /tmp/dev && git clone /var/lib/jenkins/app_repo.git /tmp/test && git clone /var/lib/jenkins/app_repo.git /tmp/prod"
+	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
+
 	ssh -t centos@tooling ansible-playbook /tmp/prod/ansible/deploy.yaml -e git_branch=origin/production -e git_commit=x -e sdlc_env=PROD --limit prodweb &
 	ssh -t centos@tooling ansible-playbook /tmp/test/ansible/deploy.yaml -e git_branch=origin/master -e git_commit=x -e sdlc_env=QA --limit testweb &
 	ssh -t centos@tooling ansible-playbook /tmp/dev/ansible/deploy.yaml -e git_branch=origin/develop -e git_commit=x -e sdlc_env=DEV --limit devweb &
@@ -50,9 +53,6 @@ function STAGED {
 	echo "Running STAGED function"
 	~/tw_prep -c ~/tw_prep_conf.txt
 
-	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
-
-	ssh -t centos@tooling "rm -Rf /tmp/dev /tmp/test /tmp/prod && git clone /var/lib/jenkins/app_repo.git /tmp/dev && git clone /var/lib/jenkins/app_repo.git /tmp/test && git clone /var/lib/jenkins/app_repo.git /tmp/prod"
 	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
 
 	ssh -t centos@tooling snap_prod_refresh_mm --config snap_conf.txt &
