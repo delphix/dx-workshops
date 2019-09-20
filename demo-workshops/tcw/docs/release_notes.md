@@ -2,6 +2,11 @@
 
 ## What's Changed
 
+### v2.08
+
+1. (6fd064d) Collapsed build steps for LabAlchemy-compliant systems
+2. (b4963fe) Resolved https://github.com/delphix/dx-workshops/issues/3
+
 ### v2.07
 
 1. (5f6f8da) workaround for GUAC-414 as found https://github.com/cisagov/pca-gophish-composition-packer/pull/1
