@@ -32,7 +32,6 @@ SUFFIX=$(GET_DEFAULT_AMI_SUFFIX)
 function ENVCHECK() {
 	[[ -z "${S3_AWS_ACCESS_KEY_ID}" ]] && export S3_AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
 	[[ -z "${S3_AWS_SECRET_ACCESS_KEY}" ]] && export S3_AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-  env | grep _KEY
 }
 
 function ENDTIME() {
