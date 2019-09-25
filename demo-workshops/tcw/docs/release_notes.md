@@ -2,6 +2,9 @@
 
 ## What's Changed
 
+### v2.09
+1. (9ab28a0) removed environment echo
+
 ### v2.08
 
 1. (6fd064d) Collapsed build steps for LabAlchemy-compliant systems
