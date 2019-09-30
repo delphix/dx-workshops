@@ -4,6 +4,7 @@
 
 ### v2.09
 1. (9ab28a0) removed environment echo
+2. resolved delphix/dx-workshops#7
 
 ### v2.08
 
