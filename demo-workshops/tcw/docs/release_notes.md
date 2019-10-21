@@ -2,6 +2,9 @@
 
 ## What's Changed
 
+### v2.10
+1. This repo now supports building on Windows systems
+
 ### v2.09
 1. (9ab28a0) removed environment echo
 2. resolved delphix/dx-workshops#7

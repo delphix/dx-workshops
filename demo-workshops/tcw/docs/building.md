@@ -6,12 +6,6 @@ These have been prepared for Mac/Linux-based installations.
 - [Simple Installation](#simple-installation)
   - [Requirements](#requirements)
   - [Instructions](#instructions)
-  - [Environment File](#environment-file)
-- [Image Build Flow](#image-build-flow)
-- [Second Simplest Installation](#second-simplest-installation)
-  - [Requirements (Advanced Instructions)](#requirements-advanced-instructions)
-  - [Instructions (Advanced Instructions)](#instructions-advanced-instructions)
-  - [Upgrading](#upgrading)
 
 ## Workshop Walk-through Documentation
 
@@ -34,6 +28,7 @@ You can view the workshop walk-through [here](http://18.236.74.213/index.html)
     7. [oracle-instantclient12.2-sqlplus-12.2.0.1.0-1.x86_64.rpm](https://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html)
 4. AWS access keys with permissions to read the s3 bucket from #3
 5. AWS access keys to create and destroy EC2 objects (VPCs, subnets, SGs, ami's, instances, etc)
+6. If executing from Windows, must use Linux Containers mode.
 
 ### Instructions
 
