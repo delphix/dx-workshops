@@ -174,6 +174,11 @@ function PREPARE_LOCAL {
 rm -f ~/Desktop/READY ~/Desktop/WAIT ~/Desktop/ERROR
 
 {
+	while pgrep startup.sh; do
+		echo "Waiting for startup.sh to finish"
+		sleep 3
+	done
+	
 	if [[ -f ~/UPDOWN ]] ; then
 		UPDOWN
 	elif [[ -f ~/STAGED ]] ; then
