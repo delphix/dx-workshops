@@ -2,6 +2,9 @@
 
 ## What's Changed
 
+### v2.11
+1. (4d8014c) Fixes race condition issue that manifests in how_many > 1 environments
+
 ### v2.10
 1. This repo now supports building on Windows systems
 
