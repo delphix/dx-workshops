@@ -2,6 +2,10 @@
 
 ## What's Changed
 
+### v2.12
+
+1. (fbc8dff) Fixes #18 where automatic updates prevent ansible roles from running 
+
 ### v2.11
 1. (4d8014c) Fixes race condition issue that manifests in how_many > 1 environments
 
