@@ -62,6 +62,13 @@
   "provisioners": [
     {
       "inline": [
+        "echo masking unattended-upgrades.service && sudo systemctl mask unattended-upgrades.service",
+        "echo stopping unattended-upgrades.service && sudo systemctl stop unattended-upgrades.service",
+        "echo masking apt-daily.service && sudo systemctl mask apt-daily.service",
+        "echo stopping apt-daily.service && sudo systemctl stop apt-daily.service",
+        "while systemctl is-active --quiet unattended-upgrades.service; do sleep 1; echo sleep;done",
+        "while systemctl is-active --quiet apt-daily.service; do sleep 1; echo sleep;done",
+        "while pgrep apt-get; do echo waiting for apt-get to stop; sleep 3; done",
         "sudo apt-get update",
         "sudo DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -yq",
         "i=0; until sudo apt-get install -y python-pip python-netaddr libmariadbclient-dev git; do if [ $i = 5 ]; then echo exiting after 5 attempts; exit 1; fi; i=$((i+1)); sleep 5; echo trying again; sudo apt-get update; done",
