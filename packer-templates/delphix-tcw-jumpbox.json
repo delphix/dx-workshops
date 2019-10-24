@@ -62,7 +62,7 @@
   "provisioners": [
     {
       "inline": [
-        "echo Just going to check that apt isn't running",
+        "echo Just going to check that apt is not running",
         "while pgrep apt-get; do echo waiting for apt-get to stop; sleep 3; done"
       ],
       "type": "shell"
