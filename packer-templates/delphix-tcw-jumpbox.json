@@ -62,9 +62,8 @@
   "provisioners": [
     {
       "inline": [
-        "sudo systemctl mask unattended-upgrades.service",
-        "sudo systemctl stop unattended-upgrades.service",
-        "while systemctl is-active --quiet unattended-upgrades.service; do sleep 1; echo sleep;done"
+        "echo Just going to check that apt isn't running",
+        "while pgrep apt-get; do echo waiting for apt-get to stop; sleep 3; done"
       ],
       "type": "shell"
     },
@@ -129,7 +128,7 @@
     "labalchemy_pub_key": "{{env `LABALCHEMY_PUB_KEY`}}",
     "md5sum": "",
     "region": "{{env `AWS_REGION`}}",
-    "seed": "4d8014c",
+    "seed": "5953175",
     "source": "delphix-ubuntu-bionic-guacamole.json",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",
     "vpc_id": "{{env `AWS_VPC_ID`}}"
