@@ -62,10 +62,10 @@
   "provisioners": [
     {
       "inline": [
-        "echo masking unattended-upgrades.service && sudo systemctl mask unattended-upgrades.service",
-        "echo stopping unattended-upgrades.service && sudo systemctl stop unattended-upgrades.service",
-        "echo masking apt-daily.service && sudo systemctl mask apt-daily.service",
-        "echo stopping apt-daily.service && sudo systemctl stop apt-daily.service",
+        "echo masking unattended-upgrades.service \u0026\u0026 sudo systemctl mask unattended-upgrades.service",
+        "echo stopping unattended-upgrades.service \u0026\u0026 sudo systemctl stop unattended-upgrades.service",
+        "echo masking apt-daily.service \u0026\u0026 sudo systemctl mask apt-daily.service",
+        "echo stopping apt-daily.service \u0026\u0026 sudo systemctl stop apt-daily.service",
         "while systemctl is-active --quiet unattended-upgrades.service; do sleep 1; echo sleep;done",
         "while systemctl is-active --quiet apt-daily.service; do sleep 1; echo sleep;done",
         "while pgrep apt-get; do echo waiting for apt-get to stop; sleep 3; done",
