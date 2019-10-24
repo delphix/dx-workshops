@@ -63,7 +63,7 @@ You can view the workshop walk-through [here](http://18.236.74.213/index.html)
     AWS_SUBNET_ID=subnet-09f297f4c80d78eef
     AWS_VPC_ID=vpc-0acd2e06169cc859b
     #DELPHIX_ADMIN_PASSWORD Password must be between 6-12 characters and contain 1 digit, 1 uppercase alphabet character, and 1 special character
-    DELPHIX_ADMIN_PASSWORD=Mypassword123
+    DELPHIX_ADMIN_PASSWORD=Password123
     DELPHIX_VERSION=5.3.4.*
     #GUAC_USER_PASSWORD must be at least 8 characters
     GUACADMIN_PASSWORD=flonkerton
