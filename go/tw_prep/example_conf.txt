@@ -1,6 +1,10 @@
+ddp_virt_hostname = delphixengine
+ddp_mask_hostname = maskingengine
+virt_username = delphix_admin
+virt_password = Landshark-12
+mask_username = admin
+mask_password = Landshark-12
 ddp_hostname = delphixengine
-username = delphix_admin
-password = Landshark-12
 skip-validate = 1
 dsource = "Patients Prod"
 vdb = "Patients Masked Master"

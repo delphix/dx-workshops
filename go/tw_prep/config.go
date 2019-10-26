@@ -14,7 +14,7 @@ import (
 
 	flags "github.com/jessevdk/go-flags"
 	log "github.com/sirupsen/logrus"
-	resty "gopkg.in/resty.v1"
+	resty "gopkg.in/resty.v2"
 )
 
 func init() {
@@ -34,8 +34,8 @@ func configLogging() {
 		DisableLevelTruncation: true,
 	})
 	logger = log.WithFields(log.Fields{
-		"url":      fmt.Sprintf("https://%s", opts.DDPName),
-		"username": opts.UserName,
+		"url":      fmt.Sprintf("https://%s", opts.DDPVirtName),
+		"username": "delphix_admin",
 	})
 }
 
@@ -57,6 +57,11 @@ func optionStuff() {
 			panic(err)
 		}
 	}
+}
+
+type myClient struct {
+	*resty.Client
+	*ClientRequest
 }
 
 // CreateAPISession returns an APISession object
@@ -146,8 +151,8 @@ type AuthSuccess struct {
 	ID, Message string
 }
 
-// Client the structure of a client request
-type Client struct {
+// ClientRequest the structure of a client request
+type ClientRequest struct {
 	url, username, password string
 	version                 *APIVersionStruct
 }
@@ -193,9 +198,9 @@ type RespError struct {
 	ErrorStruct `json:"error,omitempty"`
 }
 
-// NewClient creates a new client object
-func NewClient(username, password, url string) *Client {
-	return &Client{
+// NewClientRequest creates a new client object
+func NewClientRequest(username, password, url string) *ClientRequest {
+	return &ClientRequest{
 		url:      url,
 		username: username,
 		password: password,
@@ -203,36 +208,36 @@ func NewClient(username, password, url string) *Client {
 }
 
 // LoadAndValidate establishes a new client connection
-func (c *Client) LoadAndValidate() error {
+func (c *myClient) LoadAndValidate() (int, error) {
 
 	apiVersion, err := CreateAPIVersionFromString()
 	if err != nil {
-		return err
+		return 0, err
 	}
 	apiStruct, err := CreateAPISession(apiVersion, "", "")
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	resp, err := resty.R().
+	resp, err := c.R().
 		SetBody(apiStruct).
 		Post(c.url + "/session")
 
 	result := resp.Body()
 	var resultdat map[string]interface{}
 	if err = json.Unmarshal(result, &resultdat); err != nil { //convert the json to go objects
-		return err
+		return resp.StatusCode(), err
 	}
 
 	if resultdat["status"].(string) == "ERROR" {
 		errorMessage := string(result)
 		err = fmt.Errorf(errorMessage)
 		if err != nil {
-			return err
+			return resp.StatusCode(), err
 		}
 	}
 
-	resp, err = resty.R().
+	resp, err = c.R().
 		SetResult(AuthSuccess{}).
 		SetBody(LoginRequestStruct{
 			Type:     "LoginRequest",
@@ -241,18 +246,50 @@ func (c *Client) LoadAndValidate() error {
 		}).
 		Post(c.url + "/login")
 	if err != nil {
-		return err
+		return resp.StatusCode(), err
 	}
-	parseHTTPResponse(resp)
-	return nil
+
+	if http.StatusUnauthorized == resp.StatusCode() {
+		err = fmt.Errorf("%d", http.StatusUnauthorized)
+		if err != nil {
+			return resp.StatusCode(), err
+		}
+	}
+	parseHTTPResponseReturnMap(resp)
+	return resp.StatusCode(), nil
 }
 
-func bodyToJson(v interface{}) string {
+// MaskingLoadAndValidate establishes a new client connection
+func (c *myClient) MaskingLoadAndValidate() (int, error) {
+
+	resp, err := c.R().
+		SetResult(AuthSuccess{}).
+		SetBody(fmt.Sprintf(`{
+			"username": "%s",
+			"password": "%s"
+			}`, c.username, c.password)).
+		Post(c.url + "/login")
+	if err != nil {
+		return resp.StatusCode(), err
+	}
+	logger.Debug(resp)
+	resultdat, _, err := parseHTTPResponseReturnMap(resp)
+	if err != nil {
+		return resp.StatusCode(), err
+	}
+
+	if auth, _ := resultdat["Authorization"].(string); auth != "" {
+		c.SetHeader("Authorization", auth)
+	}
+	return resp.StatusCode(), nil
+}
+
+func bodyToJSON(v interface{}) string {
 	switch v := v.(type) {
 	case string:
 		return string(v)
 	case LoginRequestStruct:
-		return fmt.Sprintf("{\"type\": \"LoginRequest\",\"username\": \"%s\",\"password\": \"<redacted>\"}", opts.UserName)
+		return fmt.Sprintf("{\"type\": \"LoginRequest\",\"username\": \"%s\",\"password\": \"<redacted>\"}", "delphix_admin")
 	default:
 		if fmt.Sprintf("HERE %v", reflect.ValueOf(v).Kind()) == "struct" {
 			tbEnc, _ := json.Marshal(v)
@@ -262,32 +299,37 @@ func bodyToJson(v interface{}) string {
 	return ""
 }
 
-func (c *Client) initResty() {
-	resty.DefaultClient.
-		SetTimeout(time.Duration(30 * time.Second)).
-		SetRetryCount(3).
+func (cr ClientRequest) initResty() *myClient {
+	client := &myClient{resty.New(), &cr}
+	client.
+		SetTimeout(time.Duration(120 * time.Second)).
+		SetRetryCount(5).
 		SetRetryWaitTime(5 * time.Second).
 		SetRetryMaxWaitTime(20 * time.Second)
+	// AddRetryCondition(func(r *resty.Response) (bool, error) {
+	// 	return r.StatusCode() == http.StatusBadGateway, nil
+	// })
 
-	resty.
+	client.
 		SetHeader("Content-Type", "application/json").
 		SetHeader("Accept", "application/json")
 
-	skipCertValidation(opts.SkipValidate)
+	client.skipCertValidation(opts.SkipValidate)
 
 	if len(opts.Debug) >= 3 {
-		resty.OnBeforeRequest(func(c *resty.Client, req *resty.Request) error {
+		client.OnBeforeRequest(func(c *resty.Client, req *resty.Request) error {
 			var requestdat map[string]interface{}
-			strbody := bodyToJson(req.Body)
+			strbody := bodyToJSON(req.Body)
 			err := json.Unmarshal([]byte(strbody), &requestdat)
 			if err == nil {
-				if requestdat["type"].(string) == "ERROR" {
+				requestType, _ := requestdat["type"].(string)
+				if requestType == "ERROR" {
 					errorMessage := string(req.Body.(string))
 					err := fmt.Errorf(errorMessage)
 					if err != nil {
 						return err
 					}
-				} else if requestdat["type"].(string) == "LoginRequest" {
+				} else if requestType == "LoginRequest" {
 					strbody = fmt.Sprintf("{\"type\": \"LoginRequest\",\"username\": \"%s\",\"password\": \"<redacted>\"}", requestdat["username"])
 				}
 			}
@@ -300,7 +342,7 @@ func (c *Client) initResty() {
 			return nil
 		})
 
-		resty.OnAfterResponse(func(c *resty.Client, resp *resty.Response) error {
+		client.OnAfterResponse(func(c *resty.Client, resp *resty.Response) error {
 			log.WithFields(log.Fields{
 				"statusCode":   resp.StatusCode(),
 				"status":       resp.Status(),
@@ -311,16 +353,17 @@ func (c *Client) initResty() {
 			return nil
 		})
 	}
+	return client
 }
 
-func skipCertValidation(b bool) {
+func (c *myClient) skipCertValidation(b bool) {
 	if b {
 		//Turn off Cert Validation for our testing
-		resty.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
+		c.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
 	}
 }
 
-func (c *Client) assembleURL(url string, params []string) string {
+func (c *myClient) assembleURL(url string, params []string) string {
 	return fmt.Sprintf("%s/%s?%s", c.url, url, strings.Join(params, "&"))
 }
 
@@ -347,93 +390,195 @@ func CreateAPIVersionFromString() (APIVersionStruct, error) {
 	return CreateAPIVersion(maj, min, mic)
 }
 
-func (c *Client) httpPost(url, body string, params ...string) map[string]interface{} {
+func (c *myClient) httpPost(url, body string, params ...string) (map[string]interface{}, int, error) {
 
 	postURL := c.assembleURL(url, params)
 	// postURL := fmt.Sprintf("%s/%s", c.url, url)
 	logger.WithField("url", postURL)
-	resp, err := resty.R().
+	resp, err := c.R().
 		SetBody(body).
 		Post(postURL)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return parseHTTPResponse(resp)
+	return parseHTTPResponseReturnMap(resp)
 }
 
-func (c *Client) httpGet(url string, params ...string) map[string]interface{} {
-	getURL := c.assembleURL(url, params)
-	logger.WithField("url", getURL)
-	resp, err := resty.R().
-		Get(getURL)
+func (c *myClient) httpPut(url, body string, params ...string) (map[string]interface{}, int, error) {
+
+	putURL := c.assembleURL(url, params)
+	logger.WithField("url", putURL)
+	resp, err := c.R().
+		SetBody(body).
+		Put(putURL)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return parseHTTPResponse(resp)
+
+	return parseHTTPResponseReturnMap(resp)
 }
 
-func parseHTTPResponse(resp *resty.Response) map[string]interface{} {
+func (c *myClient) httpPostBytesReturnSlice(url string, file []byte, params ...string) ([]interface{}, int, error) {
+
+	postURL := c.assembleURL(url, params)
+	// postURL := fmt.Sprintf("%s/%s", c.url, url)
+	logger.WithField("url", postURL)
+	resp, err := c.R().
+		SetBody(file).
+		Post(postURL)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return parseHTTPResponseReturnSlice(resp)
+}
+
+func (c *myClient) httpGet(url string, params ...string) (map[string]interface{}, int, error) {
+	getURL := c.assembleURL(url, params)
+	logger.WithField("url", getURL)
+	resp, err := c.R().
+		Get(getURL)
+	if err != nil {
+		return nil, resp.StatusCode(), err
+	}
+	return parseHTTPResponseReturnMap(resp)
+}
+
+func parseHTTPResponse(resp *resty.Response) ([]byte, int, error) {
 	var err error
-	var resultdat map[string]interface{}
 
 	if http.StatusOK != resp.StatusCode() {
 		err = fmt.Errorf("Got an HTTP Status of %v instead of %v\n%v", resp.StatusCode(), http.StatusOK, resp)
 		if err != nil {
-			log.Fatal(err)
+			return nil, resp.StatusCode(), err
 		}
 	}
-	result := resp.Body()
-	if err = json.Unmarshal(result, &resultdat); err != nil { //convert the json to go objects
-		log.Fatal(err)
-	}
-
-	if resultdat["status"].(string) == "ERROR" {
-		errorMessage := string(result)
-		err = fmt.Errorf(errorMessage)
-		log.Fatal(err)
-	}
-	return resultdat
+	return resp.Body(), resp.StatusCode(), nil
 }
 
-func (c *Client) jobWaiter(actionList ...map[string]interface{}) {
-	if actionList == nil {
-		logger.Warnln("No jobs passed to jobWaiter")
+func parseHTTPResponseReturnMap(resp *resty.Response) (resultdat map[string]interface{}, statusCode int, err error) {
+	result, statusCode, err := parseHTTPResponse(resp)
+	if err != nil {
+		return nil, statusCode, err
 	}
+	if err = json.Unmarshal(result, &resultdat); err != nil { //convert the json to go objects
+		return nil, statusCode, err
+	}
+
+	if status, _ := resultdat["status"].(string); status == "ERROR" {
+		errorMessage := string(result)
+		err = fmt.Errorf(errorMessage)
+		return nil, statusCode, err
+	}
+	return resultdat, statusCode, err
+}
+
+func parseHTTPResponseReturnSlice(resp *resty.Response) (resultdat []interface{}, statusCode int, err error) {
+	result, statusCode, err := parseHTTPResponse(resp)
+	if err != nil {
+		return nil, statusCode, err
+	}
+	if err := json.Unmarshal(result, &resultdat); err != nil { //convert the json to go objects
+		return nil, statusCode, err
+	}
+
+	return resultdat, statusCode, nil
+}
+
+func (c *myClient) jobWaiter(actionList ...map[string]interface{}) error {
+	if actionList == nil {
+		logger.Debug("No jobs passed to jobWaiter")
+	}
+	logger.Debugf("Action list: %v", actionList)
 	for _, v := range actionList {
 		jobLogger := logger.WithFields(log.Fields{
 			"url":    fmt.Sprintf("%s/job/%s", c.url, v["job"]),
 			"action": v["action"],
 			"job":    v["job"],
 		})
-		for {
-			jobObj := c.httpGet(fmt.Sprintf("job/%s", v["job"]))["result"].(map[string]interface{})
-			jobLogger.Infof("%g%s complete", jobObj["percentComplete"], "%")
-			if jobState := jobObj["jobState"].(string); jobState == "RUNNING" {
-				jobLogger.Debug(c.listObjects("notification", fmt.Sprintf("channel=%s", jobObj["reference"])))
-			} else {
-				if jobState != "COMPLETED" {
-					jobLogger.Fatal(jobState)
+		jobLogger.Debugf("acting on %v", v)
+		if v["job"] != nil {
+			for {
+
+				jobObj, _, err := c.httpGet(fmt.Sprintf("job/%s", v["job"]))
+				if err != nil {
+					return err
 				}
-				break
+				jobResult := jobObj["result"].(map[string]interface{})
+				jobLogger.Infof("%g%s complete", jobResult["percentComplete"], "%")
+				if jobState := jobResult["jobState"].(string); jobState == "RUNNING" {
+					jobLogger.Debug(c.listObjects("notification", fmt.Sprintf("channel=%s", jobResult["reference"])))
+				} else {
+					if jobState != "COMPLETED" {
+						jobLogger.Fatal(jobState)
+					}
+					jobLogger.Info(jobState)
+					break
+				}
+			}
+		} else {
+			for {
+				jobLogger := logger.WithFields(log.Fields{
+					"url":    fmt.Sprintf("%s/action/%s", c.url, v["action"]),
+					"action": v["action"],
+				})
+				actionObj, _, err := c.httpGet(fmt.Sprintf("action/%s", v["action"]))
+				if err != nil {
+					return err
+				}
+				actionResult := actionObj["result"].(map[string]interface{})
+				jobLogger.Infof("Waiting for action to complete")
+				if actionState := actionResult["state"].(string); actionState == "EXECUTING" || actionState == "WAITING" {
+					jobLogger.Debug(c.listObjects("notification", fmt.Sprintf("channel=%s", v["action"])))
+				} else {
+					if actionState != "COMPLETED" {
+						jobLogger.Fatal(actionState)
+					}
+					jobLogger.Info(actionState)
+					break
+				}
 			}
 		}
 	}
-
+	return nil
 }
 
 // WaitForEngineReady loops until the Client connection is successful or time (t) expires
-func (c *Client) waitForEngineReady(p int, t int) error {
+func (c *myClient) waitForEngineReady(p int, t int) error {
 
-	logger.Printf("Waiting up to %v seconds for the DDDP to be ready\n", t)
+	logger.Infof("Waiting up to %v seconds for the DDDP to be ready", t)
 	timeOut := 0
 	for timeOut < t {
-		fmt.Println("Waiting for Delphix DDP")
+		logger.Info("Waiting for Delphix DDP")
 		time.Sleep(time.Duration(p) * time.Second)
 		timeOut = timeOut + p
-		if err := c.LoadAndValidate(); err == nil {
+		if _, err := c.LoadAndValidate(); err == nil {
 			break
 		}
 	}
 	return nil
+}
+
+// WaitForMaskingEngineReady loops until the Client connection is successful or time (t) expires
+func (c *myClient) waitForMaskingEngineReady(p int, t int) error {
+	logger := logger.WithFields(log.Fields{
+		"url":      c.url,
+		"username": c.username,
+	})
+	logger.Infof("Waiting up to %v seconds for the DDDP to be ready", t)
+	timeOut := 0
+	for timeOut < t {
+		logger.Info("Waiting for Delphix DDP Masking Engine")
+		time.Sleep(time.Duration(p) * time.Second)
+		timeOut = timeOut + p
+		if _, err := c.MaskingLoadAndValidate(); err == nil {
+			break
+		}
+	}
+	return nil
+}
+
+func returnObjReference(obj map[string]interface{}, errIn error) (reference interface{}, errOut error) {
+	return obj["reference"], errIn
 }

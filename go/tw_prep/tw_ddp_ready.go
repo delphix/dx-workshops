@@ -10,9 +10,12 @@ import (
 
 // Options for the script
 type Options struct {
-	DDPName         string               `short:"e" long:"ddp_hostname" env:"DELPHIX_DDP_HOSTNAME" description:"The hostname or IP address of the Delphix Dynamic Data Platform" required:"true"`
-	UserName        string               `short:"u" long:"username" env:"DELPHIX_USER" description:"The username used to authenticate to the Delphix Engine" required:"true"`
-	Password        string               `short:"p" long:"password" env:"DELPHIX_PASS" description:"The password used to authenticate to the Delphix Engine" required:"true"`
+	DDPVirtName     string               `short:"e" long:"ddp_virt_hostname" env:"DDP_VIRT_HOSTNAME" description:"The hostname or IP address of the Delphix Dynamic Data Platform - Virtualization Engine" required:"true"`
+	DDPMaskName     string               `short:"m" long:"ddp_mask_hostname" env:"DDP_MASK_HOSTNAME" description:"The hostname or IP address of the Delphix Dynamic Data Platform - Masking Engine" required:"true"`
+	VirtUserName    string               `long:"virt_username" env:"DDP_VIRT_USERNAME" description:"The username used to authenticate to the Virtualization Engine" required:"true"`
+	VirtPassword    string               `long:"virt_password" env:"DDP_VIRT_PASSWORD" description:"The password used to authenticate to the Virtualization Engine" required:"true"`
+	MaskUserName    string               `long:"mask_username" env:"DDP_MASK_USER" description:"The username used to authenticate to the Masking Engine" required:"true"`
+	MaskPassword    string               `long:"mask_password" env:"DDP_MASK_PASS" description:"The password used to authenticate to the Mas Engine" required:"true"`
 	Debug           []bool               `short:"v" long:"debug" env:"DELPHIX_DEBUG" description:"Turn on debugging. -vvv for the most verbose debugging"`
 	SkipValidate    bool                 `long:"skip-validate" env:"DELPHIX_SKIP_VALIDATE" description:"Don't validate TLS certificate of Delphix Engine"`
 	ConfigFile      func(s string) error `short:"c" long:"config" description:"Optional INI config file to pass in for the variables" no-ini:"true"`
@@ -21,11 +24,14 @@ type Options struct {
 	EnvironmentList []string             `long:"environment" env:"DELPHIX_ENV" description:"The name of the environment to refresh" required:"true"`
 }
 
-func (c *Client) syncDatabaseByName(dSourceName string) (results map[string]interface{}) {
+func (c *myClient) syncDatabaseByName(dSourceName string) (results map[string]interface{}, err error) {
 	databaseNamespace := "database"
 	//Find our dSource of interest
 	log.Info("Searching for dSource by name")
-	databaseObj := c.findObjectByName(databaseNamespace, dSourceName)
+	databaseObj, err := c.findObjectByName(databaseNamespace, dSourceName)
+	if err != nil {
+		return nil, err
+	}
 	if databaseObj == nil {
 		log.Fatalf("Could not find dSource named %s", dSourceName)
 	}
@@ -34,17 +40,23 @@ func (c *Client) syncDatabaseByName(dSourceName string) (results map[string]inte
 
 	//Sync the dSource
 	url := fmt.Sprintf("%s/%s/sync", databaseNamespace, databaseObj["reference"])
-	action := c.httpPost(url, "")
+	action, _, err := c.httpPost(url, "")
+	if err != nil {
+		return nil, err
+	}
 
 	c.jobWaiter(action)
-	return action
+	return action, err
 }
 
-func (c *Client) refreshDatabaseByName(vdbName string) (results map[string]interface{}) {
+func (c *myClient) refreshDatabaseByName(vdbName string) (results map[string]interface{}, err error) {
 	namespace := "database"
 	//Find our VDB of interest
 	log.Info("Searching for VDB by name")
-	databaseObj := c.findObjectByName(namespace, vdbName)
+	databaseObj, err := c.findObjectByName(namespace, vdbName)
+	if err != nil {
+		return nil, err
+	}
 	if databaseObj == nil {
 		log.Fatalf("Could not find VDB named %s", vdbName)
 	}
@@ -60,17 +72,23 @@ func (c *Client) refreshDatabaseByName(vdbName string) (results map[string]inter
 			"location": "LATEST_SNAPSHOT"
 		}
 		}`
-	action := c.httpPost(url, refreshParameters)
+	action, _, err := c.httpPost(url, refreshParameters)
+	if err != nil {
+		return nil, err
+	}
 
 	c.jobWaiter(action)
-	return action
+	return action, err
 }
 
-func (c *Client) refreshEnvironmentByName(envName string, wait bool) (results map[string]interface{}) {
+func (c *myClient) refreshEnvironmentByName(envName string, wait bool) (results map[string]interface{}, err error) {
 	namespace := "environment"
 	//Find our Environment of interest
 	log.Info("Searching for Environment by name")
-	envObj := c.findObjectByName(namespace, envName)
+	envObj, err := c.findObjectByName(namespace, envName)
+	if err != nil {
+		return nil, err
+	}
 	if envObj == nil {
 		log.Fatalf("Could not find Environment named %s", envName)
 	}
@@ -79,30 +97,39 @@ func (c *Client) refreshEnvironmentByName(envName string, wait bool) (results ma
 
 	//refresh the Environment
 	url := fmt.Sprintf("%s/%s/refresh", namespace, envObj["reference"])
-	action := c.httpPost(url, "")
+	action, _, err := c.httpPost(url, "")
+	if err != nil {
+		return nil, err
+	}
 
 	if wait {
 		c.jobWaiter(action)
 	}
-	return action
+	return action, err
 }
 
-func (c *Client) batchRefreshEnvironmentByName(envList []string) (resultsList []map[string]interface{}) {
+func (c *myClient) batchRefreshEnvironmentByName(envList []string) (resultsList []map[string]interface{}, err error) {
 	for _, v := range envList {
-		action := c.refreshEnvironmentByName(v, false)
+		action, err := c.refreshEnvironmentByName(v, false)
+		if err != nil {
+			return nil, err
+		}
 		resultsList = append(resultsList, action)
 	}
 
 	c.jobWaiter(resultsList...)
 
-	return resultsList
+	return resultsList, err
 }
 
-func (c *Client) updateEnvironmentHostByHostName(envName string, wait bool) (results map[string]interface{}) {
+func (c *myClient) updateEnvironmentHostByHostName(envName string, wait bool) (results map[string]interface{}, err error) {
 	namespace := "environment"
 	//Find our Environment of interest
 	log.Info("Searching for Environment by name")
-	envObj := c.findObjectByName(namespace, envName)
+	envObj, err := c.findObjectByName(namespace, envName)
+	if err != nil {
+		return nil, err
+	}
 	if envObj == nil {
 		log.Fatalf("Could not find Environment named %s", envName)
 	}
@@ -112,7 +139,10 @@ func (c *Client) updateEnvironmentHostByHostName(envName string, wait bool) (res
 	namespace = "host"
 	//Find our Host of interest
 	log.Info("Searching for Host by Environment")
-	hostObj := c.listObjects(namespace, fmt.Sprintf("environment=%s", envObj["reference"]))
+	hostObj, err := c.listObjects(namespace, fmt.Sprintf("environment=%s", envObj["reference"]))
+	if err != nil {
+		return nil, err
+	}
 	if hostObj == nil {
 		log.Fatalf("Could not find Host linked to Environment %s", envName)
 	}
@@ -135,70 +165,91 @@ func (c *Client) updateEnvironmentHostByHostName(envName string, wait bool) (res
 		"address": "%s"
 		}
 	`, ips[0])
-	action := c.httpPost(url, hostUpdate)
+	action, _, err := c.httpPost(url, hostUpdate)
+	if err != nil {
+		return nil, err
+	}
 
 	if wait {
 		c.jobWaiter(action)
 	}
-	return action
+	return action, err
 }
 
-func (c *Client) batchUpdateEnvironmentHostByHostName(envList []string) (resultsList []map[string]interface{}) {
+func (c *myClient) batchUpdateEnvironmentHostByHostName(envList []string) (resultsList []map[string]interface{}, err error) {
 	for _, v := range envList {
-		action := c.updateEnvironmentHostByHostName(v, false)
+		action, err := c.updateEnvironmentHostByHostName(v, false)
+		if err != nil {
+			return nil, err
+		}
 		resultsList = append(resultsList, action)
 	}
 
 	c.jobWaiter(resultsList...)
 
-	return resultsList
+	return resultsList, nil
 }
 
-func (c *Client) findSourceByDatabaseRef(databaseRef string) map[string]interface{} {
+func (c *myClient) findSourceByDatabaseRef(databaseRef string) (map[string]interface{}, error) {
 	namespace := "source"
 	//Find our VDB of interest
 	log.Info("Searching for source by reference")
-	obj := c.listObjects(namespace, fmt.Sprintf("database=%s", databaseRef))
+	obj, err := c.listObjects(namespace, fmt.Sprintf("database=%s", databaseRef))
+	if err != nil {
+		return nil, err
+	}
 	log.Debug(obj)
 	if obj == nil {
 		log.Fatalf("Could not find sourceconfig for VDB reference %s", databaseRef)
 	} else if len(obj) > 1 {
 		log.Fatalf("More than one result was returned. Exiting.\n%v", obj)
 	}
-	return obj[0].(map[string]interface{})
+	return obj[0].(map[string]interface{}), err
 }
 
-func (c *Client) startVDBByName(vdbName string, wait bool) (results map[string]interface{}) {
+func (c *myClient) startVDBByName(vdbName string, wait bool) (results map[string]interface{}, err error) {
 	namespace := "database"
 	//Find our VDB of interest
 	log.Info("Searching for VDB by name")
-	obj := c.findObjectByName(namespace, vdbName)
+	obj, err := c.findObjectByName(namespace, vdbName)
+	if err != nil {
+		return nil, err
+	}
 	log.Debug(obj)
 	if obj == nil {
 		log.Fatalf("Could not find VDB named %s", vdbName)
 	}
 	log.Infof("Found %s: %s", obj["name"], obj["reference"])
-	sourceObj := c.findSourceByDatabaseRef(obj["reference"].(string))
+	sourceObj, err := c.findSourceByDatabaseRef(obj["reference"].(string))
+	if err != nil {
+		return nil, err
+	}
 	//start
 	namespace = "source"
 	url := fmt.Sprintf("%s/%s/start", namespace, sourceObj["reference"])
-	action := c.httpPost(url, "")
+	action, _, err := c.httpPost(url, "")
+	if err != nil {
+		return nil, err
+	}
 
 	if wait {
 		c.jobWaiter(action)
 	}
-	return action
+	return action, err
 }
 
-func (c *Client) batchStartVDBByName(vdbList ...string) (resultsList []map[string]interface{}) {
+func (c *myClient) batchStartVDBByName(vdbList ...string) (resultsList []map[string]interface{}, err error) {
 	for _, v := range vdbList {
-		action := c.startVDBByName(v, false)
+		action, err := c.startVDBByName(v, false)
+		if err != nil {
+			return nil, err
+		}
 		resultsList = append(resultsList, action)
 	}
 
 	c.jobWaiter(resultsList...)
 
-	return resultsList
+	return resultsList, err
 }
 
 var (
@@ -214,17 +265,17 @@ func main() {
 	var err error
 
 	log.Info("Establishing session and logging in")
-	client := NewClient(opts.UserName, opts.Password, fmt.Sprintf("https://%s/resources/json/delphix", opts.DDPName))
-	client.initResty()
-	err = client.waitForEngineReady(10, 600)
+	virtualizationCR := NewClientRequest(opts.VirtUserName, opts.VirtPassword, fmt.Sprintf("https://%s/resources/json/delphix", opts.DDPVirtName))
+	virtualizationClient := virtualizationCR.initResty()
+	err = virtualizationClient.waitForEngineReady(10, 600)
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Info("Successfully Logged in")
 
-	client.batchUpdateEnvironmentHostByHostName(opts.EnvironmentList)
-	client.batchRefreshEnvironmentByName(opts.EnvironmentList)
-	client.batchStartVDBByName(opts.VDBList...)
+	virtualizationClient.batchUpdateEnvironmentHostByHostName(opts.EnvironmentList)
+	virtualizationClient.batchRefreshEnvironmentByName(opts.EnvironmentList)
+	virtualizationClient.batchStartVDBByName(opts.VDBList...)
 
 	log.Info("Complete")
 }
