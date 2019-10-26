@@ -10,6 +10,7 @@
         - java-1.8.0
       jenkins_plugins: # have to list all dependencies due to https://github.com/ansible/ansible/issues/24864
         - workflow-support
+        - delphix
         - credentials
         - structs
         - git-server
