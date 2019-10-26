@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/http"
 	"os"
 	"reflect"
@@ -581,4 +582,14 @@ func (c *myClient) waitForMaskingEngineReady(p int, t int) error {
 
 func returnObjReference(obj map[string]interface{}, errIn error) (reference interface{}, errOut error) {
 	return obj["reference"], errIn
+}
+
+func getIP(hostName string) (ip string, err error) {
+	ips, err := net.LookupIP(hostName)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Could not get IPs: %v\n", err)
+		return "", err
+	}
+	log.Debugf("%s : %s", hostName, ips[0].String())
+	return ips[0].String(), err
 }

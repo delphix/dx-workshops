@@ -252,6 +252,57 @@ func (c *myClient) batchStartVDBByName(vdbList ...string) (resultsList []map[str
 	return resultsList, err
 }
 
+func (c *myClient) updateMaskingConnector() (err error) {
+	logger := logger.WithFields(log.Fields{
+		"url":      c.url,
+		"username": c.username,
+	})
+	prodDBIP, err := getIP("proddb")
+	if err != nil {
+		return err
+	}
+	logger.Infof("updating connector host to %s", prodDBIP)
+	result, _, err := c.httpPut("database-connectors/1", fmt.Sprintf(`
+	{
+		"connectorName": "Patients Prod - Do Not Mask",
+		"databaseType": "ORACLE",
+		"environmentId": 1,
+		"jdbc": "jdbc:oracle:thin:@%s:1521/patpdb",
+		"schemaName": "DELPHIXDB",
+		"username": "DELPHIXDB",
+		"password": "delphixdb"
+	}`, prodDBIP))
+	if err != nil {
+		return err
+	}
+	log.Debug(result)
+	return err
+}
+
+func (c *myClient) updateMaskingService() error {
+
+	maskingIP, err := getIP("maskingengine")
+	if err != nil {
+		return err
+	}
+	logger.Infof("updating masking service server to %s", maskingIP)
+
+	result, _, err := c.httpPost("maskingjob/serviceconfig/MASKING_SERVICE_CONFIG-1", fmt.Sprintf(`{
+			"type": "MaskingServiceConfig",
+			"server": "%s",
+			"port": 80,
+			"credentials": {
+				"type": "PasswordCredential",
+				"password": "%s"
+			}
+		}`, maskingIP, opts.MaskPassword))
+	if err != nil {
+		logger.Fatal(err)
+	}
+	logger.Debug(result)
+	return err
+}
+
 var (
 	opts             Options
 	parser           = flags.NewParser(&opts, flags.Default)
@@ -265,6 +316,7 @@ func main() {
 	var err error
 
 	log.Info("Establishing session and logging in")
+
 	virtualizationCR := NewClientRequest(opts.VirtUserName, opts.VirtPassword, fmt.Sprintf("https://%s/resources/json/delphix", opts.DDPVirtName))
 	virtualizationClient := virtualizationCR.initResty()
 	err = virtualizationClient.waitForEngineReady(10, 600)
@@ -272,7 +324,17 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Info("Successfully Logged in")
-
+	err = virtualizationClient.updateMaskingService()
+	if err != nil {
+		log.Fatal(err)
+	}
+	maskingCR := NewClientRequest(opts.MaskUserName, opts.MaskPassword, fmt.Sprintf("http://%s/masking/api", opts.DDPMaskName))
+	maskingClient := maskingCR.initResty()
+	maskingClient.waitForMaskingEngineReady(10, 600)
+	err = maskingClient.updateMaskingConnector()
+	if err != nil {
+		log.Fatal(err)
+	}
 	virtualizationClient.batchUpdateEnvironmentHostByHostName(opts.EnvironmentList)
 	virtualizationClient.batchRefreshEnvironmentByName(opts.EnvironmentList)
 	virtualizationClient.batchStartVDBByName(opts.VDBList...)

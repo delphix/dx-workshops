@@ -669,17 +669,25 @@ func (c *myClient) populateMasking() (err error) {
 	}
 	logger.Info("Uploading masking job")
 	c.httpPostBytesReturnSlice("import", mjFile, "force_overwrite=true", "environment_id=1")
-	logger.Info("updating connector")
-	c.httpPut("database-connectors/1", fmt.Sprintf(`
+	prodDBIP, err := getIP("proddb")
+	if err != nil {
+		return err
+	}
+	logger.Infof("updating connector host to %s", prodDBIP)
+	result, _, err := c.httpPut("database-connectors/1", fmt.Sprintf(`
 	{
 		"connectorName": "Patients Prod - Do Not Mask",
 		"databaseType": "ORACLE",
 		"environmentId": 1,
-		"jdbc": "jdbc:oracle:thin:@10.0.1.20:1521/patpdb",
+		"jdbc": "jdbc:oracle:thin:@%s:1521/patpdb",
 		"schemaName": "DELPHIXDB",
 		"username": "DELPHIXDB",
 		"password": "delphixdb"
-	}`))
+	}`, prodDBIP))
+	if err != nil {
+		return err
+	}
+	log.Debug(result)
 	return err
 }
 
@@ -983,6 +991,30 @@ func (c *myClient) setInitialMaskingPassword() {
 	}
 }
 
+func (c *myClient) updateMaskingService() (map[string]interface{}, error) {
+
+	maskingIP, err := getIP("maskingengine")
+	if err != nil {
+		return nil, err
+	}
+	logger.Infof("updating masking service server to %s", maskingIP)
+
+	result, _, err := c.httpPost("maskingjob/serviceconfig/MASKING_SERVICE_CONFIG-1", fmt.Sprintf(`{
+			"type": "MaskingServiceConfig",
+			"server": "%s",
+			"port": 80,
+			"credentials": {
+				"type": "PasswordCredential",
+				"password": "%s"
+			}
+		}`, maskingIP, opts.Password))
+	if err != nil {
+		logger.Fatal(err)
+	}
+	logger.Debug(result)
+	return result, err
+}
+
 var (
 	opts             Options
 	parser           = flags.NewParser(&opts, flags.Default)
@@ -1011,18 +1043,9 @@ func main() {
 	maskingClient = maskingCR.initResty()
 	maskingClient.setInitialMaskingPassword()
 
-	logger.Info("Configuring Masking Service")
-	result, _, err := virtualizationClient.httpPost("maskingjob/serviceconfig/MASKING_SERVICE_CONFIG-1", fmt.Sprintf(`{
-			"type": "MaskingServiceConfig",
-			"server": "10.0.1.11",
-			"port": 80,
-			"credentials": {
-				"type": "PasswordCredential",
-				"password": "%s"
-			}
-		}`, opts.Password))
+	result, err := virtualizationClient.updateMaskingService()
 	if err != nil {
-		logger.Fatal(err)
+		log.Fatal(err)
 	}
 	logger.Debug(result)
 
