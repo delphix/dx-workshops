@@ -2,6 +2,11 @@
 
 ## What's Changed
 
+### v2.13
+
+1. (50989ae) #20 Added Delphix Jenkins plugin
+2. (5c40713) Fixes #18 masking IP's now dynamic
+
 ### v2.12
 
 1. (fbc8dff) Fixes #18 where automatic updates prevent ansible roles from running 
