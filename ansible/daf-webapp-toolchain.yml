@@ -4,7 +4,7 @@
     become: yes
     vars:
       java_packages:
-        - java-1.8.0
+        - java-1.11.0
     roles:
       - role: geerlingguy.java
       - role: daf-webapp-toolchain

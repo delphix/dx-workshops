@@ -7,7 +7,7 @@
         command: /bin/update-ca-trust
     vars:
       java_packages:
-        - java-1.8.0
+        - java-1.11.0
       jenkins_plugins: # have to list all dependencies due to https://github.com/ansible/ansible/issues/24864
         - workflow-support
         - delphix
