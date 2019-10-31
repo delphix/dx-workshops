@@ -12,7 +12,8 @@
 - src: carloslongarela.mariadb
 - src: sdarwin.vnc
 - src: geerlingguy.postgresql
-- src: geerlingguy.jenkins
+- src: https://github.com/CloudSurgeon/ansible-role-jenkins
+  name: geerlingguy.jenkins
 - src: geerlingguy.docker
 - src: geerlingguy.git
 - src: geerlingguy.nodejs

@@ -61,7 +61,7 @@
     binaries:
       - linuxx64_12201_database.zip
     java_packages:
-      - java-1.11.0
+      - java-11-openjdk
     oracle_pv: /dev/xvdb
     oracle_installer_path: /tmp
     oracle_pass: delphixdb

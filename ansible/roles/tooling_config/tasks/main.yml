@@ -16,7 +16,15 @@
   until: task_result is success
   retries: 3
   delay: 2
-
+  tags:
+    - alternative
+- name: Set Java 11 to default alternative
+  alternatives:
+    name: java
+    link: /usr/bin/java
+    path: /usr/lib/jvm/java-11-openjdk-11.0.5.10-0.el7_7.x86_64/bin/java
+  tags:
+    - alternative
 - name: Install required pip modules
   pip:
     name: "{{ modules }}"
