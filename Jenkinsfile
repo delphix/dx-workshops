@@ -101,6 +101,7 @@ pipeline {
     post{
         always{
             script{environment.terraformDestroy()}
+            script{environment.chownership()}
         }
     }
 }
