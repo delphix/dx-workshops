@@ -57,6 +57,8 @@
     - role: geerlingguy.firewall
       become: yes
   vars:
+    java_packages:
+      - java-11-openjdk
     aws_access_key_id: "{{ lookup('env','S3_AWS_ACCESS_KEY_ID') }}"
     aws_secret_key: "{{ lookup('env','S3_AWS_SECRET_ACCESS_KEY') }}"
     s3_bucket: "{{ lookup('env','S3_BUCKET') }}"
