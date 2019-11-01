@@ -23,7 +23,7 @@ amis:
 - delphix-tcw-centos7-kitchen_sink:
     packer:
       batch: 2
-      md5sum: 17e73d4290a99240cc733a6f5d5a0e2e
+      md5sum: 7f7020f6f64b6c05f90b4cd8c9ce2546
       name: delphix-tcw-centos7-kitchen_sink.json
 - delphix-tcw-jumpbox:
     packer:
