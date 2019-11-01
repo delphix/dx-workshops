@@ -113,9 +113,9 @@
         - '@angular/cli'
         - '@angular-devkit/build-angular'
     roles:
-      # - role: geerlingguy.java
+      - role: geerlingguy.java
       - role: geerlingguy.jenkins
-      # - role: geerlingguy.docker
-      # - role: geerlingguy.git
-      # - role: geerlingguy.nodejs
-      # - role: ocha.yarn
+      - role: geerlingguy.docker
+      - role: geerlingguy.git
+      - role: geerlingguy.nodejs
+      - role: ocha.yarn
