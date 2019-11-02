@@ -13,6 +13,7 @@
 - src: sdarwin.vnc
 - src: geerlingguy.postgresql
 - src: https://github.com/CloudSurgeon/ansible-role-jenkins
+  version: tcw
   name: geerlingguy.jenkins
 - src: geerlingguy.docker
 - src: geerlingguy.git
