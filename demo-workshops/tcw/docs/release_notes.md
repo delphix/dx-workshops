@@ -2,6 +2,12 @@
 
 ## What's Changed
 
+### v2.14
+
+1. (143bd6e) Jenkins uses Java 11
+2. (d17999b) Jenkins plugins pinned (#32)
+3. (1ea60b1) Fixed #33
+
 ### v2.13
 
 1. (50989ae) #20 Added Delphix Jenkins plugin
