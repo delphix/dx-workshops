@@ -62,7 +62,7 @@
   "provisioners": [
     {
       "destination": "/tmp/DLPX-62018.sh",
-      "source": "../scripts/DLPX-62018.sh",
+      "source": "../scripts/misc/DLPX-62018.sh",
       "type": "file"
     },
     {
