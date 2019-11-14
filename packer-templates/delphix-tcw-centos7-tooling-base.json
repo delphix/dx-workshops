@@ -122,7 +122,7 @@
     "md5sum": "",
     "region": "{{env `AWS_REGION`}}",
     "seed": "9d4efc1",
-    "source": "delphix-centos7-kitchen_sink.json",
+    "source": "delphix-tcw-centos7-kitchen_sink.json",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",
     "vpc_id": "{{env `AWS_VPC_ID`}}"
   }

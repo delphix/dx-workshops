@@ -1,0 +1,32 @@
+#The new password you want for guacadmin
+guacadmin_password: changeme
+
+#The username of the guacuser
+guac_user: delphix
+
+#The password of the guacuser
+guac_user_password: changeme
+
+#The password used to configure VNC
+vnc_password: changeme
+
+#The delphix_admin_password for the tester
+delphix_admin_password: changeme
+
+domain_suffix: delphix.local
+
+lab_systems:
+  - tooling
+  - delphixengine
+  - datical-server
+  - proddb
+  - devdb
+  - devweb
+  - prodweb
+  - testweb
+
+docs_host: "18.236.74.213"
+
+docs_ver: "204"
+
+wp_text: "{{ lookup('template', 'credentials.j2') }}"

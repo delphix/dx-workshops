@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=VS Code
+Comment=
+Exec=/usr/bin/code git/app_repo
+Icon=/usr/share/pixmaps/com.visualstudio.code.png
+Path=
+Terminal=false
+StartupNotify=false

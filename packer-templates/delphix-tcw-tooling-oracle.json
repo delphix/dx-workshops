@@ -110,7 +110,7 @@
     "md5sum": "",
     "region": "{{env `AWS_REGION`}}",
     "seed": "1ea60b1",
-    "source": "delphix-centos7-tooling-base.json",
+    "source": "delphix-tcw-centos7-tooling-base.json",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",
     "vpc_id": "{{env `AWS_VPC_ID`}}"
   }

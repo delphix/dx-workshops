@@ -30,3 +30,10 @@ docs_host: "18.236.74.213"
 docs_ver: "204"
 
 wp_text: "{{ lookup('template', 'credentials.j2') }}"
+
+#To pull in Postgres Plugin from S3
+aws_access_key_id: "{{ lookup('env','S3_AWS_ACCESS_KEY_ID') }}"
+aws_secret_key: "{{ lookup('env','S3_AWS_SECRET_ACCESS_KEY') }}"
+s3_bucket: "{{ lookup('env','S3_BUCKET') }}"
+s3_object_path: "{{ lookup('env','S3_OBJECT_PATH') }}"
+postgres_plugin_archive: Plugin_postgreSQL_1.3.0.zip

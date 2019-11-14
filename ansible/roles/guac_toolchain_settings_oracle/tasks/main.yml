@@ -1,0 +1,242 @@
+---
+  - name: Install Desktop tools
+    apt:
+      name: "{{ packages }}"
+      state: present
+    become: true
+    vars:
+      packages:
+        - putty
+        - remmina
+        - postgresql-client-common
+        - postgresql-client
+        - caffeine
+        - imagemagick
+    register: task_result
+    until: task_result is success
+    retries: 5
+    delay: 30
+  - name: Install google-chrome-stable
+    apt:
+      deb: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+      state: present
+    become: true
+  - name: Create Chrome shortcut
+    copy:
+      src: "google-chrome.desktop"
+      dest: "/home/{{ ansible_user }}/Desktop/google-chrome.desktop"
+      mode: "u+x,g+x"
+    tags:
+      - chrome
+  - name: Create Caffeine shortcut
+    copy:
+      src: "Caffeine.desktop"
+      dest: "/home/{{ ansible_user }}/Desktop/Caffeine.desktop"
+      mode: "u+x,g+x"
+  - name: Create Putty shortcut
+    copy: 
+      src: putty.desktop
+      dest: "/home/{{ ansible_user }}/Desktop/putty.desktop"
+      mode: "u+x,g+x"
+  - name: Create RDP shortcut
+    copy:
+      src: rdp.desktop
+      dest: "/home/{{ ansible_user }}/Desktop/rdp.desktop"
+      mode: "u+x,g+x"
+  - name: Create vscode shortcut
+    copy:
+      src: vscode.desktop
+      dest: "/home/{{ ansible_user }}/Desktop/vscode.desktop"
+      mode: "u+x,g+x"
+    tags:
+      - code
+  - name: Create config sql
+    template: 
+      src: guac_settings_import.sql.j2
+      dest: "/tmp/guac_settings_import.sql"
+  - name: Setup Guacamole users, passwords, and connections
+    become: True
+    mysql_db:
+      name: guacamole
+      state: import
+      target: /tmp/guac_settings_import.sql
+  - name: Extract xfce settings
+    unarchive:
+      src: xfce_config.tgz
+      dest: "/home/{{ ansible_user }}"
+    tags:
+      - xfce
+  - name: Create app_repo_local.tgz
+    copy:
+      src: app_repo_local.tgz
+      dest: "/home/{{ ansible_user }}"
+      mode: "u+rwx"
+  - name: Create provision_workshop.sh
+    copy:
+      src: provision_workshop.sh
+      dest: "/home/{{ ansible_user }}/provision_workshop.sh"
+      mode: "u+x,g+x"
+    tags:
+      - test
+  - name: Creates the reboot crontab for provision_workshop.sh 
+    cron:
+      name: "Run provision_workshop on reboot"
+      special_time: reboot
+      job: "{{ ansible_env.HOME }}/provision_workshop.sh"
+    become: no
+    tags:
+      - test
+  - name: Create tw_prep
+    copy: 
+      src: ../../../../go/tw_prep/bin/linux64/tw_prep
+      dest: "/home/{{ ansible_user }}/tw_prep"
+      mode: "u+x,g+x"
+    tags:
+      - test
+  - name: Create tw_provision
+    copy: 
+      src: ../../../../go/tw_provision/bin/linux64/tw_provision
+      dest: "/home/{{ ansible_user }}/tw_provision"
+      mode: "u+x,g+x"
+    tags:
+      - test
+  - name: Copy masking json files
+    copy: 
+      src: "{{ item }}"
+      dest: "/home/{{ ansible_user }}/{{ item }}"
+      mode: "u+x,g+x"
+    with_items:
+      - global_objects.json
+      - masking_job.json
+    tags:
+      - test
+  - name: Create tw_provision_config.txt
+    template: 
+      src: tw_provision_config.txt.j2
+      dest: "/home/{{ ansible_user }}/tw_provision_config.txt"
+  - name: Create reset_workshop.sh
+    copy: 
+      src: reset_workshop.sh
+      dest: "/home/{{ ansible_user }}/reset_workshop.sh"
+      mode: "u+x,g+x"
+  - name: Create conf.txt
+    template: 
+      src: tw_prep_conf.txt.j2
+      dest: "/home/{{ ansible_user }}/tw_prep_conf.txt"
+  - name: Add hosts to .ssh/config
+    blockinfile:
+      path: "/home/{{ ansible_user }}/.ssh/config"
+      block: |
+        host {{ item }}
+          IdentityFile ~/.ssh/ansible
+          StrictHostKeyChecking no
+      marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item }}"
+      create: yes
+    loop: "{{ lab_systems }}"
+  - name: Add an apt key by id from a url
+    apt_key:
+      url: https://packages.microsoft.com/keys/microsoft.asc
+    become: true
+  - apt_repository:
+      repo: deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main
+      state: present
+      filename: vscode
+    become: true
+  - name: Install VSCode tools
+    apt:
+      name: "{{ packages }}"
+      state: present
+      update_cache: yes
+    become: true
+    vars:
+      packages:
+        - code
+  - name: Create notes_changes
+    unarchive:
+      src: notes_changes.tgz
+      dest: "/home/{{ ansible_user }}"
+    tags:
+      - notes
+    become: no
+  - name: Copy Chrome bookmarks
+    copy:
+      src: "Bookmarks"
+      dest: "/home/{{ ansible_user }}/.config/google-chrome/Default/Bookmarks"
+      mode: "u+rwx"
+    become: no
+  - name: Copy deploy_qa
+    copy:
+      src: "deploy_qa"
+      dest: "/usr/local/bin/deploy_qa"
+      mode: "a+x"
+    become: yes
+    tags:
+      - deploys
+  - name: Copy deploy_dev
+    copy:
+      src: "deploy_dev"
+      dest: "/usr/local/bin/deploy_dev"
+      mode: "a+x"
+    become: yes
+    tags:
+      - deploys
+  - name: Copy deploy_masktest
+    copy:
+      src: "deploy_masktest"
+      dest: "/usr/local/bin/deploy_masktest"
+      mode: "a+x"
+    become: yes
+    tags:
+      - deploys
+  - name: Create Workshop Documentation Shortcut
+    template:
+      src: "WorkshopDocumentation.desktop.j2"
+      dest: "/home/{{ ansible_user }}/Desktop/WorkshopDocumentation.desktop"
+      mode: "a+x"
+    become: no
+    tags:
+      - shortcut
+  - name: Create shutdown_dbs
+    copy: 
+      src: ../../../../go/shutdown_dbs/bin/linux64/shutdown_dbs
+      dest: "/home/{{ ansible_user }}/shutdown_dbs"
+      mode: "u+x,g+x"
+    become: no
+    tags:
+      - shutdown_dbs
+  - name: Create shutdown_dbs conf file
+    template: 
+      src: shutdown_conf.txt.j2
+      dest: "/home/{{ ansible_user }}/shutdown_conf.txt"
+    become: no
+    tags:
+      - shutdown_dbs
+  - name: Create shutdown_dbs shortcut
+    copy:
+      src: "shutdown_dbs.desktop"
+      dest: "/home/{{ ansible_user }}/Desktop/shutdown_dbs.desktop"
+      mode: "u+x,g+x"
+    tags:
+      - shutdown_dbs
+  - name: Add Delphix Guacamole customizations
+    copy:
+      src: delphix_customization.jar
+      dest: "/etc/guacamole/extensions/delphix_customization.jar"
+      mode: "u+x,g+x"
+    become: yes
+    tags:
+      - guac-custom
+  - debug:
+      msg: "{{ wp_text }}"
+    tags:
+       - wallpaper
+  - name: Add credentials table to desktop wallpaper
+    shell: |
+      #!/bin/bash
+      XC=450
+      YC=300
+      TEXT=$(echo "{{ wp_text }}"| column -ts "$(printf '\t')")
+      convert -font courier -fill white -pointsize 46 -interline-spacing 15 -draw "text $XC,$YC '$TEXT'" /usr/share/backgrounds/xfce/xfce-teal.jpg /usr/share/backgrounds/xfce/xfce-teal.jpg
+    become: yes
+    tags:
+       - wallpaper

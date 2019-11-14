@@ -1,0 +1,12 @@
+ORACLE_HOME: /usr/lib/oracle/12.2/client64
+REPL_HOME: /opt/datical/DaticalDB/repl
+#The delphix_admin_password for the tester
+delphix_admin_password: changeme
+s3_bucket: changeme
+s3_object_path: changeme
+datical_software: DaticalDB-linux.gtk.x86_64-2019.2.2.6029.jar
+datical_license: datical_admin.lic
+postgres_plugin_archive: Plugin_postgreSQL_1.3.0.zip
+aws_access_key_id: changeme
+aws_secret_key: changeme
+postgres_jar_version: "42.2.8"

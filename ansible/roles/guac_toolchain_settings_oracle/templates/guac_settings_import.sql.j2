@@ -1,0 +1,72 @@
+-- Generate salt
+SET @salt = UNHEX(SHA2(UUID(), 256));
+
+-- Update user and hash password with salt
+SET @guacadmin_ph = UNHEX(SHA2(CONCAT('{{ guacadmin_password }}', HEX(@salt)), 256));
+SET @delphix_ph = UNHEX(SHA2(CONCAT('{{ guac_user_password }}', HEX(@salt)), 256));
+
+
+LOCK TABLES `guacamole_entity` WRITE;
+INSERT INTO `guacamole_entity` VALUES (2,'{{ guac_user }}','USER');
+
+
+--
+-- Dumping data for table `guacamole_user`
+--
+
+LOCK TABLES `guacamole_user` WRITE;
+/*!40000 ALTER TABLE `guacamole_user` DISABLE KEYS */;
+INSERT INTO `guacamole_user` VALUES (2,2,'blah','blah','2018-12-13 21:42:35',0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+/*!40000 ALTER TABLE `guacamole_user` ENABLE KEYS */;
+UPDATE guacamole_user
+SET
+    password_salt = @salt,
+    password_hash = UNHEX(SHA2(CONCAT('{{ guacadmin_password }}', HEX(@salt)), 256))
+WHERE
+    entity_id = 1;
+UPDATE guacamole_user
+SET
+    password_salt = @salt,
+    password_hash = UNHEX(SHA2(CONCAT('{{ guac_user_password }}', HEX(@salt)), 256))
+WHERE
+    entity_id = 2;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `guacamole_connection`
+--
+
+LOCK TABLES `guacamole_connection` WRITE;
+/*!40000 ALTER TABLE `guacamole_connection` DISABLE KEYS */;
+INSERT INTO `guacamole_connection` VALUES (1,'VNC',NULL,'vnc',NULL,NULL,NULL,10,10,NULL,0);
+/*!40000 ALTER TABLE `guacamole_connection` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `guacamole_connection_parameter`
+--
+
+
+INSERT INTO `guacamole_connection_parameter` VALUES (1,'hostname','localhost'),(1,'password','{{ vnc_password }}'),(1,'port','5901');
+
+
+--
+-- Dumping data for table `guacamole_connection_permission`
+--
+
+LOCK TABLES `guacamole_connection_permission` WRITE;
+/*!40000 ALTER TABLE `guacamole_connection_permission` DISABLE KEYS */;
+INSERT INTO `guacamole_connection_permission` VALUES (2,1,'READ');
+/*!40000 ALTER TABLE `guacamole_connection_permission` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+--
+-- Dumping data for table `guacamole_user_permission`
+--
+
+LOCK TABLES `guacamole_user_permission` WRITE;
+/*!40000 ALTER TABLE `guacamole_user_permission` DISABLE KEYS */;
+INSERT INTO `guacamole_user_permission` VALUES (1,2,'READ'),(1,2,'UPDATE'),(1,2,'DELETE'),(1,2,'ADMINISTER'),(2,2,'READ');
+/*!40000 ALTER TABLE `guacamole_user_permission` ENABLE KEYS */;
+UNLOCK TABLES;

@@ -111,10 +111,17 @@ function PREPARE_PROD {
 	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
 
 	#introduce the constraint bug
-	ssh centos@proddb sudo -i -u oracle sqlplus delphixdb/delphixdb@localhost:1521/patpdb <<-EOF
-	ALTER TABLE USERS DROP CONSTRAINT username;
-	quit;
-	EOF
+	if [[ $RDBMS == "ORACLE" ]]; then
+		ssh centos@proddb sudo -i -u oracle sqlplus delphixdb/delphixdb@localhost:1521/patpdb <<-EOF
+		ALTER TABLE USERS DROP CONSTRAINT username;
+		quit;
+		EOF
+	else
+		ssh centos@proddb sudo -i -u postgres psql -d dafdb <<-EOF
+		ALTER TABLE USERS DROP CONSTRAINT username;
+		\q;
+		EOF
+	fi
 
 	[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
 

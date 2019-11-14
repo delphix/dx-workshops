@@ -1,0 +1,8 @@
+---
+  - name: Configure TCW Postgres 11 Target
+    hosts: all
+    # become: yes
+    # become_user: postgres
+    vars:
+    roles:
+      - role: tcw_postgres11_target

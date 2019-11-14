@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false
+Exec=putty
+Name=putty
+Comment=Access the ssh
+Icon=putty

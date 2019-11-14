@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net"
 	"net/http"
 	"os"
@@ -435,6 +436,51 @@ func (c *myClient) httpPostBytesReturnSlice(url string, file []byte, params ...s
 	return parseHTTPResponseReturnSlice(resp)
 }
 
+func (c *myClient) uploadPlugin(pluginFileName string) (err error) {
+	logger := logger.WithFields(log.Fields{
+		"url":      c.url,
+		"username": c.username,
+	})
+
+	pluginFile, err := ioutil.ReadFile(pluginFileName)
+	if err != nil {
+		logger.Fatal("Unable to open: ", pluginFileName, err)
+	}
+
+	uploadTokenResp, _, err := c.httpPost("toolkit/requestUploadToken", "")
+	if err != nil {
+		logger.Fatal(err)
+	}
+	log.Debug(uploadTokenResp)
+	uploadToken := uploadTokenResp["result"].(map[string]interface{})["token"].(string)
+
+	logger.Info("Uploading plugin")
+	postURL := c.assembleURL("data/upload", nil)
+
+	logger = logger.WithFields(log.Fields{
+		"url":      postURL,
+		"username": c.username,
+		"token":    uploadToken,
+		"filename": pluginFileName,
+	})
+
+	resp, err := c.R().
+		SetFileReader("file", pluginFileName, bytes.NewReader(pluginFile)).
+		SetFormData(map[string]string{
+			"token": uploadToken,
+		}).
+		Post(postURL)
+	if err != nil {
+		return err
+	}
+
+	action, _, err := parseHTTPResponseReturnMap(resp)
+
+	c.jobWaiter(action)
+
+	return err
+}
+
 func (c *myClient) httpGet(url string, params ...string) (map[string]interface{}, int, error) {
 	getURL := c.assembleURL(url, params)
 	logger.WithField("url", getURL)
@@ -520,18 +566,22 @@ func (c *myClient) jobWaiter(actionList ...map[string]interface{}) error {
 			}
 		} else {
 			for {
+				actionRef, ok := v["action"].(string)
+				if !ok {
+					actionRef = v["reference"].(string)
+				}
 				jobLogger := logger.WithFields(log.Fields{
-					"url":    fmt.Sprintf("%s/action/%s", c.url, v["action"]),
-					"action": v["action"],
+					"url":    fmt.Sprintf("%s/action/%s", c.url, actionRef),
+					"action": actionRef,
 				})
-				actionObj, _, err := c.httpGet(fmt.Sprintf("action/%s", v["action"]))
+				actionObj, _, err := c.httpGet(fmt.Sprintf("action/%s", actionRef))
 				if err != nil {
 					return err
 				}
 				actionResult := actionObj["result"].(map[string]interface{})
 				jobLogger.Infof("Waiting for action to complete")
 				if actionState := actionResult["state"].(string); actionState == "EXECUTING" || actionState == "WAITING" {
-					jobLogger.Debug(c.listObjects("notification", fmt.Sprintf("channel=%s", v["action"])))
+					jobLogger.Debug(c.listObjects("notification", fmt.Sprintf("channel=%s", actionRef)))
 				} else {
 					if actionState != "COMPLETED" {
 						jobLogger.Fatal(actionState)

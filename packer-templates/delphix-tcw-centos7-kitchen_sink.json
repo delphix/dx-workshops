@@ -103,7 +103,7 @@
     "labalchemy_pub_key": "{{env `LABALCHEMY_PUB_KEY`}}",
     "md5sum": "",
     "region": "{{env `AWS_REGION`}}",
-    "seed": "6eabdcb",
+    "seed": "6eabdcbNEW",
     "source": "delphix-centos7-ansible-base.json",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",
     "vpc_id": "{{env `AWS_VPC_ID`}}"

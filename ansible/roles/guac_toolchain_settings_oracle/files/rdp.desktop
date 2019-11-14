@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false
+Exec=remmina
+Name=RDP
+Comment=Access the Windows boxen
+Icon=remmina

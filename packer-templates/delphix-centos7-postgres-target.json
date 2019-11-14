@@ -6,16 +6,16 @@
       "ami_regions": "{{user `region`}}",
       "associate_public_ip_address": true,
       "force_deregister": true,
-      "instance_type": "t2.large",
+      "instance_type": "t2.xlarge",
       "launch_block_device_mappings": [
         {
           "delete_on_termination": true,
           "device_name": "/dev/sda1",
-          "volume_size": 8,
+          "volume_size": 15,
           "volume_type": "gp2"
         }
       ],
-      "name": "delphix-centos7-postgres{{user `pg_ver`}}",
+      "name": "{{user `ami_name_prefix`}}",
       "region": "{{user `region`}}",
       "run_tags": {
         "branch": "{{ user `branch`}}",
@@ -36,7 +36,7 @@
       "secret_key": "{{user `aws_secret_key`}}",
       "source_ami_filter": {
         "filters": {
-          "name": "delphix-centos7-ansible-base-*"
+          "name": "delphix-centos7-postgres{{user `pg_ver`}}-base-*"
         },
         "most_recent": true,
         "owners": [
@@ -52,7 +52,8 @@
         "dlpx:Expiration": "{{user `dlpx:Expiration`}}",
         "dlpx:Owner": "{{user `dlpx:Owner`}}",
         "dlpx:Project": "{{user `dlpx:Project`}}",
-        "md5sum": "{{user `md5sum`}}"
+        "md5sum": "{{user `md5sum`}}",
+        "source": "{{ user `source`}}"
       },
       "type": "amazon-ebs",
       "vpc_id": "{{user `vpc_id`}}"
@@ -61,32 +62,20 @@
   "post-processors": [],
   "provisioners": [
     {
-      "destination": "/tmp/DLPX-62018.sh",
-      "source": "../scripts/misc/DLPX-62018.sh",
-      "type": "file"
-    },
-    {
-      "inline": [
-        "sudo yum update -y",
-        "sudo yum install -y epel-release",
-        "sudo yum install -y ansible",
-        "sudo yum install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm -y"
-      ],
-      "type": "shell"
-    },
-    {
       "ansible_env_vars": [
         "ANSIBLE_HOST_KEY_CHECKING=False"
       ],
-      "playbook_file": "../ansible/postgres-{{user `pg_ver`}}.yml",
+      "playbook_file": "../ansible/tcw_postgres{{user `pg_ver`}}_target.yml",
       "type": "ansible",
       "user": "centos"
     },
     {
+      "destination": "/tmp/dafsetup",
+      "source": "../scripts/dafsetup",
+      "type": "file"
+    },
+    {
       "inline": [
-        "sudo chmod +x /tmp/DLPX-62018.sh",
-        "sudo /tmp/DLPX-62018.sh /var/lib/pgsql/{{user `pg_ver`}}/data",
-        "sudo restorecon -Rv /var/lib/pgsql/.ssh",
         "sudo sed -i -e '/.*'`hostname -s`'.*/d' /etc/hosts"
       ],
       "type": "shell"
@@ -110,15 +99,17 @@
     "ansible_pub_key",
     "aws_access_key",
     "aws_secret_key",
-    "labalchemy_pub_key"
+    "daf_user_pass"
   ],
   "variables": {
-    "ami_name_prefix": "delphix-centos7-postgres{{user `pg_ver`}}",
+    "ami_name_prefix": "delphix-centos7-postgres{{user `pg_ver`}}-target",
     "ansible_pub_key": "{{env `ANSIBLE_PUB_KEY`}}",
     "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
     "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
     "branch": "{{env `GIT_BRANCH`}}",
     "commit": "{{env `GIT_COMMIT`}}",
+    "daf_user": "{{env `DAF_USER`}}",
+    "daf_user_pass": "{{env `DAF_USER_PASS`}}",
     "dlpx:CostCenter": "{{env `AWS_COSTCENTER`}}",
     "dlpx:Expiration": "{{env `AWS_EXPIRATION`}}",
     "dlpx:Owner": "{{env `AWS_OWNER`}}",
@@ -127,7 +118,8 @@
     "md5sum": "",
     "pg_ver": "{{env `PG_VER`}}",
     "region": "{{env `AWS_REGION`}}",
-    "seed": "e055490",
+    "seed": "e055490TTTTTT",
+    "source": "delphix-centos7-postgres-base.json",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",
     "vpc_id": "{{env `AWS_VPC_ID`}}"
   }

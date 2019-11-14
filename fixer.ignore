@@ -2,9 +2,9 @@
 #
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
-source demo-workshops/tcw/image-builder/library.sh
+source demo-workshops/tcw-pg/image-builder/library.sh
 
-: "${PG_VER:=9.6}"
+: "${PG_VER:=11}"
 
 export PG_VER
 

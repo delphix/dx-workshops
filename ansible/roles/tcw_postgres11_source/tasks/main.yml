@@ -1,0 +1,21 @@
+---
+- name: Add to DE as proddb
+  lineinfile:
+    path: /home/centos/conf.txt
+    regexp: '^environment ='
+    line: 'environment = proddb'
+  become_user: root
+- name: Creates the reboot crontab for self_enroll 
+  cron:
+    name: "Enroll into Delphix on boot"
+    special_time: reboot
+    job: "until [[ \"$RESULT\" == \"yes\" ]] ; do RESULT=$(curl guacamole:8181 2>/dev/null| jq -r '.environments.ready');echo waiting for ready &>>/tmp/enroll.log; sleep 10; done; sudo /home/{{ ansible_user }}/self_enroll -c conf.txt &>> /tmp/enroll.log"
+  become: no
+  tags:
+    - cron
+- name: Enable postgresql service
+  systemd:
+    enabled: yes
+    name: "{{ postgresql_daemon }}"
+    daemon_reload: yes
+    state: started

@@ -252,26 +252,31 @@ func (c *myClient) batchStartVDBByName(vdbList ...string) (resultsList []map[str
 	return resultsList, err
 }
 
-func (c *myClient) updateMaskingConnector() (err error) {
+func (c *myClient) updateMaskingConnector(user, pass string, port int) (err error) {
 	logger := logger.WithFields(log.Fields{
 		"url":      c.url,
 		"username": c.username,
 	})
+
 	prodDBIP, err := getIP("proddb")
 	if err != nil {
 		return err
 	}
 	logger.Infof("updating connector host to %s", prodDBIP)
-	result, _, err := c.httpPut("database-connectors/1", fmt.Sprintf(`
-	{
-		"connectorName": "Patients Prod - Do Not Mask",
-		"databaseType": "ORACLE",
-		"environmentId": 1,
-		"jdbc": "jdbc:oracle:thin:@%s:1521/patpdb",
-		"schemaName": "DELPHIXDB",
-		"username": "DELPHIXDB",
-		"password": "delphixdb"
-	}`, prodDBIP))
+	putBody := fmt.Sprintf(`{
+      "connectorName": "PatientsMM - PG",
+      "databaseType": "POSTGRES",
+      "environmentId": 1,
+      "databaseName": "dafdb",
+      "host": "%s",
+      "port": %d,
+      "schemaName": "public",
+      "username": "%s",
+      "kerberosAuth": false,
+	  "password": "%s"
+	}`, prodDBIP, port, user, pass)
+	log.Debug(putBody)
+	result, _, err := c.httpPut("database-connectors/1", putBody)
 	if err != nil {
 		return err
 	}
@@ -279,11 +284,11 @@ func (c *myClient) updateMaskingConnector() (err error) {
 	return err
 }
 
-func (c *myClient) updateMaskingService() error {
+func (c *myClient) updateMaskingService() (map[string]interface{}, error) {
 
 	maskingIP, err := getIP("maskingengine")
 	if err != nil {
-		return err
+		return nil, err
 	}
 	logger.Infof("updating masking service server to %s", maskingIP)
 
@@ -300,7 +305,7 @@ func (c *myClient) updateMaskingService() error {
 		logger.Fatal(err)
 	}
 	logger.Debug(result)
-	return err
+	return result, err
 }
 
 var (
@@ -324,14 +329,14 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Info("Successfully Logged in")
-	err = virtualizationClient.updateMaskingService()
+	_, err = virtualizationClient.updateMaskingService()
 	if err != nil {
 		log.Fatal(err)
 	}
 	maskingCR := NewClientRequest(opts.MaskUserName, opts.MaskPassword, fmt.Sprintf("http://%s/masking/api", opts.DDPMaskName))
 	maskingClient := maskingCR.initResty()
 	maskingClient.waitForMaskingEngineReady(10, 600)
-	err = maskingClient.updateMaskingConnector()
+	err = maskingClient.updateMaskingConnector("delphixdb", "delphixdb", 5435)
 	if err != nil {
 		log.Fatal(err)
 	}

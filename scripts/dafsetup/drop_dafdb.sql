@@ -7,4 +7,4 @@ SELECT pg_terminate_backend(pid)
 FROM pg_stat_activity
 WHERE datname = 'dafdb';
 drop database dafdb;
-drop user dafpostgresuser;
+drop user delphixdb;

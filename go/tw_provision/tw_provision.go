@@ -24,8 +24,21 @@ type Options struct {
 	SysPass      string               `long:"sysadmin-password" env:"SYSADMIN_PASS" description:"The password used to authenticate to the Delphix Engine as the sysadmin user" required:"true"`
 }
 
-// VDBParams - parameters for constructing a VDB
-type VDBParams struct {
+// PGVDBParams - parameters for constructing an AppData VDB
+type PGVDBParams struct {
+	configClone         string
+	dbName              string
+	environmentUserName string
+	groupName           string
+	masked              bool
+	port                int
+	sourceDBName        string
+	sourceConfig        AppDataStagedSourceConfig
+	vdbName             string
+}
+
+// PVDBParams - parameters for constructing a PDB VDB
+type PVDBParams struct {
 	vdbName    string
 	dbName     string
 	groupName  string
@@ -41,6 +54,26 @@ type PatientContainer struct {
 	vdbName    string
 	sourceName string
 	owners     []string
+}
+
+// LinkParams - parameters for constructing a dSource
+type LinkParams struct {
+	dbName              string
+	groupName           string
+	environmentUserName string
+	sourceConfig        AppDataStagedSourceConfig
+	dbUser              string
+	dbPass              string
+}
+
+// AppDataStagedSourceConfig - parameters for constructing a Source Config object
+type AppDataStagedSourceConfig struct {
+	linkingEnabled bool
+	name           string
+	parameters     string
+	dbPath         string
+	repoName       string
+	envName        string
 }
 
 // User - parameters for constructing the Users
@@ -180,7 +213,7 @@ func (c *myClient) createUser(user User, wait bool) (results map[string]interfac
 // wait: Wait for the action to complete before completing
 func (c *myClient) discoverCDB(envName, cdbName, username, password string, wait bool) (results map[string]interface{}, err error) {
 	namespace := "sourceconfig"
-	scObj, err := c.findSourceCongfigByDBNameAndEnvironmentName(cdbName, envName)
+	scObj, err := c.findSourceCongfigByNameAndEnvironmentName(cdbName, envName)
 	scObjRef := scObj["reference"]
 	if err != nil {
 		return nil, err
@@ -254,7 +287,8 @@ func (c *myClient) batchCreateDatasetGroup(groupNameList ...string) (resultsList
 	return resultsList, err
 }
 
-func (c *myClient) linkDatabase(wait bool) (results map[string]interface{}, err error) {
+// Oracle PDB
+func (c *myClient) linkOracle12PDB(wait bool) (results map[string]interface{}, err error) {
 	namespace := "database"
 	dbName := "Patients Prod"
 	groupName := "Prod"
@@ -286,7 +320,7 @@ func (c *myClient) linkDatabase(wait bool) (results map[string]interface{}, err 
 		if environmentUserRef == nil {
 			logger.Fatalf("User %s not found", environmentUserName)
 		}
-		scObjRef, err := returnObjReference(c.findSourceCongfigByDBNameAndEnvironmentName(pdbName, envName))
+		scObjRef, err := returnObjReference(c.findSourceCongfigByNameAndEnvironmentName(pdbName, envName))
 		if err != nil {
 			return nil, err
 		}
@@ -337,39 +371,112 @@ func (c *myClient) linkDatabase(wait bool) (results map[string]interface{}, err 
 	}
 }
 
-// turnOnMasking deprecated with >=5.3.3
-// func turnOnMasking() {
-// 	logger := log.WithFields(log.Fields{
-// 		"connection": fmt.Sprintf("ssh://%s:22", opts.DDPVirtName),
-// 		"username":   "sysadmin",
-// 	})
-// 	logger.Info("Attempting to start masking")
-// 	config := &ssh.ClientConfig{
-// 		User: "sysadmin",
-// 		Auth: []ssh.AuthMethod{
-// 			ssh.Password(opts.SysPass),
-// 		},
-// 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-// 	}
+// Postgres Database
+func (c *myClient) linkPostgresDatabase(linkParams LinkParams, wait bool) (results map[string]interface{}, err error) {
+	namespace := "database"
+	if dbObjRef, err := c.findObjectByNameReturnReference(namespace, linkParams.dbName); dbObjRef == nil && err == nil {
+		envRef, err := c.findObjectByNameReturnReference("environment", linkParams.sourceConfig.envName)
+		if err != nil {
+			return nil, err
+		}
+		if envRef == nil {
+			logger.Fatalf("Environment %s not found", linkParams.sourceConfig.envName)
+		}
+		groupRef, err := c.findObjectByNameReturnReference("group", linkParams.groupName)
+		if err != nil {
+			return nil, err
+		}
+		if groupRef == nil {
+			logger.Fatalf("Group %s not found", linkParams.groupName)
+		}
+		environmentUserRef, err := c.findObjectByNameReturnReference("environment/user", linkParams.environmentUserName, fmt.Sprintf("environment=%s", envRef))
+		if err != nil {
+			return nil, err
+		}
+		if environmentUserRef == nil {
+			logger.Fatalf("User %s not found", linkParams.environmentUserName)
+		}
+		scObj, err := c.createSourceConfig(linkParams.sourceConfig, true)
+		if err != nil {
+			return nil, err
+		}
+		scObjRef, ok := scObj["result"].(string)
+		if !ok {
+			scObjRef = scObj["reference"].(string)
+		}
 
-// 	client, err := ssh.Dial("tcp", fmt.Sprintf("%s:22", opts.DDPVirtName), config)
-// 	if err != nil {
-// 		logger.Fatal("Unable to create client: ", err)
-// 	}
-// 	defer client.Close()
+		log.Debug(scObj)
+		log.Debug(scObjRef)
+		prodDBIP, err := getIP("proddb")
+		if err != nil {
+			return nil, err
+		}
 
-// 	session, err := client.NewSession()
-// 	if err != nil {
-// 		logger.Fatal("Unable to create session: ", err)
-// 	}
-// 	defer session.Close()
+		postBody := fmt.Sprintf(`{
+		"name": "%s",
+		"group": "%s",
+		"description": "",
+		"linkData": {
+			"config": "%s",
+			"stagingMountBase": "/var/lib/pgsql/staging",
+			"stagingEnvironment": "%s",
+			"stagingEnvironmentUser": "%s",
+			"environmentUser": "%s",
+			"operations": {
+			"preSync": [],
+			"postSync": [],
+			"type": "LinkedSourceOperations"
+			},
+			"parameters": {
+			"delphixInitiatedBackupFlag": true,
+			"keepStagingInSync": true,
+			"postgresPort": 5433,
+			"externalBackup": [],
+			"delphixInitiatedBackup": [
+				{
+				"userName": "%s",
+				"postgresSourcePort": 5432,
+				"userPass": "%s",
+				"sourceHostAddress": "%s"
+				}
+			],
+			"configSettingsStg": []
+			},
+			"sourcingPolicy": { "logsyncEnabled": false, "type": "SourcingPolicy" },
+			"type": "AppDataStagedLinkData"
+		},
+		"type": "LinkParameters"
+		}`, linkParams.dbName, groupRef, scObjRef, envRef, environmentUserRef, environmentUserRef, linkParams.dbUser, linkParams.dbPass, prodDBIP)
+		log.Debug(postBody)
+		url := fmt.Sprintf("%s/link", namespace)
+		action, _, err := c.httpPost(url, postBody)
+		if err != nil {
+			return nil, err
+		}
+		logger.Debugf("DBLINK ACTION: %v", action)
+		err = c.jobWaiter(action)
+		if err != nil {
+			return nil, err
+		}
 
-// 	err = session.Run("cd system; startMasking; commit")
-// 	if err != nil {
-// 		logger.Fatal("Unable to start masking: ", err)
-// 	}
-// 	logger.Info("Masking started")
-// }
+		syncAction, err := c.findActionByTitleAndParentAction("DB_SYNC", action["action"].(string))
+		if err != nil {
+			return nil, err
+		}
+		if wait {
+			c.jobWaiter(syncAction)
+		}
+		return action, err
+	} else if err != nil {
+		return nil, err
+	} else {
+		log.Debug(dbObjRef)
+		log.Infof("%s already exists", linkParams.dbName)
+		results := make(map[string]interface{})
+		results["result"] = dbObjRef.(string)
+		return results, err
+	}
+}
 
 func (c *myClient) linkMaskingJob() (results map[string]interface{}, err error) {
 	namespace := "maskingjob"
@@ -402,7 +509,8 @@ func (c *myClient) linkMaskingJob() (results map[string]interface{}, err error) 
 	return action, err
 }
 
-func (c *myClient) provisionVDB(vdbParams VDBParams, wait bool) (results map[string]interface{}, err error) {
+// provisionPVDB provisions virtual PDB into existing CDB's
+func (c *myClient) provisionPVDB(vdbParams PVDBParams, wait bool) (results map[string]interface{}, err error) {
 	namespace := "database"
 	maskingJSON := ""
 	var maskingJobRef interface{}
@@ -429,7 +537,7 @@ func (c *myClient) provisionVDB(vdbParams VDBParams, wait bool) (results map[str
 		if groupRef == nil {
 			logger.Fatalf("Group %s not found", vdbParams.groupName)
 		}
-		scObjRef, err := returnObjReference(c.findSourceCongfigByDBNameAndEnvironmentName(vdbParams.cdbName, vdbParams.envName))
+		scObjRef, err := returnObjReference(c.findSourceCongfigByNameAndEnvironmentName(vdbParams.cdbName, vdbParams.envName))
 		if err != nil {
 			return nil, err
 		}
@@ -494,9 +602,160 @@ func (c *myClient) provisionVDB(vdbParams VDBParams, wait bool) (results map[str
 	}
 }
 
+// provisionVDB provisions VDBs
+func (c *myClient) provisionVDB(vdbParams PGVDBParams, wait bool) (results map[string]interface{}, err error) {
+	namespace := "database"
+
+	if vdbObjRef, err := c.findObjectByNameReturnReference(namespace, vdbParams.vdbName); vdbObjRef == nil && err == nil {
+		sourceDBRef, err := c.findObjectByNameReturnReference(namespace, vdbParams.sourceDBName)
+		if err != nil {
+			return nil, err
+		}
+		if sourceDBRef == nil {
+			logger.Fatalf("Source Database %s not found", vdbParams.sourceDBName)
+		}
+		envRef, err := c.findObjectByNameReturnReference("environment", vdbParams.sourceConfig.envName)
+		if err != nil {
+			return nil, err
+		}
+		if envRef == nil {
+			logger.Fatalf("Environment %s not found", vdbParams.sourceConfig.envName)
+		}
+		groupRef, err := c.findObjectByNameReturnReference("group", vdbParams.groupName)
+		if err != nil {
+			return nil, err
+		}
+		if groupRef == nil {
+			logger.Fatalf("Group %s not found", vdbParams.groupName)
+		}
+		scObj, err := c.createSourceConfig(vdbParams.sourceConfig, true)
+		if err != nil {
+			return nil, err
+		}
+		scRepoRef := scObj["repository"]
+		if scRepoRef == nil {
+			logger.Fatalf("Repository for SourceConfig %s not found on %s", vdbParams.sourceConfig.name, vdbParams.sourceConfig.envName)
+		}
+		environmentUserRef, err := c.findObjectByNameReturnReference("environment/user", vdbParams.environmentUserName, fmt.Sprintf("environment=%s", envRef))
+		if err != nil {
+			return nil, err
+		}
+		if environmentUserRef == nil {
+			logger.Fatalf("User %s not found", vdbParams.environmentUserName)
+		}
+
+		postBody := fmt.Sprintf(`{
+			"container": {
+				"sourcingPolicy": { "logsyncEnabled": false, "type": "SourcingPolicy" },
+				"group": "%s",
+				"name": "%s",
+				"type": "AppDataContainer"
+			},
+			"source": {
+				"operations": {
+				"configureClone": [%s],
+				"preRefresh": [],
+				"postRefresh": [],
+				"preRollback": [],
+				"postRollback": [],
+				"preSnapshot": [],
+				"postSnapshot": [],
+				"preStart": [],
+				"postStart": [],
+				"preStop": [],
+				"postStop": [],
+				"type": "VirtualSourceOperations"
+				},
+				"parameters": {
+					"postgresPort": %d,
+					"configSettingsStg": [
+						{ "propertyName": "listen_addresses", "value": "*" }
+					]
+				},
+				"additionalMountPoints": [],
+				"allowAutoVDBRestartOnHostReboot": true,
+				"logCollectionEnabled": false,
+				"name": "%s",
+				"type": "AppDataVirtualSource"
+			},
+			"sourceConfig": {
+				"path": "/mnt/provision/%s",
+				"name": "%s",
+				"repository": "%s",
+				"linkingEnabled": true,
+				"environmentUser": "%s",
+				"type": "AppDataDirectSourceConfig"
+			},
+			"timeflowPointParameters": {
+				"type": "TimeflowPointSemantic",
+				"location": "LATEST_SNAPSHOT",
+				"container": "%s"
+			},
+			"masked": %t,
+			"type": "AppDataProvisionParameters"
+			}`, groupRef, vdbParams.vdbName, vdbParams.configClone, vdbParams.port, vdbParams.vdbName, vdbParams.dbName, vdbParams.vdbName, scRepoRef, environmentUserRef, sourceDBRef, vdbParams.masked)
+		logger.Debug(postBody)
+		url := fmt.Sprintf("%s/provision", namespace)
+		action, _, err := c.httpPost(url, postBody)
+		if err != nil {
+			return nil, err
+		}
+		if wait {
+			c.jobWaiter(action)
+		}
+		return action, err
+	} else if err != nil {
+		return nil, err
+	} else {
+		log.Debug(vdbObjRef)
+		log.Infof("%s already exists", vdbParams.vdbName)
+		return nil, err
+	}
+}
+
+func (c *myClient) createSourceConfig(scParams AppDataStagedSourceConfig, wait bool) (results map[string]interface{}, err error) {
+
+	scObj, err := c.findSourceCongfigByNameAndEnvironmentName(scParams.name, scParams.envName)
+	if err != nil {
+		return nil, err
+	}
+	if scObj != nil {
+		logger.Infof("SourceConfig %s already exists on %s", scParams.name, scParams.envName)
+		logger.Info(scObj)
+		return scObj, err
+	}
+
+	repoObj, err := c.findRepoByNameAndEnvironmentName(scParams.repoName, scParams.envName)
+	if err != nil {
+		return nil, err
+	}
+	if repoObj == nil {
+		log.Fatalf("Repo %s on %s not found", scParams.repoName, scParams.envName)
+	}
+
+	postBody := fmt.Sprintf(`{
+		"name":"%s",
+		"repository":"%s",
+		"parameters":{
+			"dbPath":"%s"
+			},
+		"linkingEnabled":%t,
+		"type":"AppDataStagedSourceConfig"
+	}`, scParams.name, repoObj["reference"], scParams.parameters, scParams.linkingEnabled)
+	log.Print(postBody)
+	action, _, err := c.httpPost("sourceconfig", postBody)
+	if err != nil {
+		return nil, err
+	}
+	if wait {
+		c.jobWaiter(action)
+	}
+	return action, err
+}
+
 // batchProvisionVDB takes one parameter:
 // vdbParamsList: a slice of VDBParams to create
-func (c *myClient) batchProvisionVDB(vdbParamsList ...VDBParams) (resultsList []map[string]interface{}, err error) {
+func (c *myClient) batchProvisionVDB(vdbParamsList ...PGVDBParams) (resultsList []map[string]interface{}, err error) {
 	for _, v := range vdbParamsList {
 		if action, err := c.provisionVDB(v, false); action != nil && err == nil {
 			resultsList = append(resultsList, action)
@@ -613,7 +872,7 @@ func (c *myClient) createSelfServiceContainer(container PatientContainer, wait b
 	}
 }
 
-func (c *myClient) populateMasking() (err error) {
+func (c *myClient) populateMasking(user, pass string, port int) (err error) {
 	logger := logger.WithFields(log.Fields{
 		"url":      c.url,
 		"username": c.username,
@@ -624,7 +883,7 @@ func (c *myClient) populateMasking() (err error) {
 	appExists := false
 	envExists := false
 	globFileName := "global_objects.json"
-	mjFileName := "masking_job.json"
+	mjFileName := "masking_job_postgres.json"
 	glObjFile, err := ioutil.ReadFile(globFileName)
 	if err != nil {
 		logger.Fatal("Unable to open: ", globFileName, err)
@@ -673,21 +932,26 @@ func (c *myClient) populateMasking() (err error) {
 	if err != nil {
 		return err
 	}
-	logger.Infof("updating connector host to %s", prodDBIP)
-	result, _, err := c.httpPut("database-connectors/1", fmt.Sprintf(`
-	{
-		"connectorName": "Patients Prod - Do Not Mask",
-		"databaseType": "ORACLE",
-		"environmentId": 1,
-		"jdbc": "jdbc:oracle:thin:@%s:1521/patpdb",
-		"schemaName": "DELPHIXDB",
-		"username": "DELPHIXDB",
-		"password": "delphixdb"
-	}`, prodDBIP))
+	logger.Infof("updating masking connector host to %s", prodDBIP)
+	putBody := fmt.Sprintf(`{
+      "connectorName": "PatientsMM - PG",
+      "databaseType": "POSTGRES",
+      "environmentId": 1,
+      "databaseName": "dafdb",
+      "host": "%s",
+      "port": %d,
+      "schemaName": "public",
+      "username": "%s",
+      "kerberosAuth": false,
+	  "password": "%s"
+	}`, prodDBIP, port, user, pass)
+	log.Debug(putBody)
+	result, _, err := c.httpPut("database-connectors/1", putBody)
 	if err != nil {
 		return err
 	}
 	log.Debug(result)
+
 	return err
 }
 
@@ -1015,6 +1279,49 @@ func (c *myClient) updateMaskingService() (map[string]interface{}, error) {
 	return result, err
 }
 
+func (c *myClient) createDemoRetentionPolicy() (string, error) {
+	namespace := "policy"
+	policyName := "Demo"
+	if policyRef, err := c.findObjectByNameReturnReference(namespace, policyName); policyRef == nil && err == nil {
+		postBody := fmt.Sprintf(`{
+		"dataDuration": 2,
+		"dataUnit": "YEAR",
+		"logDuration": 1,
+		"logUnit": "YEAR",
+		"customized": false,
+		"name": "%s",
+		"type": "RetentionPolicy"
+		}`, policyName)
+
+		action, _, err := c.httpPost(namespace, postBody)
+		if err != nil {
+			return "", err
+		}
+
+		c.jobWaiter(action)
+		return action["result"].(string), err
+	} else {
+		return policyRef.(string), err
+	}
+}
+
+func (c *myClient) applyDemoRetentionPolicy(policyRef, containerRef string) error {
+	namespace := "policy"
+	postBody := fmt.Sprintf(`{
+			"target":"%s",
+			"type":"PolicyApplyTargetParameters"
+		}`, containerRef)
+
+	action, _, err := c.httpPost(fmt.Sprintf("%s/%s/apply", namespace, policyRef), postBody)
+	if err != nil {
+		return err
+	}
+
+	c.jobWaiter(action)
+	return err
+
+}
+
 var (
 	opts             Options
 	parser           = flags.NewParser(&opts, flags.Default)
@@ -1027,181 +1334,132 @@ var (
 func main() {
 	var err error
 
-	err = initializePlatform()
-	if err != nil {
-		logger.Fatal(err)
-	}
-	virtualizationCR := NewClientRequest("delphix_admin", "delphix", fmt.Sprintf("https://%s/resources/json/delphix", opts.DDPVirtName))
-	virtualizationClient := virtualizationCR.initResty()
-	virtualizationClient.setInitialPlatformPassword()
-
-	maskingCR := NewClientRequest("admin", "Admin-12", fmt.Sprintf("https://%s/resources/json/delphix", opts.DDPMaskName))
-	maskingClient := maskingCR.initResty()
-	maskingClient.setInitialPlatformPassword()
-
-	maskingCR = NewClientRequest("admin", "Admin-12", fmt.Sprintf("http://%s/masking/api", opts.DDPMaskName))
-	maskingClient = maskingCR.initResty()
-	maskingClient.setInitialMaskingPassword()
-
-	result, err := virtualizationClient.updateMaskingService()
-	if err != nil {
-		log.Fatal(err)
-	}
-	logger.Debug(result)
-
-	srv := startHTTPServer()
-	defer shutdownHTTPServer(srv)
-	err = virtualizationClient.waitForEnvironmentsReady(10, 300, "proddb", "devdb")
-
-	if err != nil {
-		logger.Fatal(err)
+	prodSC := AppDataStagedSourceConfig{
+		linkingEnabled: true,
+		name:           "Patients Prod",
+		parameters:     "{dbPath: \\\"Patients Prod\\\"}",
+		dbPath:         "Patients Prod",
+		repoName:       "Postgres vFiles (11.5)",
+		envName:        "proddb",
 	}
 
-	devUser := User{
-		name:                  "dev",
-		password:              "delphix",
-		passwordUpdateRequest: "NONE",
-		roles:                 []string{"Self-Service User"},
+	devSC := AppDataStagedSourceConfig{
+		linkingEnabled: true,
+		name:           "Patients Non-Prod",
+		parameters:     "{dbPath: \\\"Patients Non-Prod\\\"}",
+		dbPath:         "Patients Non-Prod",
+		repoName:       "Postgres vFiles (11.5)",
+		envName:        "devdb",
 	}
-	qaUser := User{
-		name:                  "qa",
-		password:              "delphix",
-		passwordUpdateRequest: "NONE",
-		roles:                 []string{"Self-Service User"},
-	}
-	_, err = virtualizationClient.batchCreateUserAndAuthorizations(devUser, qaUser)
 
-	_, err = virtualizationClient.discoverCDB("proddb", "patcdb", "c##delphixdb", "delphixdb", true)
-	if err != nil {
-		logger.Fatal(err)
+	proddb := LinkParams{
+		dbName:              "Patients Prod",
+		groupName:           "Prod",
+		environmentUserName: "postgres",
+		sourceConfig:        prodSC,
+		dbUser:              "delphixdb",
+		dbPass:              "delphixdb",
 	}
-	_, err = virtualizationClient.discoverCDB("devdb", "tcdb", "c##delphixdb", "delphixdb", true)
-	if err != nil {
-		logger.Fatal(err)
-	}
-	_, err = virtualizationClient.batchCreateDatasetGroup("Prod", "Masked Masters", "Non Prod")
-	if err != nil {
-		logger.Fatal(err)
-	}
-	_, err = virtualizationClient.linkDatabase(true)
+
+	maskingIP, err := getIP("maskingengine")
 	if err != nil {
 		logger.Fatal(err)
 	}
 
-	err = maskingClient.populateMasking()
-	if err != nil {
-		logger.Fatal(err)
+	patmm := PGVDBParams{
+		configClone: fmt.Sprintf(`{
+							"command": "#!/usr/bin/env bash\n#\n# Copyright (c) 2019 by Delphix. All rights reserved.\n#\n#v1.0\n#2019 - Adam Bowen\n#requires curl and jq to be installed on the host machine\nDMHOST=\"%s\"\nDMPORT=\"80\"\nURL=\"http://${DMHOST}:${DMPORT}/masking/api\"\nENVIRONMENT=\"Patients Environment\"\nMASKINGJOB=\"Patients Mask - PG\"\nCONNECTOR=\"PatientsMM - PG\"\nDMUSER=Admin\nDMPASS=%s\n\necho \"Connecting to ${URL}\"\n\necho \"Authenticating\"\n\nAUTH=$(curl -sX POST --header 'Content-Type: application/json' --header 'Accept: application/json'\\\n  -d \"{ \\\"username\\\": \\\"${DMUSER}\\\", \\\"password\\\": \\\"${DMPASS}\\\"}\" \"${URL}/login\" | jq -r .Authorization)\n\n[[ -z $AUTH || $AUTH == \"null\" ]] && echo \"Was unable to get authenticate. Please try again\" && exit 1\n\nENVID=$(curl -sX GET --header 'Accept: application/json' --header \"Authorization: ${AUTH}\" \"${URL}/environments\" | \\\n  jq -r \".responseList[]| select(.environmentName==\\\"${ENVIRONMENT}\\\").environmentId\")\n\n[[ -z $ENVID || $ENVID == \"null\" ]] && echo \"Was unable to find Job ${ENVIRONMENT}. Please try again\" && echo ${EXECID} && exit 1\n\nJOBID=$(curl -sX GET --header 'Accept: application/json' --header \"Authorization: ${AUTH}\" \\\n  \"${URL}/masking-jobs?environment_id=${ENVID}\" | jq -r \".responseList[] | select(.jobName==\\\"${MASKINGJOB}\\\").maskingJobId\")\n\n[[ -z $JOBID || $JOBID == \"null\" ]] && echo \"Was unable to find Job ${MASKINGJOB}. Please try again\" && echo ${JOBID} && exit 1\n\nCONID=$(curl -sX GET --header 'Accept: application/json' --header \"Authorization: ${AUTH}\" \\\n  \"${URL}/database-connectors?environment_id=${ENVID}\" | jq -r \".responseList[] | select(.connectorName==\\\"${CONNECTOR}\\\").databaseConnectorId\")\n\n[[ -z $CONID || $CONID == \"null\" ]] && echo \"Was unable to find Job ${CONNECTOR}. Please try again\" && echo ${CONID} && exit 1\n\necho \"Executing Job \\\"${ENVIRONMENT}/${MASKINGJOB}\\\" with \\\"${CONNECTOR}\\\": ${JOBID}\"\n\nEXECID=$(curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json'\\\n  --header \"Authorization: ${AUTH}\" -d \"{\\\"jobId\\\": ${JOBID}, \\\"targetConnectorId\\\": ${CONID}}}\"\\\n  \"${URL}/executions\"|jq -r .executionId)\n\n[[ -z $EXECID || $EXECID == \"null\" ]] && echo \"Was unable to start Job ${JOBID}. Please try again\" && echo ${EXECID} && exit 1\n\necho \"Waiting for execution ${EXECID} to finish\"\n\nwhile [[ \"$STATUS\" != \"SUCCEEDED\" && \"$STATUS\" != \"FAILED\" ]]\n    do\n    sleep 3\n    STATUS=$(curl -sX GET --header 'Accept: application/json' --header \"Authorization: ${AUTH}\"\\\n    \"${URL}/executions/${EXECID}\" | jq -r .status)\n    [[ -z $STATUS || $STATUS == \"null\" ]] && echo \"Was unable to get status of execution ${EXECID}. Please try again\" && exit 1\ndone\n\n[[ \"$STATUS\" == \"FAILED\" ]] && echo \"\\\"${ENVIRONMENT}/${MASKINGJOB}\\\" failed execution ${EXECID}.\\nCheck logs for details.\" && exit 1\n\necho \"\\\"${ENVIRONMENT}/${MASKINGJOB}\\\" : $JOBID successfully ran\"",
+							"name": "Masking Job",
+							"type": "RunBashOnSourceOperation"
+						}`, maskingIP, opts.Password),
+		dbName:              "patmm",
+		environmentUserName: "postgres",
+		groupName:           "Masked Masters",
+		masked:              true,
+		port:                5435,
+		sourceDBName:        "Patients Prod",
+		sourceConfig:        prodSC,
+		vdbName:             "Patients Masked Master",
 	}
 
-	returnVal, _, err := virtualizationClient.httpGet("maskingjob/fetch")
-	if err != nil {
-		logger.Fatal(err)
-	}
-	err = virtualizationClient.jobWaiter(returnVal)
-	if err != nil {
-		logger.Fatal(err)
-	}
-	// logger.Fatal(returnVal)
-	_, err = virtualizationClient.linkMaskingJob()
-	if err != nil {
-		logger.Fatal(err)
+	devdb := PGVDBParams{
+		dbName:              "devdb",
+		environmentUserName: "postgres",
+		groupName:           "Non Prod",
+		port:                5454,
+		sourceConfig:        devSC,
+		sourceDBName:        "Patients Masked Master",
+		vdbName:             "Patients Dev",
 	}
 
-	patmm := VDBParams{
-		vdbName:    "Patients Masked Master",
-		dbName:     "patmm",
-		groupName:  "Masked Masters",
-		pdbName:    "Patients Prod",
-		cdbName:    "patcdb",
-		envName:    "proddb",
-		maskingJob: "Patients Mask",
+	testdb := PGVDBParams{
+		dbName:              "testdb",
+		environmentUserName: "postgres",
+		groupName:           "Non Prod",
+		port:                5455,
+		sourceConfig:        devSC,
+		sourceDBName:        "Patients Masked Master",
+		vdbName:             "Patients Test",
 	}
 
-	_, err = virtualizationClient.provisionVDB(patmm, true)
-	if err != nil {
-		logger.Fatal(err)
+	prep1 := PGVDBParams{
+		dbName:              "prep1",
+		environmentUserName: "postgres",
+		groupName:           "Non Prod",
+		port:                5461,
+		sourceConfig:        devSC,
+		sourceDBName:        "Patients Masked Master",
+		vdbName:             "prep1",
 	}
 
-	devdb := VDBParams{
-		vdbName:   "Patients Dev",
-		dbName:    "devdb",
-		groupName: "Non Prod",
-		pdbName:   "Patients Masked Master",
-		cdbName:   "tcdb",
-		envName:   "devdb",
+	prep2 := PGVDBParams{
+		dbName:              "prep2",
+		environmentUserName: "postgres",
+		groupName:           "Non Prod",
+		port:                5462,
+		sourceConfig:        devSC,
+		sourceDBName:        "Patients Masked Master",
+		vdbName:             "prep2",
 	}
 
-	testdb := VDBParams{
-		vdbName:   "Patients Test",
-		dbName:    "testdb",
-		groupName: "Non Prod",
-		pdbName:   "Patients Masked Master",
-		cdbName:   "tcdb",
-		envName:   "devdb",
+	prep3 := PGVDBParams{
+		dbName:              "prep3",
+		environmentUserName: "postgres",
+		groupName:           "Non Prod",
+		port:                5463,
+		sourceConfig:        devSC,
+		sourceDBName:        "Patients Masked Master",
+		vdbName:             "prep3",
 	}
 
-	prep1 := VDBParams{
-		vdbName:   "prep1",
-		dbName:    "prep1",
-		groupName: "Non Prod",
-		pdbName:   "Patients Masked Master",
-		cdbName:   "tcdb",
-		envName:   "devdb",
+	prep4 := PGVDBParams{
+		dbName:              "prep4",
+		environmentUserName: "postgres",
+		groupName:           "Non Prod",
+		port:                5464,
+		sourceConfig:        devSC,
+		sourceDBName:        "Patients Masked Master",
+		vdbName:             "prep4",
 	}
 
-	prep2 := VDBParams{
-		vdbName:   "prep2",
-		dbName:    "prep2",
-		groupName: "Non Prod",
-		pdbName:   "Patients Masked Master",
-		cdbName:   "tcdb",
-		envName:   "devdb",
+	prep5 := PGVDBParams{
+		dbName:              "prep5",
+		environmentUserName: "postgres",
+		groupName:           "Non Prod",
+		port:                5465,
+		sourceConfig:        devSC,
+		sourceDBName:        "Patients Masked Master",
+		vdbName:             "prep5",
 	}
 
-	prep3 := VDBParams{
-		vdbName:   "prep3",
-		dbName:    "prep3",
-		groupName: "Non Prod",
-		pdbName:   "Patients Masked Master",
-		cdbName:   "tcdb",
-		envName:   "devdb",
-	}
-
-	prep4 := VDBParams{
-		vdbName:   "prep4",
-		dbName:    "prep4",
-		groupName: "Non Prod",
-		pdbName:   "Patients Masked Master",
-		cdbName:   "tcdb",
-		envName:   "devdb",
-	}
-
-	prep5 := VDBParams{
-		vdbName:   "prep5",
-		dbName:    "prep5",
-		groupName: "Non Prod",
-		pdbName:   "Patients Masked Master",
-		cdbName:   "tcdb",
-		envName:   "devdb",
-	}
-
-	prep6 := VDBParams{
-		vdbName:   "prep6",
-		dbName:    "prep6",
-		groupName: "Non Prod",
-		pdbName:   "Patients Masked Master",
-		cdbName:   "tcdb",
-		envName:   "devdb",
-	}
-
-	_, err = virtualizationClient.batchProvisionVDB(devdb, testdb, prep1, prep2, prep3, prep4, prep5, prep6)
-	if err != nil {
-		logger.Fatal(err)
-	}
-
-	_, err = virtualizationClient.createSelfServiceTemplate(true)
-	if err != nil {
-		logger.Fatal(err)
+	prep6 := PGVDBParams{
+		dbName:              "prep6",
+		environmentUserName: "postgres",
+		groupName:           "Non Prod",
+		port:                5466,
+		sourceConfig:        devSC,
+		sourceDBName:        "Patients Masked Master",
+		vdbName:             "prep6",
 	}
 
 	developContainer := PatientContainer{
@@ -1258,6 +1516,111 @@ func main() {
 		sourceName: prep6.vdbName,
 		name:       prep6.vdbName,
 		owners:     []string{"delphix_admin"},
+	}
+
+	err = initializePlatform()
+	if err != nil {
+		logger.Fatal(err)
+	}
+	virtualizationCR := NewClientRequest("delphix_admin", "delphix", fmt.Sprintf("https://%s/resources/json/delphix", opts.DDPVirtName))
+	virtualizationClient := virtualizationCR.initResty()
+	virtualizationClient.setInitialPlatformPassword()
+
+	err = virtualizationClient.uploadPlugin("postgres.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	retPolicy, err := virtualizationClient.createDemoRetentionPolicy()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	maskingCR := NewClientRequest("admin", "Admin-12", fmt.Sprintf("https://%s/resources/json/delphix", opts.DDPMaskName))
+	maskingClient := maskingCR.initResty()
+	maskingClient.setInitialPlatformPassword()
+
+	maskingCR = NewClientRequest("admin", "Admin-12", fmt.Sprintf("http://%s/masking/api", opts.DDPMaskName))
+	maskingClient = maskingCR.initResty()
+	maskingClient.setInitialMaskingPassword()
+
+	result, err := virtualizationClient.updateMaskingService()
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Debug(result)
+
+	srv := startHTTPServer()
+	defer shutdownHTTPServer(srv)
+	err = virtualizationClient.waitForEnvironmentsReady(10, 300, prodSC.envName, devSC.envName)
+
+	if err != nil {
+		logger.Fatal(err)
+	}
+
+	devUser := User{
+		name:                  "dev",
+		password:              "delphix",
+		passwordUpdateRequest: "NONE",
+		roles:                 []string{"Self-Service User"},
+	}
+	qaUser := User{
+		name:                  "qa",
+		password:              "delphix",
+		passwordUpdateRequest: "NONE",
+		roles:                 []string{"Self-Service User"},
+	}
+	_, err = virtualizationClient.batchCreateUserAndAuthorizations(devUser, qaUser)
+
+	_, err = virtualizationClient.batchCreateDatasetGroup("Prod", "Masked Masters", "Non Prod")
+	if err != nil {
+		logger.Fatal(err)
+	}
+
+	dSourceRef, err := virtualizationClient.linkPostgresDatabase(proddb, true)
+	if err != nil {
+		logger.Fatal(err)
+	}
+	logger.Info(dSourceRef)
+	err = virtualizationClient.applyDemoRetentionPolicy(retPolicy, dSourceRef["result"].(string))
+	err = maskingClient.populateMasking(proddb.dbUser, proddb.dbPass, patmm.port)
+	if err != nil {
+		logger.Fatal(err)
+	}
+
+	returnVal, _, err := virtualizationClient.httpGet("maskingjob/fetch")
+	if err != nil {
+		logger.Fatal(err)
+	}
+	err = virtualizationClient.jobWaiter(returnVal)
+	if err != nil {
+		logger.Fatal(err)
+	}
+
+	// _, err = virtualizationClient.linkMaskingJob()
+	// if err != nil {
+	// 	logger.Fatal(err)
+	// }
+
+	_, err = virtualizationClient.provisionVDB(patmm, true)
+	if err != nil {
+		logger.Fatal(err)
+	}
+
+	// //create the devSource config upfront, so that we can create other VDB's in parallel
+	_, err = virtualizationClient.createSourceConfig(devSC, true)
+	if err != nil {
+		logger.Fatal(err)
+	}
+
+	_, err = virtualizationClient.batchProvisionVDB(devdb, testdb, prep1, prep2, prep3, prep4, prep5, prep6)
+	if err != nil {
+		logger.Fatal(err)
+	}
+
+	_, err = virtualizationClient.createSelfServiceTemplate(true)
+	if err != nil {
+		logger.Fatal(err)
 	}
 
 	_, err = virtualizationClient.batchCreateSelfServiceContainer(developContainer, testContainer, prep1Container, prep2Container, prep3Container, prep4Container, prep5Container, prep6Container)

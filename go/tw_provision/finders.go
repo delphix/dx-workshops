@@ -59,7 +59,7 @@ func (c *myClient) findObjectByReference(namespace, objectReference string, para
 	return c.findObjectByAttributeValue("reference", namespace, objectReference, params...)
 }
 
-func (c *myClient) findSourceCongfigByDBNameAndEnvironmentName(dbName, envName string) (results map[string]interface{}, err error) {
+func (c *myClient) findSourceCongfigByNameAndEnvironmentName(scName, envName string) (results map[string]interface{}, err error) {
 	namespace := "environment"
 	//Find our Environment of interest
 	logger.Info("Searching for Environment by name")
@@ -75,16 +75,52 @@ func (c *myClient) findSourceCongfigByDBNameAndEnvironmentName(dbName, envName s
 
 	namespace = "sourceconfig"
 	//Find our SourceConfig of interest
-	logger.Info("Searching for Environment by name")
-	scObj, err := c.findObjectByName(namespace, dbName, fmt.Sprintf("environment=%s", envObj["reference"]))
+	logger.Info("Searching for SourceConfig by name")
+	scObj, err := c.findObjectByName(namespace, scName, fmt.Sprintf("environment=%s", envObj["reference"]))
 	if err != nil {
 		return nil, err
 	}
 	if scObj == nil {
-		logger.Fatalf("Could not find SourceConfig named %s on %s", dbName, envName)
+		logger.Infof("Could not find SourceConfig named %s on %s", scName, envName)
+		return nil, nil
 	}
 
 	logger.Infof("Found %s: %s", scObj["name"], scObj["reference"])
 
 	return scObj, err
+}
+
+func (c *myClient) findRepoByNameAndEnvironmentName(repoName, envName string) (results map[string]interface{}, err error) {
+	namespace := "environment"
+	//Find our Environment of interest
+	logger.Info("Searching for Environment by name")
+	envObj, err := c.findObjectByName(namespace, envName)
+	if err != nil {
+		return nil, err
+	}
+	if envObj == nil {
+		logger.Fatalf("Could not find Environment named %s", envName)
+	}
+
+	logger.Infof("Found %s: %s", envObj["name"], envObj["reference"])
+
+	namespace = "repository"
+	//Find our SourceConfig of interest
+	logger.Info("Searching for Repository by name")
+	repoObj, err := c.findObjectByName(namespace, repoName, fmt.Sprintf("environment=%s", envObj["reference"]))
+	if err != nil {
+		return nil, err
+	}
+	if repoObj == nil {
+		logger.Infof("Could not find Repo named %s on %s", repoName, envName)
+		return nil, nil
+	}
+
+	logger.Infof("Found %s: %s", repoObj["name"], repoObj["reference"])
+
+	return repoObj, err
+}
+
+func (c *myClient) findActionByTitleAndParentAction(title, parentAction string) (reference map[string]interface{}, err error) {
+	return c.findObjectByAttributeValue("title", "action", title, fmt.Sprintf("parentAction=%s", parentAction))
 }
