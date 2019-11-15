@@ -7,13 +7,13 @@ ALTER TABLE PATIENTS
   ADD NOTES character varying(2000);
 EOF
 
-scp -o "StrictHostKeyChecking=no" add_notes.sql ubuntu@delphix-tcw-jumpbox:git/app_repo/sql_code/ddl/.
+scp -o "StrictHostKeyChecking=no" add_notes.sql ubuntu@guacamole:git/app_repo/sql_code/ddl/.
 
 rm add_notes.sql
 
-ssh -o "StrictHostKeyChecking=no" ubuntu@delphix-tcw-jumpbox 'cd git/app_repo && git add -A && git commit -m "corrected notes column" && git push'
+ssh -o "StrictHostKeyChecking=no" ubuntu@guacamole 'cd git/app_repo && git add -A && git commit -m "corrected notes column" && git push'
 
-JOB_STATUS_URL=http://delphix-tcw-tooling-postgres11:8080/job/PatientsPipeline/job/develop/lastBuild/api/json
+JOB_STATUS_URL=http://dtooling:8080/job/PatientsPipeline/job/develop/lastBuild/api/json
 
 GREP_RETURN_CODE=0
 

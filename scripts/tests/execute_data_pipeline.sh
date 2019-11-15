@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -e
 echo "###EXECUTE DATA PIPELINE###"
-ssh -o "StrictHostKeyChecking=no" centos@delphix-tcw-tooling-postgres11 java -jar /opt/jenkins-cli.jar -s http://localhost:8080 -auth admin:admin build \"Data Pipeline\"
+ssh -o "StrictHostKeyChecking=no" centos@dtooling java -jar /opt/jenkins-cli.jar -s http://localhost:8080 -auth admin:admin build \"Data Pipeline\"
 
-JOB_STATUS_URL=http://delphix-tcw-tooling-postgres11:8080/job/Data%20Pipeline/lastBuild/api/json
+JOB_STATUS_URL=http://dtooling:8080/job/Data%20Pipeline/lastBuild/api/json
 
 GREP_RETURN_CODE=0
 

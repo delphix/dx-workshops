@@ -2,9 +2,9 @@
 set -e
 echo "###PUSH NOTES FIELD###"
 
-ssh -o "StrictHostKeyChecking=no" ubuntu@delphix-tcw-jumpbox 'cd git/app_repo && git commit -m "notes field" && git push'
+ssh -o "StrictHostKeyChecking=no" ubuntu@guacamole 'cd git/app_repo && git commit -m "notes field" && git push'
 
-JOB_STATUS_URL=http://delphix-tcw-tooling-postgres11:8080/job/PatientsPipeline/job/develop/lastBuild/api/json
+JOB_STATUS_URL=http://dtooling:8080/job/PatientsPipeline/job/develop/lastBuild/api/json
 
 GREP_RETURN_CODE=0
 

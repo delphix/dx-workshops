@@ -33,8 +33,8 @@ curl -X POST \
 }'
 EOF
 
-scp -o "StrictHostKeyChecking=no" temp.sh ubuntu@delphix-tcw-jumpbox:.
+scp -o "StrictHostKeyChecking=no" temp.sh ubuntu@guacamole:.
 
-ssh -o "StrictHostKeyChecking=no" ubuntu@delphix-tcw-jumpbox 'chmod +x ./temp.sh && ./temp.sh'
+ssh -o "StrictHostKeyChecking=no" ubuntu@guacamole 'chmod +x ./temp.sh && ./temp.sh'
 
 rm temp.sh

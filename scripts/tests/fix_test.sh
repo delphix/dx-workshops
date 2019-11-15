@@ -7,13 +7,13 @@ ALTER TABLE ONLY public.users
     ADD CONSTRAINT username UNIQUE(username);
 EOF
 
-scp -o "StrictHostKeyChecking=no" add_constraint.sql ubuntu@delphix-tcw-jumpbox:git/app_repo/sql_code/ddl/.
+scp -o "StrictHostKeyChecking=no" add_constraint.sql ubuntu@guacamole:git/app_repo/sql_code/ddl/.
 
 rm add_constraint.sql
 
-ssh -o "StrictHostKeyChecking=no" ubuntu@delphix-tcw-jumpbox 'cd git/app_repo && git checkout develop && git pull && git add -A && git commit -m "added constraint" && git push'
+ssh -o "StrictHostKeyChecking=no" ubuntu@guacamole 'cd git/app_repo && git checkout develop && git pull && git add -A && git commit -m "added constraint" && git push'
 
-JOB_STATUS_URL=http://delphix-tcw-tooling-postgres11:8080/job/PatientsPipeline/job/develop/lastBuild/api/json
+JOB_STATUS_URL=http://dtooling:8080/job/PatientsPipeline/job/develop/lastBuild/api/json
 
 GREP_RETURN_CODE=0
 
