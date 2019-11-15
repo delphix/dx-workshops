@@ -13,7 +13,7 @@ rm add_notes.sql
 
 ssh -o "StrictHostKeyChecking=no" ubuntu@guacamole 'cd git/app_repo && git add -A && git commit -m "corrected notes column" && git push'
 
-JOB_STATUS_URL=http://dtooling:8080/job/PatientsPipeline/job/develop/lastBuild/api/json
+JOB_STATUS_URL=http://tooling:8080/job/PatientsPipeline/job/develop/lastBuild/api/json
 
 GREP_RETURN_CODE=0
 

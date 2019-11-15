@@ -3,7 +3,7 @@ set -e
 echo "###MERGE FEATURE###"
 ssh -o "StrictHostKeyChecking=no" ubuntu@guacamole 'cd git/app_repo && git pull && git checkout master && git merge develop && git push'
 
-JOB_STATUS_URL=http://dtooling:8080/job/PatientsPipeline/job/master/lastBuild/api/json
+JOB_STATUS_URL=http://tooling:8080/job/PatientsPipeline/job/master/lastBuild/api/json
 
 GREP_RETURN_CODE=0
 
