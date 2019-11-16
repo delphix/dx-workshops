@@ -64,7 +64,7 @@
             },
             "name": "DDDP Masking Login",
             "type": "url",
-            "url": "http://maskingengine/login/index.html"
+            "url": "http://maskingengine/masking"
          } ],
          "date_added": "13198271372069543",
          "date_modified": "13198271902737182",
