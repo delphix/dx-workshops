@@ -64,6 +64,7 @@ type LinkParams struct {
 	sourceConfig        AppDataStagedSourceConfig
 	dbUser              string
 	dbPass              string
+	preSync             string
 }
 
 // AppDataStagedSourceConfig - parameters for constructing a Source Config object
@@ -423,7 +424,7 @@ func (c *myClient) linkPostgresDatabase(linkParams LinkParams, wait bool) (resul
 			"stagingEnvironmentUser": "%s",
 			"environmentUser": "%s",
 			"operations": {
-			"preSync": [],
+			"preSync": [%s],
 			"postSync": [],
 			"type": "LinkedSourceOperations"
 			},
@@ -446,7 +447,7 @@ func (c *myClient) linkPostgresDatabase(linkParams LinkParams, wait bool) (resul
 			"type": "AppDataStagedLinkData"
 		},
 		"type": "LinkParameters"
-		}`, linkParams.dbName, groupRef, scObjRef, envRef, environmentUserRef, environmentUserRef, linkParams.dbUser, linkParams.dbPass, prodDBIP)
+		}`, linkParams.dbName, groupRef, scObjRef, envRef, environmentUserRef, environmentUserRef, linkParams.preSync, linkParams.dbUser, linkParams.dbPass, prodDBIP)
 		log.Debug(postBody)
 		url := fmt.Sprintf("%s/link", namespace)
 		action, _, err := c.httpPost(url, postBody)
@@ -1359,6 +1360,11 @@ func main() {
 		sourceConfig:        prodSC,
 		dbUser:              "delphixdb",
 		dbPass:              "delphixdb",
+		preSync: fmt.Sprintf(`{
+          "command": "psql -c 'create table test ( did integer NOT NULL);drop table test;select pg_switch_wal();'",
+          "name": "Switch WAL Log",
+          "type": "RunBashOnSourceOperation"
+        }`),
 	}
 
 	maskingIP, err := getIP("maskingengine")
