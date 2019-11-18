@@ -52,7 +52,8 @@
         "dlpx:Expiration": "{{user `dlpx:Expiration`}}",
         "dlpx:Owner": "{{user `dlpx:Owner`}}",
         "dlpx:Project": "{{user `dlpx:Project`}}",
-        "md5sum": "{{user `md5sum`}}"
+        "md5sum": "{{user `md5sum`}}",
+        "release": "{{user `release`}}"
       },
       "type": "amazon-ebs",
       "vpc_id": "{{user `vpc_id`}}"
@@ -152,7 +153,8 @@
     "labalchemy_pub_key": "{{env `LABALCHEMY_PUB_KEY`}}",
     "md5sum": "",
     "region": "{{env `AWS_REGION`}}",
-    "seed": "5f6f8da",
+    "release": "{{env `RELEASE`}}",
+    "seed": "8038586",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",
     "vpc_id": "{{env `AWS_VPC_ID`}}"
   }

@@ -52,7 +52,8 @@
         "dlpx:Expiration": "{{user `dlpx:Expiration`}}",
         "dlpx:Owner": "{{user `dlpx:Owner`}}",
         "dlpx:Project": "{{user `dlpx:Project`}}",
-        "md5sum": "{{user `md5sum`}}"
+        "md5sum": "{{user `md5sum`}}",
+        "release": "{{user `release`}}"
       },
       "type": "amazon-ebs",
       "vpc_id": "{{user `vpc_id`}}"
@@ -107,6 +108,7 @@
     "dlpx:Project": "{{env `AWS_PROJECT`}}",
     "md5sum": "",
     "region": "{{env `AWS_REGION`}}",
+    "release": "{{env `RELEASE`}}",
     "seed": "cd44c6",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",
     "vpc_id": "{{env `AWS_VPC_ID`}}"

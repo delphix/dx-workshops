@@ -53,6 +53,7 @@
         "dlpx:Owner": "{{user `dlpx:Owner`}}",
         "dlpx:Project": "{{user `dlpx:Project`}}",
         "md5sum": "{{user `md5sum`}}",
+        "release": "{{user `release`}}",
         "source": "{{ user `source`}}"
       },
       "type": "amazon-ebs",
@@ -103,6 +104,7 @@
     "labalchemy_pub_key": "{{env `LABALCHEMY_PUB_KEY`}}",
     "md5sum": "",
     "region": "{{env `AWS_REGION`}}",
+    "release": "{{env `RELEASE`}}",
     "seed": "6eabdcbNEW",
     "source": "delphix-centos7-ansible-base.json",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",

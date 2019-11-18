@@ -59,6 +59,7 @@
         "dlpx:Owner": "{{user `dlpx:Owner`}}",
         "dlpx:Project": "{{user `dlpx:Project`}}",
         "md5sum": "{{user `md5sum`}}",
+        "release": "{{user `release`}}",
         "source": "{{ user `source`}}"
       },
       "type": "amazon-ebs",
@@ -115,6 +116,7 @@
     "labalchemy_pub_key": "{{env `LABALCHEMY_PUB_KEY`}}",
     "md5sum": "",
     "region": "{{env `AWS_REGION`}}",
+    "release": "{{env `RELEASE`}}",
     "seed": "e055490",
     "source": "delphix-centos7-oracle-12.2.0.1.json",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",

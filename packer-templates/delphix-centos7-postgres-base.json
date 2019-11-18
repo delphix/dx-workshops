@@ -52,7 +52,8 @@
         "dlpx:Expiration": "{{user `dlpx:Expiration`}}",
         "dlpx:Owner": "{{user `dlpx:Owner`}}",
         "dlpx:Project": "{{user `dlpx:Project`}}",
-        "md5sum": "{{user `md5sum`}}"
+        "md5sum": "{{user `md5sum`}}",
+        "release": "{{user `release`}}"
       },
       "type": "amazon-ebs",
       "vpc_id": "{{user `vpc_id`}}"
@@ -120,6 +121,7 @@
     "md5sum": "",
     "pg_ver": "{{env `PG_VER`}}",
     "region": "{{env `AWS_REGION`}}",
+    "release": "{{env `RELEASE`}}",
     "seed": "e05549fTTT",
     "source": "delphix-centos7-ansible-base.json",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",

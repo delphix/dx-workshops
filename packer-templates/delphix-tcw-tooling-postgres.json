@@ -54,6 +54,7 @@
         "dlpx:Owner": "{{user `dlpx:Owner`}}",
         "dlpx:Project": "{{user `dlpx:Project`}}",
         "md5sum": "{{user `md5sum`}}",
+        "release": "{{user `release`}}",
         "source": "{{ user `source`}}"
       },
       "type": "amazon-ebs",
@@ -111,6 +112,7 @@
     "md5sum": "",
     "pg_ver": "{{env `PG_VER`}}",
     "region": "{{env `AWS_REGION`}}",
+    "release": "{{env `RELEASE`}}",
     "seed": "1ea60SED",
     "source": "delphix-tcw-centos7-tooling-base.json",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",
