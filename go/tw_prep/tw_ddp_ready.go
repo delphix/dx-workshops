@@ -24,7 +24,8 @@ type Options struct {
 	EnvironmentList []string             `long:"environment" env:"DELPHIX_ENV" description:"The name of the environment to refresh" required:"true"`
 }
 
-func (c *myClient) syncDatabaseByName(dSourceName string) (results map[string]interface{}, err error) {
+func (c *myClient) syncDatabaseByName(dSourceName string, reSync bool) (results map[string]interface{}, err error) {
+	var postBody string
 	databaseNamespace := "database"
 	//Find our dSource of interest
 	log.Info("Searching for dSource by name")
@@ -38,9 +39,16 @@ func (c *myClient) syncDatabaseByName(dSourceName string) (results map[string]in
 
 	log.Infof("Found %s: %s", databaseObj["name"], databaseObj["reference"])
 
+	if reSync == true {
+		postBody = fmt.Sprintf(`{
+		"resync":true,
+		"type":"AppDataSyncParameters"
+		}`)
+	}
+	log.Debugf(postBody)
 	//Sync the dSource
 	url := fmt.Sprintf("%s/%s/sync", databaseNamespace, databaseObj["reference"])
-	action, _, err := c.httpPost(url, "")
+	action, _, err := c.httpPost(url, postBody)
 	if err != nil {
 		return nil, err
 	}
@@ -207,6 +215,69 @@ func (c *myClient) findSourceByDatabaseRef(databaseRef string) (map[string]inter
 	return obj[0].(map[string]interface{}), err
 }
 
+func (c *myClient) updatePGSource(sourceRef string) error {
+	var err error
+	prodDBIP, err := getIP("proddb")
+	if err != nil {
+		return err
+	}
+	logger.Infof("updating staging host to %s", prodDBIP)
+
+	postBody := fmt.Sprintf(`{
+		"parameters": {
+			"delphixInitiatedBackupFlag": true,
+			"keepStagingInSync": true,
+			"postgresPort": 5433,
+			"externalBackup": [],
+			"delphixInitiatedBackup": [
+			{
+				"userName": "delphixdb",
+				"postgresSourcePort": 5432,
+				"userPass": "********",
+				"sourceHostAddress": "%s"
+			}
+			],
+			"configSettingsStg": []
+		},
+		"type": "AppDataLinkedStagedSource"
+		}`, prodDBIP)
+
+	namespace := "source"
+	url := fmt.Sprintf("%s/%s", namespace, sourceRef)
+	action, _, err := c.httpPost(url, postBody)
+	if err != nil {
+		return err
+	}
+
+	c.jobWaiter(action)
+	return err
+}
+
+func (c *myClient) updatePGdSource(dName string) error {
+	namespace := "database"
+	//Find our VDB of interest
+	log.Info("Searching for dSource by name")
+	obj, err := c.findObjectByName(namespace, dName)
+	if err != nil {
+		return err
+	}
+	log.Debug(obj)
+	if obj == nil {
+		log.Fatalf("Could not find dSource named %s", dName)
+	}
+	log.Infof("Found %s: %s", obj["name"], obj["reference"])
+	sourceObj, err := c.findSourceByDatabaseRef(obj["reference"].(string))
+	if err != nil {
+		return err
+	}
+	err = c.updatePGSource(sourceObj["reference"].(string))
+	if err != nil {
+		return err
+	}
+	_, err = c.syncDatabaseByName(dName, true)
+	return err
+}
+
 func (c *myClient) startVDBByName(vdbName string, wait bool) (results map[string]interface{}, err error) {
 	namespace := "database"
 	//Find our VDB of interest
@@ -342,6 +413,7 @@ func main() {
 	}
 	virtualizationClient.batchUpdateEnvironmentHostByHostName(opts.EnvironmentList)
 	virtualizationClient.batchRefreshEnvironmentByName(opts.EnvironmentList)
+	virtualizationClient.updatePGdSource(opts.DSourceList[0])
 	virtualizationClient.batchStartVDBByName(opts.VDBList...)
 
 	log.Info("Complete")
