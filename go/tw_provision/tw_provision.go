@@ -1340,7 +1340,7 @@ func main() {
 		name:           "Patients Prod",
 		parameters:     "{dbPath: \\\"Patients Prod\\\"}",
 		dbPath:         "Patients Prod",
-		repoName:       "Postgres vFiles (11.5)",
+		repoName:       "Postgres vFiles (11.6)",
 		envName:        "proddb",
 	}
 
@@ -1349,7 +1349,7 @@ func main() {
 		name:           "Patients Non-Prod",
 		parameters:     "{dbPath: \\\"Patients Non-Prod\\\"}",
 		dbPath:         "Patients Non-Prod",
-		repoName:       "Postgres vFiles (11.5)",
+		repoName:       "Postgres vFiles (11.6)",
 		envName:        "devdb",
 	}
 
