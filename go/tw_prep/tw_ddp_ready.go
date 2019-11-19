@@ -253,6 +253,39 @@ func (c *myClient) updatePGSource(sourceRef string) error {
 	return err
 }
 
+func (c *myClient) updateMMSource(sourceRef string) error {
+	var err error
+	maskingIP, err := getIP("masking")
+	if err != nil {
+		return err
+	}
+	logger.Infof("updating masking engine to %s", maskingIP)
+
+	postBody := fmt.Sprintf(`{
+		"operations": {
+			"configureClone": [
+			{
+				"command": "#!/usr/bin/env bash\n#\n# Copyright (c) 2019 by Delphix. All rights reserved.\n#\n#v1.0\n#2019 - Adam Bowen\n#requires curl and jq to be installed on the host machine\nDMHOST=\"%s\"\nDMPORT=\"80\"\nURL=\"http://${DMHOST}:${DMPORT}/masking/api\"\nENVIRONMENT=\"Patients Environment\"\nMASKINGJOB=\"Patients Mask - PG\"\nCONNECTOR=\"PatientsMM - PG\"\nDMUSER=Admin\nDMPASS=Landshark-12\n\necho \"Connecting to ${URL}\"\n\necho \"Authenticating\"\n\nAUTH=$(curl -sX POST --header 'Content-Type: application/json' --header 'Accept: application/json'\\\n  -d \"{ \\\"username\\\": \\\"${DMUSER}\\\", \\\"password\\\": \\\"${DMPASS}\\\"}\" \"${URL}/login\" | jq -r .Authorization)\n\n[[ -z $AUTH || $AUTH == \"null\" ]] && echo \"Was unable to get authenticate. Please try again\" && exit 1\n\nENVID=$(curl -sX GET --header 'Accept: application/json' --header \"Authorization: ${AUTH}\" \"${URL}/environments\" | \\\n  jq -r \".responseList[]| select(.environmentName==\\\"${ENVIRONMENT}\\\").environmentId\")\n\n[[ -z $ENVID || $ENVID == \"null\" ]] && echo \"Was unable to find Job ${ENVIRONMENT}. Please try again\" && echo ${EXECID} && exit 1\n\nJOBID=$(curl -sX GET --header 'Accept: application/json' --header \"Authorization: ${AUTH}\" \\\n  \"${URL}/masking-jobs?environment_id=${ENVID}\" | jq -r \".responseList[] | select(.jobName==\\\"${MASKINGJOB}\\\").maskingJobId\")\n\n[[ -z $JOBID || $JOBID == \"null\" ]] && echo \"Was unable to find Job ${MASKINGJOB}. Please try again\" && echo ${JOBID} && exit 1\n\nCONID=$(curl -sX GET --header 'Accept: application/json' --header \"Authorization: ${AUTH}\" \\\n  \"${URL}/database-connectors?environment_id=${ENVID}\" | jq -r \".responseList[] | select(.connectorName==\\\"${CONNECTOR}\\\").databaseConnectorId\")\n\n[[ -z $CONID || $CONID == \"null\" ]] && echo \"Was unable to find Job ${CONNECTOR}. Please try again\" && echo ${CONID} && exit 1\n\necho \"Executing Job \\\"${ENVIRONMENT}/${MASKINGJOB}\\\" with \\\"${CONNECTOR}\\\": ${JOBID}\"\n\nEXECID=$(curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json'\\\n  --header \"Authorization: ${AUTH}\" -d \"{\\\"jobId\\\": ${JOBID}, \\\"targetConnectorId\\\": ${CONID}}}\"\\\n  \"${URL}/executions\"|jq -r .executionId)\n\n[[ -z $EXECID || $EXECID == \"null\" ]] && echo \"Was unable to start Job ${JOBID}. Please try again\" && echo ${EXECID} && exit 1\n\necho \"Waiting for execution ${EXECID} to finish\"\n\nwhile [[ \"$STATUS\" != \"SUCCEEDED\" && \"$STATUS\" != \"FAILED\" ]]\n    do\n    sleep 3\n    STATUS=$(curl -sX GET --header 'Accept: application/json' --header \"Authorization: ${AUTH}\"\\\n    \"${URL}/executions/${EXECID}\" | jq -r .status)\n    [[ -z $STATUS || $STATUS == \"null\" ]] && echo \"Was unable to get status of execution ${EXECID}. Please try again\" && exit 1\ndone\n\n[[ \"$STATUS\" == \"FAILED\" ]] && echo \"\\\"${ENVIRONMENT}/${MASKINGJOB}\\\" failed execution ${EXECID}.\\nCheck logs for details.\" && exit 1\n\necho \"\\\"${ENVIRONMENT}/${MASKINGJOB}\\\" : $JOBID successfully ran\"",
+				"name": "Masking Job",
+				"type": "RunBashOnSourceOperation"
+			}
+			],
+			"type": "VirtualSourceOperations"
+		},
+		"type": "AppDataVirtualSource"
+		}`, maskingIP)
+
+	namespace := "source"
+	url := fmt.Sprintf("%s/%s", namespace, sourceRef)
+	action, _, err := c.httpPost(url, postBody)
+	if err != nil {
+		return err
+	}
+
+	c.jobWaiter(action)
+	return err
+}
+
 func (c *myClient) updatePGdSource(dName string) error {
 	namespace := "database"
 	//Find our VDB of interest
@@ -275,6 +308,27 @@ func (c *myClient) updatePGdSource(dName string) error {
 		return err
 	}
 	_, err = c.syncDatabaseByName(dName, true)
+	return err
+}
+
+func (c *myClient) updateMMConfigClone(dName string) error {
+	namespace := "database"
+	//Find our VDB of interest
+	log.Info("Searching for dSource by name")
+	obj, err := c.findObjectByName(namespace, dName)
+	if err != nil {
+		return err
+	}
+	log.Debug(obj)
+	if obj == nil {
+		log.Fatalf("Could not find dSource named %s", dName)
+	}
+	log.Infof("Found %s: %s", obj["name"], obj["reference"])
+	sourceObj, err := c.findSourceByDatabaseRef(obj["reference"].(string))
+	if err != nil {
+		return err
+	}
+	err = c.updateMMSource(sourceObj["reference"].(string))
 	return err
 }
 
@@ -414,6 +468,7 @@ func main() {
 	virtualizationClient.batchUpdateEnvironmentHostByHostName(opts.EnvironmentList)
 	virtualizationClient.batchRefreshEnvironmentByName(opts.EnvironmentList)
 	virtualizationClient.updatePGdSource(opts.DSourceList[0])
+	virtualizationClient.updateMMConfigClone("Patients Masked Master")
 	virtualizationClient.batchStartVDBByName(opts.VDBList...)
 
 	log.Info("Complete")
