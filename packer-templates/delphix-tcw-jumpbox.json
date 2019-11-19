@@ -130,7 +130,7 @@
     "md5sum": "",
     "region": "{{env `AWS_REGION`}}",
     "release": "{{env `RELEASE`}}",
-    "seed": "969f560",
+    "seed": "066a99b",
     "source": "delphix-ubuntu-bionic-guacamole.json",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",
     "vpc_id": "{{env `AWS_VPC_ID`}}"
