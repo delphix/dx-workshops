@@ -255,7 +255,7 @@ func (c *myClient) updatePGSource(sourceRef string) error {
 
 func (c *myClient) updateMMSource(sourceRef string) error {
 	var err error
-	maskingIP, err := getIP("masking")
+	maskingIP, err := getIP("maskingengine")
 	if err != nil {
 		return err
 	}
@@ -314,7 +314,7 @@ func (c *myClient) updatePGdSource(dName string) error {
 func (c *myClient) updateMMConfigClone(dName string) error {
 	namespace := "database"
 	//Find our VDB of interest
-	log.Info("Searching for dSource by name")
+	log.Info("Searching for VDB by name")
 	obj, err := c.findObjectByName(namespace, dName)
 	if err != nil {
 		return err
@@ -465,11 +465,26 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	virtualizationClient.batchUpdateEnvironmentHostByHostName(opts.EnvironmentList)
-	virtualizationClient.batchRefreshEnvironmentByName(opts.EnvironmentList)
-	virtualizationClient.updatePGdSource(opts.DSourceList[0])
-	virtualizationClient.updateMMConfigClone("Patients Masked Master")
-	virtualizationClient.batchStartVDBByName(opts.VDBList...)
+	_, err = virtualizationClient.batchUpdateEnvironmentHostByHostName(opts.EnvironmentList)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = virtualizationClient.batchRefreshEnvironmentByName(opts.EnvironmentList)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = virtualizationClient.updatePGdSource(opts.DSourceList[0])
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = virtualizationClient.updateMMConfigClone("Patients Masked Master")
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = virtualizationClient.batchStartVDBByName(opts.VDBList...)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	log.Info("Complete")
 }
