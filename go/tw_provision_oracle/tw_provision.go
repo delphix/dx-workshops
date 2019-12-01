@@ -333,7 +333,9 @@ func (c *myClient) linkDatabase(wait bool) (results map[string]interface{}, err 
 	} else {
 		log.Debug(dbObjRef)
 		log.Infof("%s already exists", dbName)
-		return nil, err
+		results := make(map[string]interface{})
+		results["result"] = dbObjRef.(string)
+		return results, err
 	}
 }
 
@@ -1131,7 +1133,8 @@ func main() {
 	if err != nil {
 		logger.Fatal(err)
 	}
-	_, err = virtualizationClient.linkDatabase(true)
+
+	dSourceRef, err := virtualizationClient.linkDatabase(true)
 	if err != nil {
 		logger.Fatal(err)
 	}
