@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<AutomatedInstallation langpack="eng">
+<com.izforge.izpack.panels.HelloPanel id="UNKNOWN (com.izforge.izpack.panels.HelloPanel)"/>
+<com.izforge.izpack.panels.LicencePanel id="UNKNOWN (com.izforge.izpack.panels.LicencePanel)"/>
+<com.izforge.izpack.panels.TargetPanel id="UNKNOWN (com.izforge.izpack.panels.TargetPanel)">
+<installpath>/opt/datical/DaticalDB</installpath>
+</com.izforge.izpack.panels.TargetPanel>
+<com.izforge.izpack.panels.PacksPanel id="UNKNOWN (com.izforge.izpack.panels.PacksPanel)">
+<pack index="0" name="Datical DB UI" selected="true"/>
+<pack index="1" name="Datical DB CLI" selected="true"/>
+<pack index="2" name="Datical DB license manager" selected="true"/>
+<pack index="3" name="Java 8 Runtime" selected="true"/>
+<pack index="4" name="Oracle Instant Client" selected="true"/>
+<pack index="5" name="Edbplus Client" selected="true"/>
+</com.izforge.izpack.panels.PacksPanel>
+<com.izforge.izpack.panels.UserInputPanel id="SelectLicenseFilePanel">
+<userInput>
+<entry key="license.path" value="/tmp/datical_admin.lic"/>
+</userInput>
+</com.izforge.izpack.panels.UserInputPanel>
+<com.izforge.izpack.panels.InstallPanel id="UNKNOWN (com.izforge.izpack.panels.InstallPanel)"/>
+<com.izforge.izpack.panels.ShortcutPanel id="UNKNOWN (com.izforge.izpack.panels.ShortcutPanel)">
+<programGroup name="Datical"/>
+<shortcut KdeSubstUID="false" categories="" commandLine="" createForAll="false" description="This starts Datical DB" encoding="UTF-8" group="false" icon="/home/centos/DaticalDB/img/datical.ico" iconIndex="0" initialState="1" mimetype="" name="Datical DB" target="/home/centos/DaticalDB/datical" terminal="false" terminalOptions="" tryexec="" type="Application" url="" usertype="0" workingDirectory="/home/centos/DaticalDB"/>
+<shortcut KdeSubstUID="false" categories="" commandLine="" createForAll="false" description="This starts Datical DB" encoding="UTF-8" group="false" icon="/home/centos/DaticalDB/img/datical.ico" iconIndex="0" initialState="1" mimetype="" name="Datical DB" target="/home/centos/DaticalDB/datical" terminal="false" terminalOptions="" tryexec="" type="Application" url="" usertype="0" workingDirectory="/home/centos/DaticalDB"/>
+<shortcut KdeSubstUID="false" categories="" commandLine="" createForAll="false" description="This starts Datical DB" encoding="UTF-8" group="true" icon="/home/centos/DaticalDB/img/datical.ico" iconIndex="0" initialState="1" mimetype="" name="Datical DB" target="/home/centos/DaticalDB/datical" terminal="false" terminalOptions="" tryexec="" type="Application" url="" usertype="0" workingDirectory="/home/centos/DaticalDB"/>
+<shortcut KdeSubstUID="false" categories="" commandLine="-jar &quot;/home/centos/DaticalDB/Uninstaller/uninstall.jar&quot;" createForAll="false" description="Datical DB Uninstaller" encoding="UTF-8" group="false" icon="/home/centos/DaticalDB/img/recycle.ico" iconIndex="0" initialState="0" mimetype="" name="Datical DB Uninstaller" target="/usr/lib/jvm/java-1.11.0-openjdk-1.11.0.201.b09-2.el7_6.x86_64/jre/bin/java" terminal="" terminalOptions="" tryexec="" type="Application" url="" usertype="0" workingDirectory=""/>
+<shortcut KdeSubstUID="false" categories="" commandLine="-jar &quot;/home/centos/DaticalDB/Uninstaller/uninstall.jar&quot;" createForAll="false" description="Datical DB Uninstaller" encoding="UTF-8" group="false" icon="/home/centos/DaticalDB/img/recycle.ico" iconIndex="0" initialState="0" mimetype="" name="Datical DB Uninstaller" target="/usr/lib/jvm/java-1.11.0-openjdk-1.11.0.201.b09-2.el7_6.x86_64/jre/bin/java" terminal="" terminalOptions="" tryexec="" type="Application" url="" usertype="0" workingDirectory=""/>
+<shortcut KdeSubstUID="false" categories="" commandLine="-jar &quot;/home/centos/DaticalDB/Uninstaller/uninstall.jar&quot;" createForAll="false" description="Datical DB Uninstaller" encoding="UTF-8" group="true" icon="/home/centos/DaticalDB/img/recycle.ico" iconIndex="0" initialState="0" mimetype="" name="Datical DB Uninstaller" target="/usr/lib/jvm/java-1.11.0-openjdk-1.11.0.201.b09-2.el7_6.x86_64/jre/bin/java" terminal="" terminalOptions="" tryexec="" type="Application" url="" usertype="0" workingDirectory=""/>
+</com.izforge.izpack.panels.ShortcutPanel>
+<com.izforge.izpack.panels.FinishPanel id="UNKNOWN (com.izforge.izpack.panels.FinishPanel)"/>
+</AutomatedInstallation>

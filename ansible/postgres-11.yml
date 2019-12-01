@@ -3,6 +3,7 @@
   hosts: all
   vars:
     ddp_password: "{{ lookup('env','DELPHIX_ADMIN_PASSWORD') }}"
+    postgresql_port: 5432
     postgresql_version: "11.0"
     postgresql_packages:
       - postgresql11
@@ -14,12 +15,12 @@
       - { type: host, database: all, user: all, address: '127.0.0.1/32', auth_method: trust }
       - { type: host, database: all, user: all, address: '::1/128', auth_method: md5 }
       - { type: host, database: all, user: all, address: '10.0.0.0/16', auth_method: trust }
-      - { type: host, database: replication, user: dafpostgresuser, address: '10.0.0.0/16', auth_method: trust }
+      - { type: host, database: replication, user: delphixdb, address: '10.0.0.0/16', auth_method: trust }
     postgresql_global_config_options:
       - option: unix_socket_directories
         value: '{{ postgresql_unix_socket_directories | join(",") }}'
       - option: port
-        value: 5432
+        value: "{{ postgresql_port }}"
       - option: listen_addresses
         value: "*"
       - option: wal_level
@@ -53,4 +54,20 @@
       become: yes
     - role: delphix.target-host
       become: yes
-    - delphix.self-enroll
+    - role: delphix.self-enroll
+      version: v0.3
+  post_tasks:
+    # https://jira.delphix.com/browse/DLPX-62018
+    - name: Remove quotes from port number
+      lineinfile:
+        path: "{{ postgresql_config_path }}/postgresql.conf"
+        regexp: '^port ='
+        line: "port = {{ postgresql_port }}"
+      become: true
+    # https://docs.delphix.com/docs/delphix-administration/postgresql-environments-and-data-sources/postgresql-support-and-requirements/requirements-for-postgresql-target-hosts-and-databases
+    - name: Add DELPHIX_PG_PATH for non-interactive logins
+      lineinfile:
+        path: "/etc/environment"
+        regexp: '^DELPHIX_PG_PATH='
+        line: "DELPHIX_PG_PATH={{ postgresql_bin_path }}:{{ postgresql_data_dir }}"
+      become: true

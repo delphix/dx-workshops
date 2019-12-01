@@ -1,0 +1,17 @@
+---
+- name: Configure the tooling box for the Postgres 11 and Datical usecase
+  hosts: "all"
+  become: yes
+  vars:
+    aws_access_key_id: "{{ lookup('env','S3_AWS_ACCESS_KEY_ID') }}"
+    aws_secret_key: "{{ lookup('env','S3_AWS_SECRET_ACCESS_KEY') }}"
+    s3_bucket: "{{ lookup('env','S3_BUCKET') }}"
+    s3_object_path: "{{ lookup('env','S3_OBJECT_PATH') }}"
+    delphix_admin_password: "{{ lookup('env','DELPHIX_ADMIN_PASSWORD') }}"
+    datical_software: DaticalDB-linux.gtk.x86_64-2019.2.2.6029.jar
+    datical_license: datical_admin.lic
+    postgres_plugin_archive: Plugin_postgreSQL_1.3.0.zip
+    postgres_jar_version: "42.2.8"
+    postgresql_package: postgresql11
+  roles:
+    - tooling_postgres_config

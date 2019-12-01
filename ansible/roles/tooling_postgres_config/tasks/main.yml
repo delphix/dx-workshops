@@ -1,0 +1,67 @@
+---
+- name: Update jenkins config.xml
+  template: 
+    src: jenkins_config.j2
+    dest: "/var/lib/jenkins/config.xml"
+  become_user: jenkins
+  register: jenkins_config
+  tags:
+    - test
+
+- name: Create conf.txt
+  template: 
+    src: snap_conf.txt.j2
+    dest: "{{ item }}"
+    mode: "u=rwx,a=r"
+  with_items:
+      - "/home/{{ ansible_user }}/snap_conf.txt"
+      - /var/lib/jenkins/snap_conf.txt
+
+- name: setup local git repo
+  include: app-repo.yml
+
+- name: install datical tools
+  include: datical_tools.yml
+
+- name: install postgres_components
+  include: postgres_client_install.yml
+
+- name: setup data pipeline repo
+  include: data-pipeline.yml
+
+- name: Create the /opt/delphixpy-examples directory
+  file:
+    path: /opt/delphixpy-examples
+    state: directory
+    mode: 0755
+    owner: jenkins
+    group: jenkins
+
+- name: Clone the delphixpy-examples repo
+  git:
+    dest: /opt/delphixpy-examples
+    repo: https://github.com/delphix/delphixpy-examples.git
+    version: master
+  retries: 3
+  delay: 2
+  become: yes
+  become_user: jenkins
+
+- name: Place dxtools.conf
+  template: 
+      src: dxtools.conf.j2
+      dest: "/opt/delphixpy-examples/dxtools.conf"
+      mode: "a+r"
+      owner: jenkins
+      group: jenkins
+  become_user: jenkins
+  become: yes
+
+- name: Create daf_tests
+  copy: 
+    src: ../../../../go/daf_tests/bin/linux64/daf_tests
+    dest: "/var/lib/jenkins/daf_tests"
+    owner: jenkins
+    group: jenkins
+    mode: "a+rx"
+  become: yes

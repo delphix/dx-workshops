@@ -1,0 +1,57 @@
+---
+- name: Install required packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+    update_cache: true
+  vars:
+    packages:
+      - python-botocore
+      - python-boto3
+      - unzip
+
+## Commented out temporarily
+# - block:
+#   - name: make .aws directory
+#     file:
+#       path: "/home/{{ ansible_user }}/.aws"
+#       mode: 0700
+#       state: directory
+#     become: no
+#   - name: create credentials
+#     shell: |
+#       echo "[default]" > /home/{{ ansible_user }}/.aws/credentials
+#       echo "aws_access_key_id = {{ aws_access_key_id }}" >> /home/{{ ansible_user }}/.aws/credentials
+#       echo "aws_secret_access_key = {{ aws_secret_key }}" >> /home/{{ ansible_user }}/.aws/credentials
+#     args:
+#       creates: "/home/{{ ansible_user }}/.aws/credentials"
+#     become: no
+#   - name: Simple GET operation
+#     aws_s3:
+#       bucket: "{{ s3_bucket }}"
+#       object: "{{ s3_object_path }}/{{ postgres_plugin_archive }}"
+#       dest: "/tmp/{{ postgres_plugin_archive }}"
+#       mode: get
+#       retries: 3
+#     become: no
+#   always:
+#   - name: remove .aws directory
+#     file:
+#       path: "/home/{{ ansible_user }}/.aws"
+#       state: absent
+#     become: no
+
+# - name: "Unarchive {{ postgres_plugin_archive }}"
+#   unarchive:
+#     src: "/tmp/{{ postgres_plugin_archive }}"
+#     dest: "/home/{{ ansible_user }}"
+#     owner: ubuntu
+#     group: ubuntu
+#     mode: "a+r"
+#     remote_src: true
+
+- name: Temporary hotfix
+  copy: 
+    src: postgres.json
+    dest: "/home/{{ ansible_user }}/postgres.json"
+    mode: "u+r,g+r"

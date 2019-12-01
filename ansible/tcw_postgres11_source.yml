@@ -1,0 +1,8 @@
+---
+  - name: Configure TCW Postgres 11 Source
+    hosts: all
+    become: yes
+    vars:
+      postgresql_daemon: "postgresql-11"
+    roles:
+      - role: tcw_postgres11_source

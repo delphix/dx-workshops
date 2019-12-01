@@ -1,0 +1,230 @@
+pipeline {
+    options {
+        disableConcurrentBuilds()
+    }
+    agent any
+    environment {
+        CAT_ADD_TEMPLATE_ONLY = '/opt/delphixpy-examples/js_bookmark.py \
+                        --config /opt/delphixpy-examples/dxtools.conf \
+                        --create_bookmark \"\${ENTRY_NAME}\" \
+                        --data_layout \"Patients\" \
+                        --tags "\${DATE},\${DATASET}%,\${BUILD_TAG}"'
+        CAT_ADD = '/opt/delphixpy-examples/dx_jetstream_container.py --template "Patients" --container "\${PREP_ENV}" \
+                        --operation bookmark --bookmark_name "\${ENTRY_NAME}" --bookmark_tags "\${DATE},\${DATASET}%,\${BUILD_TAG}" \
+                        --bookmark_shared true --conf /opt/delphixpy-examples/dxtools.conf'
+        DAF = 'docker run -v \"${PWD}\":/daf/app --env-file \"/var/lib/jenkins/workspace/PatientsPipeline_develop/.env\" -e GIT_BRANCH=${PREP_ENV} delphix/automation-framework'
+    }
+    stages {
+        stage('Sync Delphix with Prod'){
+            steps {
+                echo "Syncing Delphix with Patients Prod"
+                sh """#!/bin/bash
+                sleep 5
+                """
+            }
+        }
+        stage('Refresh Secure Pipeline Master'){
+            steps {
+                echo "Refreshing Patients Masked Master"
+                sh """#!/bin/bash
+                /usr/local/bin/snap_prod_refresh_mm -c ${JENKINS_HOME}/snap_conf.txt
+                """
+            }
+        }
+        stage('Update Database Users and Passwords'){
+            steps{
+                echo "Configuring Users and Passwords"
+            }
+        }
+        stage('Prepare Data and Make Available For Use'){
+            parallel {
+                stage('Full Dataset'){
+                    stages{
+                        stage('Add full dataset to catalog'){
+                            steps{
+                                //Here we just bookmark the template source, since it is the full dataset
+                                echo "Add full dataset to catalog"
+                                sh """#!/bin/bash
+                                    DATASET="FULL"
+                                    DATE=\$(date '+%F %H%M%S')
+                                    ENTRY_NAME="\${DATE} \${DATASET}"
+                                    BUILD_TAG="${env.BUILD_TAG}"
+                                    ${CAT_ADD_TEMPLATE_ONLY}
+                                    """
+                            }
+                        }
+                    }
+                }
+                stage('50% Subset'){
+                    stages{
+                        stage('Create 50% dataset'){
+                            steps{
+                                echo "Creating 50% subset"
+                                sh """#!/bin/bash
+                                    PREP_ENV=prep1
+                                    ${DAF}
+                                    """
+                                /*We are just refreshing a datapod and creating a bookmark
+                                You could insert your own subsetting step here*/
+                            }
+                        }
+                        stage('Add 50% dataset to catalog'){
+                            steps{
+                                echo "Adding 50% subset to catalog"
+                                sh """#!/bin/bash
+                                        PREP_ENV=prep1
+                                        DATASET="50"
+                                        DATE=\$(date '+%F %H%M%S')
+                                        ENTRY_NAME="\${DATE} \${DATASET}"
+                                        BUILD_TAG="${env.BUILD_TAG}"
+                                        ${CAT_ADD}
+                                    """
+                            }
+                        }
+                    }
+                }
+                stage('25% Subset'){
+                    stages{
+                        stage('Create 25% dataset'){
+                            steps{
+                                echo "Creating 25% subset"
+                                sh """#!/bin/bash
+                                    PREP_ENV=prep2
+                                    ${DAF}
+                                    """
+                                /*We are just refreshing a datapod and creating a bookmark
+                                You could insert your own subsetting step here*/
+                            }
+                        }
+                        stage('Add 25% dataset to catalog'){
+                            steps{
+                                echo "Adding 25% subset to catalog"
+                                sh """#!/bin/bash
+                                        PREP_ENV=prep2
+                                        DATASET="25"
+                                        DATE=\$(date '+%F %H%M%S')
+                                        ENTRY_NAME="\${DATE} \${DATASET}"
+                                        BUILD_TAG="${env.BUILD_TAG}"
+                                        ${CAT_ADD}
+                                    """
+                            }
+                        }
+                    }
+                }
+                stage('15% Subset'){
+                    stages{
+                        stage('Create 15% dataset'){
+                            steps{
+                                echo "Creating 15% subset"
+                                sh """#!/bin/bash
+                                    PREP_ENV=prep3
+                                    ${DAF}
+                                    """
+                                /*We are just refreshing a datapod and creating a bookmark
+                                You could insert your own subsetting step here*/
+                            }
+                        }
+                        stage('Add 15% dataset to catalog'){
+                            steps{
+                                echo "Adding 15% subset to catalog"
+                                sh """#!/bin/bash
+                                        PREP_ENV=prep3
+                                        DATASET="15"
+                                        DATE=\$(date '+%F %H%M%S')
+                                        ENTRY_NAME="\${DATE} \${DATASET}"
+                                        BUILD_TAG="${env.BUILD_TAG}"
+                                        ${CAT_ADD}
+                                    """
+                            }
+                        }
+                    }
+                }
+                stage('10% Subset'){
+                    stages{
+                        stage('Create 10% dataset'){
+                            steps{
+                                echo "Creating 10% subset"
+                                sh """#!/bin/bash
+                                    PREP_ENV=prep4
+                                    ${DAF}
+                                    """
+                                /*We are just refreshing a datapod and creating a bookmark
+                                You could insert your own subsetting step here*/
+                            }
+                        }
+                        stage('Add 10% dataset to catalog'){
+                            steps{
+                                echo "Adding 10% subset to catalog"
+                                sh """#!/bin/bash
+                                    PREP_ENV=prep4
+                                    DATASET="10"
+                                    DATE=\$(date '+%F %H%M%S')
+                                    ENTRY_NAME="\${DATE} \${DATASET}"
+                                    BUILD_TAG="${env.BUILD_TAG}"
+                                    ${CAT_ADD}
+                                    """
+                            }
+                        }
+                    }
+                }
+                stage('05% Subset'){
+                    stages{
+                        stage('Create 05% dataset'){
+                            steps{
+                                echo "Creating 05% subset"
+                                sh """#!/bin/bash
+                                    PREP_ENV=prep5
+                                    ${DAF}
+                                    """
+                                /*We are just refreshing a datapod and creating a bookmark
+                                You could insert your own subsetting step here*/
+                            }
+                        }
+                        stage('Add 05% dataset to catalog'){
+                            steps{
+                                echo "Adding 05% subset to catalog"
+                                sh """#!/bin/bash
+                                    PREP_ENV=prep5
+                                    DATASET="05"
+                                    DATE=\$(date '+%F %H%M%S')
+                                    ENTRY_NAME="\${DATE} \${DATASET}"
+                                    BUILD_TAG="${env.BUILD_TAG}"
+                                    ${CAT_ADD}
+                                    """
+                            }
+                        }
+                    }
+                }
+                stage('01% Subset'){
+                    stages{
+                        stage('Create 01% dataset'){
+                            steps{
+                                echo "Creating 01% subset"
+                                sh """#!/bin/bash
+                                    PREP_ENV=prep6
+                                    ${DAF}
+                                    """
+                                /*We are just refreshing a datapod and creating a bookmark
+                                You could insert your own subsetting step here*/
+                            }
+                        }
+                        stage('Add 01% dataset to catalog'){
+                            steps{
+                                echo "Adding 01% subset to catalog"
+                                sh """#!/bin/bash
+                                    PREP_ENV=prep6
+                                    DATASET="01"
+                                    DATE=\$(date '+%F %H%M%S')
+                                    ENTRY_NAME="\${DATE} \${DATASET}"
+                                    BUILD_TAG="${env.BUILD_TAG}"
+                                    ${CAT_ADD}
+                                    """
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+ 

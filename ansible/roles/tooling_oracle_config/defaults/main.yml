@@ -4,9 +4,8 @@ REPL_HOME: /opt/datical/DaticalDB/repl
 delphix_admin_password: changeme
 s3_bucket: changeme
 s3_object_path: changeme
-datical_binaries:
-  - datical_admin.lic
-  - DaticalDB-linux.gtk.x86_64-2019.2.2.6029.jar
+datical_software: DaticalDB-linux.gtk.x86_64-2019.2.2.6029.jar
+datical_license: datical_admin.lic
 oracle_binaries:
   - oracle-instantclient12.2-basic-12.2.0.1.0-1.x86_64.rpm
   - oracle-instantclient12.2-tools-12.2.0.1.0-1.x86_64.rpm

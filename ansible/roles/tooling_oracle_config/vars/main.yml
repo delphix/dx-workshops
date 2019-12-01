@@ -1,0 +1,3 @@
+datical_binaries:
+  - "{{ datical_license }}"
+  - "{{ datical_software }}"

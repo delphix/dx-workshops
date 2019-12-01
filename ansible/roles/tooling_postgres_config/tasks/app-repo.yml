@@ -1,0 +1,150 @@
+---
+- name: Add the user 'git' user
+  user:
+    name: git
+    comment: git user
+
+- name: Get ansible public key
+  shell: |
+    ssh-keygen -y -f ~/.ssh/ansible
+  become: no
+  register: ansible_pub_key
+
+- name: Set authorized key taken from file
+  authorized_key:
+    user: git
+    state: present
+    key: "{{ ansible_pub_key.stdout }}"
+
+- name: Add localhost to .ssh/config so we can easily connect with key (for clone)
+  blockinfile:
+    path: ~/.ssh/config
+    block: |
+      host localhost
+        IdentityFile ~/.ssh/ansible
+        StrictHostKeyChecking no
+    marker: "# localhost ANSIBLE MANAGED BLOCK localhost"
+    create: yes
+    mode: u=rw,g=r,o=r
+  become: no
+
+- name: Add localhost to /var/lib/jenkins/.ssh/config so we can easily connect with key (for clone)
+  blockinfile:
+    path: /var/lib/jenkins/.ssh/config
+    block: |
+      host localhost
+        IdentityFile ~/.ssh/ansible
+        StrictHostKeyChecking no
+    marker: "# localhost ANSIBLE MANAGED BLOCK localhost"
+    create: yes
+    mode: u=rw,g=r,o=r
+  become: yes
+  become_user: jenkins
+
+- name: Create the app_repo directory
+  file:
+    path: /var/lib/jenkins/app_repo.git
+    state: directory
+    mode: "u+rwx,g+rwx"
+    owner: git
+    group: git
+  register: app_repo
+
+- name: Init app_repo directory as a bare git repo
+  shell: |
+    git init --bare /var/lib/jenkins/app_repo.git
+  args:
+    creates: /var/lib/jenkins/app_repo.git/.git
+  become: yes
+  become_user: git
+  when: "app_repo.changed"
+
+- name: Clone the app_repo source
+  git:
+    dest: /tmp/app_repo_source
+    repo: https://github.com/delphix/automation-framework-demo.git
+    version: demos/tcw
+  become: no
+  retries: 3
+  delay: 2
+
+- name: Clone the bare app_repo
+  shell: |
+    git clone git@localhost:/var/lib/jenkins/app_repo.git
+  args:
+     chdir: /tmp
+     creates: /tmp/app_repo
+  retries: 3
+  delay: 2
+  become: no
+
+- name: Populate the repo
+  synchronize:
+    src: /tmp/app_repo_source/
+    dest: /tmp/app_repo
+    rsync_opts:
+      - "--exclude=.git"
+  delegate_to: "{{ inventory_hostname }}"
+  become: no
+
+- name: copy in postgres changes
+  include: postgres_app_changes.yml
+
+- name: Are there things to add to git?
+  shell: |
+    git status
+  args:
+    chdir: /tmp/app_repo
+  register: git_status
+  changed_when: false
+
+- name: Commit and push the master, production, and develop branch
+  shell: |
+    git add -A
+    git commit -m "init"
+    git push origin master
+    git checkout -b production
+    git push origin production
+    git checkout -b develop
+    git push origin develop
+  args:
+    chdir: /tmp/app_repo
+  become: no
+  when: "'git add' in git_status.stdout"
+
+- name: Place hook
+  copy: 
+    src: post-update
+    dest: "/var/lib/jenkins/app_repo.git/hooks/post-update"
+    mode: "a+x"
+  become: yes
+  become_user: git
+
+- name: Get last abbreviated git hash
+  shell: |
+    git checkout develop &>> /dev/null
+    git rev-parse --short HEAD
+  args:
+    chdir: /tmp/app_repo
+  register: gitlog
+  become: no
+  changed_when: false
+
+- debug:
+    msg: "{{gitlog.stdout}}"
+
+- name: tar up app_repo for restore
+  shell: | 
+    tar cvzf app_repo.tgz app_repo.git
+  args:
+    chdir: /var/lib/jenkins
+  become: yes
+
+- name: Yarn install
+  shell: |
+    yarn install
+  args:
+    chdir: /tmp/app_repo/client
+  register: yarn_out
+  become: no
+  changed_when: "'Already up-to-date' not in yarn_out.stdout"

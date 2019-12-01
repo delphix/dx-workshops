@@ -1,0 +1,93 @@
+{
+   "checksum": "537581238e1691faf2ed758d864fa659",
+   "roots": {
+      "bookmark_bar": {
+         "children": [ {
+            "date_added": "13198271892742571",
+            "id": "9",
+            "meta_info": {
+               "last_visited_desktop": "13198271892743016"
+            },
+            "name": "DDDP Virtualization Login",
+            "type": "url",
+            "url": "http://delphixengine/login/index.html"
+         }, {
+            "date_added": "13198271408332023",
+            "id": "5",
+            "meta_info": {
+               "last_visited_desktop": "13198271408332123"
+            },
+            "name": "Patients PROD",
+            "type": "url",
+            "url": "http://prodweb/"
+         }, {
+            "date_added": "13198271816171990",
+            "id": "6",
+            "meta_info": {
+               "last_visited_desktop": "13198271816172438"
+            },
+            "name": "Patients DEV",
+            "type": "url",
+            "url": "http://devweb/"
+         }, {
+            "date_added": "13198271838064774",
+            "id": "7",
+            "meta_info": {
+               "last_visited_desktop": "13198271838065175"
+            },
+            "name": "Patients QA",
+            "type": "url",
+            "url": "http://testweb/"
+         }, {
+            "date_added": "13198271872797971",
+            "id": "8",
+            "meta_info": {
+               "last_visited_desktop": "13198271872798383"
+            },
+            "name": "Jenkins",
+            "type": "url",
+            "url": "http://tooling:8080/blue/pipelines"
+         }, {
+            "date_added": "13198271872797971",
+            "id": "10",
+            "meta_info": {
+               "last_visited_desktop": "13198271872798383"
+            },
+            "name": "Bugzilla",
+            "type": "url",
+            "url": "http://tooling/bugzilla"
+         }, {
+            "date_added": "13198271892742571",
+            "id": "9",
+            "meta_info": {
+               "last_visited_desktop": "13198271892743016"
+            },
+            "name": "DDDP Masking Login",
+            "type": "url",
+            "url": "http://maskingengine/masking"
+         } ],
+         "date_added": "13198271372069543",
+         "date_modified": "13198271902737182",
+         "id": "1",
+         "name": "Bookmarks bar",
+         "type": "folder"
+      },
+      "other": {
+         "children": [  ],
+         "date_added": "13198271372069573",
+         "date_modified": "0",
+         "id": "2",
+         "name": "Other bookmarks",
+         "type": "folder"
+      },
+      "synced": {
+         "children": [  ],
+         "date_added": "13198271372069574",
+         "date_modified": "0",
+         "id": "3",
+         "name": "Mobile bookmarks",
+         "type": "folder"
+      }
+   },
+   "version": 1
+}

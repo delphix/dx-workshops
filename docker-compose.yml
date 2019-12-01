@@ -1,13 +1,24 @@
 version: '3'
 services:
-  tcw:
+  tcw-oracle:
     build:
       context: .
-      dockerfile: demo-workshops/tcw/image-builder/Dockerfile
+      dockerfile: demo-workshops/tcw-oracle/image-builder/Dockerfile
       args:
         WORKSHOP_PATH: demo-workshops
-        DEMO_NAME: tcw
+        DEMO_NAME: tcw-oracle
     user: ${CURRENT_UID}
     volumes:
       - .:/build
-    env_file: .docker.env 
+    env_file: .docker.env
+  tcw-pg:
+    build:
+      context: .
+      dockerfile: demo-workshops/tcw-pg/image-builder/Dockerfile
+      args:
+        WORKSHOP_PATH: demo-workshops
+        DEMO_NAME: tcw-pg
+    user: ${CURRENT_UID}
+    volumes:
+      - .:/build
+    env_file: .docker.env

@@ -5,7 +5,7 @@
     - { role: delphix.configure-workshop-hosts }
   vars:
     lab_systems:
-        - { name: guacamole, last_octet: 5 }
+        - { name: jumpbox, last_octet: 5 }
         - { name: tooling, last_octet: 6 }
         - { name: delphixengine, last_octet: 10 }
         - { name: virtualizationengine, last_octet: 10 }

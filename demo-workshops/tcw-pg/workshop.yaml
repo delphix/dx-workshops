@@ -1,0 +1,54 @@
+ami_suffix: unstaged
+amis:
+- delphix-centos7-ansible-base:
+    packer:
+      batch: 1
+      md5sum: 3bcff7d9869372209081087b09dbae5c
+      name: delphix-centos7-ansible-base.json
+- delphix-ubuntu-bionic-guacamole:
+    packer:
+      batch: 1
+      md5sum: e5c2e0858aa04c771008c539ade63d0d
+      name: delphix-ubuntu-bionic-guacamole.json
+- delphix-centos7-postgres11-base:
+    packer:
+      batch: 2
+      md5sum: 290b20c4898fcdcc5a741082302e186c
+      name: delphix-centos7-base-postgres.json
+- delphix-tcw-centos7-patients-app:
+    packer:
+      batch: 2
+      md5sum: 15519faf0e1438effdb63bd2d274c84c
+      name: delphix-tcw-centos7-patients-app.json
+- delphix-tcw-centos7-kitchen_sink:
+    packer:
+      batch: 2
+      md5sum: 0f8241fbca14766414e384ec468f5fd0
+      name: delphix-tcw-centos7-kitchen_sink.json
+- delphix-tcw-jumpbox-postgres11:
+    packer:
+      batch: 2
+      md5sum: b687d2e33da29ea00cf8bb213cb8c34c
+      name: delphix-tcw-jumpbox-postgres.json
+- delphix-centos7-source-postgres11:
+    packer:
+      batch: 3
+      md5sum: 4ee52f7c0de3d2db8abdfa89287b921b
+      name: delphix-centos7-source-postgres.json
+- delphix-centos7-target-postgres11:
+    packer:
+      batch: 3
+      md5sum: 112a915c6c0d477792700135c7cf0699
+      name: delphix-centos7-target-postgres.json
+- delphix-tcw-centos7-tooling-base:
+    packer:
+      batch: 3
+      md5sum: 12191ddd6e1af80bb79d9d8be49dd417
+      name: delphix-tcw-centos7-tooling-base.json
+- delphix-tcw-tooling-postgres11:
+    packer:
+      batch: 4
+      md5sum: c0dea28d498385a11b63a80d652ff26b
+      name: delphix-tcw-tooling-postgres.json
+- delphix-tcw-virtualizationengine: {}
+- delphix-tcw-maskingengine: {}

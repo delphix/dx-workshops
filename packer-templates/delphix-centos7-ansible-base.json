@@ -15,7 +15,7 @@
           "volume_type": "gp2"
         }
       ],
-      "name": "delphix-centos7-ansible-base",
+      "name": "{{user `ami_name_prefix`}}",
       "region": "{{user `region`}}",
       "run_tags": {
         "branch": "{{ user `branch`}}",
@@ -52,7 +52,8 @@
         "dlpx:Expiration": "{{user `dlpx:Expiration`}}",
         "dlpx:Owner": "{{user `dlpx:Owner`}}",
         "dlpx:Project": "{{user `dlpx:Project`}}",
-        "md5sum": "{{user `md5sum`}}"
+        "md5sum": "{{user `md5sum`}}",
+        "release": "{{user `release`}}"
       },
       "type": "amazon-ebs",
       "vpc_id": "{{user `vpc_id`}}"
@@ -107,7 +108,8 @@
     "dlpx:Project": "{{env `AWS_PROJECT`}}",
     "md5sum": "",
     "region": "{{env `AWS_REGION`}}",
-    "seed": "cd44c6",
+    "release": "{{env `RELEASE`}}",
+    "seed": "61b2caf",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",
     "vpc_id": "{{env `AWS_VPC_ID`}}"
   }

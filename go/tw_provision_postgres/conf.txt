@@ -1,0 +1,5 @@
+ddp_virt_hostname = delphix-tcw-virtualizationengine
+ddp_mask_hostname = delphix-tcw-maskingengine
+password = Landshark-12
+skip-validate = 1
+sysadmin-password = sysadmin

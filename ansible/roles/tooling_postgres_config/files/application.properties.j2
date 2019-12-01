@@ -1,0 +1,25 @@
+changeLogFile=src/main/resources/db/changelog/db.changelog-master.yaml
+driver-class-name=org.postgresql.Driver
+password={{ db_password }}
+username={{ db_username }}
+url=jdbc:postgresql://{{ db_hostname }}:{{ db_port }}/{{ db_name }}
+
+
+## Spring DATASOURCE (DataSourceAutoConfiguration & DataSourceProperties)
+spring.datasource.url=jdbc:postgresql://{{ db_hostname }}:{{ db_port }}/{{ db_name }}
+spring.datasource.username={{ db_username }}
+spring.datasource.password={{ db_password }}
+
+spring.liquibase.enabled=false
+
+# The SQL dialect makes Hibernate generate better SQL for the chosen database
+spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
+
+# Hibernate ddl auto (create, create-drop, validate, update)
+# spring.jpa.hibernate.ddl-auto = update
+
+jwt.header=Authorization
+jwt.prefix=Bearer
+jwt.secret={{ jwt_secret }}
+jwt.expiration=604800

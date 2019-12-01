@@ -1,0 +1,28 @@
+---
+- name: Copy postgres application files
+  copy: 
+    src: "{{ item }}"
+    dest: "/tmp/app_repo/ansible/roles/set-hosts/vars//{{ item }}"
+    mode: "u+x,g+x"
+  with_items:
+    - DEV.yml
+    - PROD.yml
+    - QA.yml
+
+- name: Copy postgres application files
+  copy: 
+    src: "application.properties.j2"
+    dest: "/tmp/app_repo/ansible/roles/set-hosts/templates/application.properties.j2"
+    mode: "u+x,g+x"
+
+- name: Copy postgres application files
+  copy: 
+    src: "pom.xml"
+    dest: "/tmp/app_repo/pom.xml"
+    mode: "u+x,g+x"
+
+- name: Copy postgres application files
+  copy: 
+    src: "application.properties.example"
+    dest: "/tmp/app_repo/src/main/resources/application.properties.example"
+    mode: "u+x,g+x"

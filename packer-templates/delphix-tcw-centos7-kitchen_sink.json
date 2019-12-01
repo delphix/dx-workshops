@@ -15,7 +15,7 @@
           "volume_type": "gp2"
         }
       ],
-      "name": "delphix-tcw-centos7-kitchen_sink",
+      "name": "{{user `ami_name_prefix`}}",
       "region": "{{user `region`}}",
       "run_tags": {
         "branch": "{{ user `branch`}}",
@@ -53,6 +53,7 @@
         "dlpx:Owner": "{{user `dlpx:Owner`}}",
         "dlpx:Project": "{{user `dlpx:Project`}}",
         "md5sum": "{{user `md5sum`}}",
+        "release": "{{user `release`}}",
         "source": "{{ user `source`}}"
       },
       "type": "amazon-ebs",
@@ -103,7 +104,8 @@
     "labalchemy_pub_key": "{{env `LABALCHEMY_PUB_KEY`}}",
     "md5sum": "",
     "region": "{{env `AWS_REGION`}}",
-    "seed": "6eabdcb",
+    "release": "{{env `RELEASE`}}",
+    "seed": "6eabdcbNEW",
     "source": "delphix-centos7-ansible-base.json",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",
     "vpc_id": "{{env `AWS_VPC_ID`}}"

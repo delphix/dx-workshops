@@ -34,6 +34,8 @@
   include: app-repo.yml
 - name: install datical tools
   include: datical_tools.yml
+  tags:
+    - datical_install
 - name: setup data pipeline repo
   include: data-pipeline.yml
 

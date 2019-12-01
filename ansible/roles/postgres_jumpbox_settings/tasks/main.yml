@@ -1,0 +1,29 @@
+---
+  - name: Copy masking job json files
+    copy: 
+      src: "{{ item }}"
+      dest: "/home/{{ ansible_user }}/{{ item }}"
+      mode: "u+x,g+x"
+    with_items:
+      - masking_job_postgres.json
+  
+  - name: Create notes_changes
+    unarchive:
+      src: notes_changes.tgz
+      dest: "/home/{{ ansible_user }}"
+    become: no
+
+  - name: Create tw_provision
+    copy: 
+      src: ../../../../go/tw_provision_postgres/bin/linux64/tw_provision
+      dest: "/home/{{ ansible_user }}/tw_provision"
+      mode: "u+x,g+x"
+
+  - name: Create tw_prep
+    copy: 
+      src: ../../../../go/tw_prep_postgres/bin/linux64/tw_prep
+      dest: "/home/{{ ansible_user }}/tw_prep"
+      mode: "u+x,g+x"
+  
+  - include: postgres_plugin.yml
+    become: true

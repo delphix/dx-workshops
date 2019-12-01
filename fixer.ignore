@@ -2,9 +2,11 @@
 #
 # Copyright (c) 2019 by Delphix. All rights reserved.
 #
-source demo-workshops/tcw/image-builder/library.sh
+[[ -z $DEMO_NAME ]] && echo "provide type" && exit 1
+export DEMO_NAME
+source demo-workshops/shared/library.sh
 
-: "${PG_VER:=9.6}"
+: "${PG_VER:=11}"
 
 export PG_VER
 

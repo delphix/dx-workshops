@@ -1,11 +1,6 @@
 --
--- Copyright (c) 2019 by Delphix. All rights reserved.
---
 -- PostgreSQL database dump
 --
-
--- Dumped from database version 9.6.8
--- Dumped by pg_dump version 9.6.8
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -68,23 +63,10 @@ SET default_tablespace = '';
 
 SET default_with_oids = false;
 
---
--- Name: billings; Type: TABLE; Schema: public; Owner: :user
---
 
--- CREATE TABLE public.billings (
---     id integer NOT NULL,
---     patient_id integer NOT NULL,
---     ccnum character varying(32) NOT NULL,
---     cctype character varying(55) NOT NULL,
---     ccexpmonth integer NOT NULL,
---     ccexpyear integer NOT NULL,
---     address1 character varying(255) NOT NULL,
---     address2 character varying(255),
---     city character varying(255) NOT NULL,
---     state character varying(4) NOT NULL,
---     zip character varying(12) NOT NULL
--- );
+--
+-- Name: billings; Type: TABLE; Schema: public; Owner: delphixdb
+--
 
 CREATE TABLE public.billings (
     id integer NOT NULL,
@@ -103,10 +85,10 @@ CREATE TABLE public.billings (
 );
 
 
-ALTER TABLE public.billings OWNER TO :user;
+ALTER TABLE public.billings OWNER TO delphixdb;
 
 --
--- Name: billings_id_seq; Type: SEQUENCE; Schema: public; Owner: :user
+-- Name: billings_id_seq; Type: SEQUENCE; Schema: public; Owner: delphixdb
 --
 
 CREATE SEQUENCE public.billings_id_seq
@@ -117,17 +99,17 @@ CREATE SEQUENCE public.billings_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.billings_id_seq OWNER TO :user;
+ALTER TABLE public.billings_id_seq OWNER TO delphixdb;
 
 --
--- Name: billings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: :user
+-- Name: billings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: delphixdb
 --
 
 ALTER SEQUENCE public.billings_id_seq OWNED BY public.billings.id;
 
 
 --
--- Name: databasechangelog; Type: TABLE; Schema: public; Owner: :user
+-- Name: databasechangelog; Type: TABLE; Schema: public; Owner: delphixdb
 --
 
 CREATE TABLE public.databasechangelog (
@@ -148,10 +130,10 @@ CREATE TABLE public.databasechangelog (
 );
 
 
-ALTER TABLE public.databasechangelog OWNER TO :user;
+ALTER TABLE public.databasechangelog OWNER TO delphixdb;
 
 --
--- Name: databasechangeloglock; Type: TABLE; Schema: public; Owner: :user
+-- Name: databasechangeloglock; Type: TABLE; Schema: public; Owner: delphixdb
 --
 
 CREATE TABLE public.databasechangeloglock (
@@ -162,27 +144,25 @@ CREATE TABLE public.databasechangeloglock (
 );
 
 
-ALTER TABLE public.databasechangeloglock OWNER TO :user;
+ALTER TABLE public.databasechangeloglock OWNER TO delphixdb;
 
 --
--- Name: patients; Type: TABLE; Schema: public; Owner: :user
+-- Name: hibernate_sequence; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
--- CREATE TABLE public.patients (
---     id integer NOT NULL,
---     firstname character varying(255) NOT NULL,
---     middlename character varying(255) NOT NULL,
---     lastname character varying(255) NOT NULL,
---     ssn character varying(12) NOT NULL,
---     dobyear smallint NOT NULL,
---     dobmonth smallint NOT NULL,
---     dobday smallint NOT NULL,
---     address1 character varying(255) NOT NULL,
---     address2 character varying(255) NOT NULL,
---     city character varying(255) NOT NULL,
---     state character varying(4) NOT NULL,
---     zip character varying(12) NOT NULL
--- );
+CREATE SEQUENCE public.hibernate_sequence
+    START WITH 501
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.hibernate_sequence OWNER TO postgres;
+
+--
+-- Name: patients; Type: TABLE; Schema: public; Owner: delphixdb
+--
 
 CREATE TABLE public.patients (
     id integer NOT NULL,
@@ -190,11 +170,9 @@ CREATE TABLE public.patients (
     middlename character varying(255) NOT NULL,
     lastname character varying(255) NOT NULL,
     ssn character varying(12) NOT NULL,
-    dobyear smallint NOT NULL,
-    dobmonth smallint NOT NULL,
-    dobday smallint NOT NULL,
+    dob character varying(10) NOT NULL,
     address1 character varying(255) NOT NULL,
-    address2 character varying(255) NOT NULL,
+    address2 character varying(255),
     city character varying(255) NOT NULL,
     state character varying(4) NOT NULL,
     zip character varying(12) NOT NULL,
@@ -202,10 +180,11 @@ CREATE TABLE public.patients (
     updated_at timestamp without time zone NOT NULL
 );
 
-ALTER TABLE public.patients OWNER TO :user;
+
+ALTER TABLE public.patients OWNER TO delphixdb;
 
 --
--- Name: patients_id_seq; Type: SEQUENCE; Schema: public; Owner: :user
+-- Name: patients_id_seq; Type: SEQUENCE; Schema: public; Owner: delphixdb
 --
 
 CREATE SEQUENCE public.patients_id_seq
@@ -216,28 +195,18 @@ CREATE SEQUENCE public.patients_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.patients_id_seq OWNER TO :user;
+ALTER TABLE public.patients_id_seq OWNER TO delphixdb;
 
 --
--- Name: patients_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: :user
+-- Name: patients_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: delphixdb
 --
 
 ALTER SEQUENCE public.patients_id_seq OWNED BY public.patients.id;
 
 
 --
--- Name: payments; Type: TABLE; Schema: public; Owner: :user
+-- Name: payments; Type: TABLE; Schema: public; Owner: delphixdb
 --
-
--- CREATE TABLE public.payments (
---     id integer NOT NULL,
---     patient_id integer NOT NULL,
---     amount integer NOT NULL,
---     authcode character varying(36) NOT NULL,
---     currency character varying(4) NOT NULL,
---     captured boolean DEFAULT false NOT NULL,
---     type character varying(55) NOT NULL
--- );
 
 CREATE TABLE public.payments (
     id integer NOT NULL,
@@ -251,10 +220,11 @@ CREATE TABLE public.payments (
     updated_at timestamp without time zone NOT NULL
 );
 
-ALTER TABLE public.payments OWNER TO :user;
+
+ALTER TABLE public.payments OWNER TO delphixdb;
 
 --
--- Name: payments_id_seq; Type: SEQUENCE; Schema: public; Owner: :user
+-- Name: payments_id_seq; Type: SEQUENCE; Schema: public; Owner: delphixdb
 --
 
 CREATE SEQUENCE public.payments_id_seq
@@ -265,24 +235,18 @@ CREATE SEQUENCE public.payments_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.payments_id_seq OWNER TO :user;
+ALTER TABLE public.payments_id_seq OWNER TO delphixdb;
 
 --
--- Name: payments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: :user
+-- Name: payments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: delphixdb
 --
 
 ALTER SEQUENCE public.payments_id_seq OWNED BY public.payments.id;
 
 
 --
--- Name: records; Type: TABLE; Schema: public; Owner: :user
+-- Name: records; Type: TABLE; Schema: public; Owner: delphixdb
 --
-
--- CREATE TABLE public.records (
---     id integer NOT NULL,
---     patient_id integer NOT NULL,
---     type character varying(255) NOT NULL
--- );
 
 CREATE TABLE public.records (
     id integer NOT NULL,
@@ -292,10 +256,11 @@ CREATE TABLE public.records (
     updated_at timestamp without time zone NOT NULL
 );
 
-ALTER TABLE public.records OWNER TO :user;
+
+ALTER TABLE public.records OWNER TO delphixdb;
 
 --
--- Name: records_id_seq; Type: SEQUENCE; Schema: public; Owner: :user
+-- Name: records_id_seq; Type: SEQUENCE; Schema: public; Owner: delphixdb
 --
 
 CREATE SEQUENCE public.records_id_seq
@@ -306,17 +271,17 @@ CREATE SEQUENCE public.records_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.records_id_seq OWNER TO :user;
+ALTER TABLE public.records_id_seq OWNER TO delphixdb;
 
 --
--- Name: records_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: :user
+-- Name: records_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: delphixdb
 --
 
 ALTER SEQUENCE public.records_id_seq OWNED BY public.records.id;
 
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: :user
+-- Name: users; Type: TABLE; Schema: public; Owner: delphixdb
 --
 
 CREATE TABLE public.users (
@@ -329,10 +294,11 @@ CREATE TABLE public.users (
     password character varying(255) NOT NULL
 );
 
-ALTER TABLE public.users OWNER TO :user;
+
+ALTER TABLE public.users OWNER TO delphixdb;
 
 --
--- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: :user
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: delphixdb
 --
 
 CREATE SEQUENCE public.users_id_seq
@@ -343,45 +309,45 @@ CREATE SEQUENCE public.users_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.users_id_seq OWNER TO :user;
+ALTER TABLE public.users_id_seq OWNER TO delphixdb;
 
 --
--- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: :user
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: delphixdb
 --
 
 ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- Name: billings id; Type: DEFAULT; Schema: public; Owner: :user
+-- Name: billings id; Type: DEFAULT; Schema: public; Owner: delphixdb
 --
 
 ALTER TABLE ONLY public.billings ALTER COLUMN id SET DEFAULT nextval('public.billings_id_seq'::regclass);
 
 
 --
--- Name: patients id; Type: DEFAULT; Schema: public; Owner: :user
+-- Name: patients id; Type: DEFAULT; Schema: public; Owner: delphixdb
 --
 
 ALTER TABLE ONLY public.patients ALTER COLUMN id SET DEFAULT nextval('public.patients_id_seq'::regclass);
 
 
 --
--- Name: payments id; Type: DEFAULT; Schema: public; Owner: :user
+-- Name: payments id; Type: DEFAULT; Schema: public; Owner: delphixdb
 --
 
 ALTER TABLE ONLY public.payments ALTER COLUMN id SET DEFAULT nextval('public.payments_id_seq'::regclass);
 
 
 --
--- Name: records id; Type: DEFAULT; Schema: public; Owner: :user
+-- Name: records id; Type: DEFAULT; Schema: public; Owner: delphixdb
 --
 
 ALTER TABLE ONLY public.records ALTER COLUMN id SET DEFAULT nextval('public.records_id_seq'::regclass);
 
 
 --
--- Name: users id; Type: DEFAULT; Schema: public; Owner: :user
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: delphixdb
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
@@ -391,28 +357,13 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 -- Data for Name: billings; Type: TABLE DATA; Schema: public; Owner: :user
 --
 
-\COPY public.billings (id, patient_id, ccnum, cctype, ccexpmonth, ccexpyear, address1, address2, city, state, zip, created_at, updated_at) FROM '/tmp/dafsetup/billings.csv'DELIMITER ',' CSV HEADER;;
-
-
---
--- Name: billings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: :user
---
-
-SELECT pg_catalog.setval('public.billings_id_seq', 1, false);
-
+\COPY public.billings (id, patient_id, ccnum, cctype, ccexpmonth, ccexpyear, address1, address2, city, state, zip, created_at, updated_at) FROM '/tmp/dafsetup/billings.csv'DELIMITER ',' CSV HEADER;
 
 --
 -- Data for Name: patients; Type: TABLE DATA; Schema: public; Owner: :user
 --
 
-\COPY public.patients (id, firstname, middlename, lastname, ssn, dobyear, dobmonth, dobday, address1, address2, city, state, zip, created_at, updated_at) FROM '/tmp/dafsetup/patients.csv'DELIMITER ',' CSV HEADER;
-
-
---
--- Name: patients_id_seq; Type: SEQUENCE SET; Schema: public; Owner: :user
---
-
-SELECT pg_catalog.setval('public.patients_id_seq', 1, false);
+\COPY public.patients (id, firstname, middlename, lastname, ssn, dob, address1, address2, city, state, zip, created_at, updated_at) FROM '/tmp/dafsetup/patients.csv'DELIMITER ',' CSV HEADER;
 
 
 --
@@ -421,45 +372,69 @@ SELECT pg_catalog.setval('public.patients_id_seq', 1, false);
 
 \COPY public.payments (id, patient_id, amount, authcode, currency, captured, type, created_at, updated_at) FROM '/tmp/dafsetup/payments.csv'DELIMITER ',' CSV HEADER;
 
-
---
--- Name: payments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: :user
---
-
-SELECT pg_catalog.setval('public.payments_id_seq', 1, false);
-
-
 --
 -- Data for Name: records; Type: TABLE DATA; Schema: public; Owner: :user
 --
 
 \COPY public.records (id, patient_id, type, created_at, updated_at) FROM '/tmp/dafsetup/records.csv'DELIMITER ',' CSV HEADER;;
 
+--
+-- Data for Name: databasechangelog; Type: TABLE DATA; Schema: public; Owner: :user
+--
+
+\COPY public.databasechangelog (id,author,filename,dateexecuted,orderexecuted,exectype,md5sum,description,comments,tag,liquibase,contexts,labels,deployment_id) FROM '/tmp/dafsetup/databasechangelog.csv'DELIMITER ',' CSV HEADER;;
 
 --
--- Name: records_id_seq; Type: SEQUENCE SET; Schema: public; Owner: :user
+-- Data for Name: databasechangeloglock; Type: TABLE DATA; Schema: public; Owner: :user
+--
+
+\COPY public.databasechangeloglock (id,locked,lockgranted,lockedby) FROM '/tmp/dafsetup/databasechangeloglock.csv'DELIMITER ',' CSV HEADER;;
+
+
+--
+-- Name: billings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: delphixdb
+--
+
+SELECT pg_catalog.setval('public.billings_id_seq', 1, false);
+
+
+--
+-- Name: hibernate_sequence; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.hibernate_sequence', 506, true);
+
+
+--
+-- Name: patients_id_seq; Type: SEQUENCE SET; Schema: public; Owner: delphixdb
+--
+
+SELECT pg_catalog.setval('public.patients_id_seq', 1, false);
+
+
+--
+-- Name: payments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: delphixdb
+--
+
+SELECT pg_catalog.setval('public.payments_id_seq', 1, false);
+
+
+--
+-- Name: records_id_seq; Type: SEQUENCE SET; Schema: public; Owner: delphixdb
 --
 
 SELECT pg_catalog.setval('public.records_id_seq', 1, false);
 
 
 --
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: :user
---
-
-COPY public.users (id, username, firstname, lastname, password) FROM stdin;
-\.
-
-
---
--- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: :user
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: delphixdb
 --
 
 SELECT pg_catalog.setval('public.users_id_seq', 1, false);
 
 
 --
--- Name: billings billings_pkey; Type: CONSTRAINT; Schema: public; Owner: :user
+-- Name: billings billings_pkey; Type: CONSTRAINT; Schema: public; Owner: delphixdb
 --
 
 ALTER TABLE ONLY public.billings
@@ -467,7 +442,7 @@ ALTER TABLE ONLY public.billings
 
 
 --
--- Name: patients patients_pkey; Type: CONSTRAINT; Schema: public; Owner: :user
+-- Name: patients patients_pkey; Type: CONSTRAINT; Schema: public; Owner: delphixdb
 --
 
 ALTER TABLE ONLY public.patients
@@ -475,7 +450,7 @@ ALTER TABLE ONLY public.patients
 
 
 --
--- Name: payments payments_pkey; Type: CONSTRAINT; Schema: public; Owner: :user
+-- Name: payments payments_pkey; Type: CONSTRAINT; Schema: public; Owner: delphixdb
 --
 
 ALTER TABLE ONLY public.payments
@@ -483,7 +458,7 @@ ALTER TABLE ONLY public.payments
 
 
 --
--- Name: records records_pkey; Type: CONSTRAINT; Schema: public; Owner: :user
+-- Name: records records_pkey; Type: CONSTRAINT; Schema: public; Owner: delphixdb
 --
 
 ALTER TABLE ONLY public.records
@@ -491,12 +466,18 @@ ALTER TABLE ONLY public.records
 
 
 --
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: :user
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: delphixdb
 --
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
 
+--
+-- Name: users username; Type: CONSTRAINT; Schema: public; Owner: :user
+--
+
+ALTER TABLE ONLY public.users 
+    ADD CONSTRAINT username UNIQUE(username);
 
 --
 -- PostgreSQL database dump complete
