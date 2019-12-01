@@ -1593,6 +1593,9 @@ func main() {
 	}
 	logger.Info(dSourceRef)
 	err = virtualizationClient.applyDemoRetentionPolicy(retPolicy, dSourceRef["result"].(string))
+	if err != nil {
+		logger.Fatal(err)
+	}
 	err = maskingClient.populateMasking(proddb.dbUser, proddb.dbPass, patmm.port)
 	if err != nil {
 		logger.Fatal(err)
