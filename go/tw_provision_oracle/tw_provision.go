@@ -1015,6 +1015,49 @@ func (c *myClient) updateMaskingService() (map[string]interface{}, error) {
 	return result, err
 }
 
+func (c *myClient) createDemoRetentionPolicy() (string, error) {
+	namespace := "policy"
+	policyName := "Demo"
+	if policyRef, err := c.findObjectByNameReturnReference(namespace, policyName); policyRef == nil && err == nil {
+		postBody := fmt.Sprintf(`{
+		"dataDuration": 2,
+		"dataUnit": "YEAR",
+		"logDuration": 1,
+		"logUnit": "YEAR",
+		"customized": false,
+		"name": "%s",
+		"type": "RetentionPolicy"
+		}`, policyName)
+
+		action, _, err := c.httpPost(namespace, postBody)
+		if err != nil {
+			return "", err
+		}
+
+		c.jobWaiter(action)
+		return action["result"].(string), err
+	} else {
+		return policyRef.(string), err
+	}
+}
+
+func (c *myClient) applyDemoRetentionPolicy(policyRef, containerRef string) error {
+	namespace := "policy"
+	postBody := fmt.Sprintf(`{
+			"target":"%s",
+			"type":"PolicyApplyTargetParameters"
+		}`, containerRef)
+
+	action, _, err := c.httpPost(fmt.Sprintf("%s/%s/apply", namespace, policyRef), postBody)
+	if err != nil {
+		return err
+	}
+
+	c.jobWaiter(action)
+	return err
+
+}
+
 var (
 	opts             Options
 	parser           = flags.NewParser(&opts, flags.Default)
@@ -1042,6 +1085,11 @@ func main() {
 	maskingCR = NewClientRequest("admin", "Admin-12", fmt.Sprintf("http://%s/masking/api", opts.DDPMaskName))
 	maskingClient = maskingCR.initResty()
 	maskingClient.setInitialMaskingPassword()
+
+	retPolicy, err := virtualizationClient.createDemoRetentionPolicy()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	result, err := virtualizationClient.updateMaskingService()
 	if err != nil {
@@ -1084,6 +1132,11 @@ func main() {
 		logger.Fatal(err)
 	}
 	_, err = virtualizationClient.linkDatabase(true)
+	if err != nil {
+		logger.Fatal(err)
+	}
+
+	err = virtualizationClient.applyDemoRetentionPolicy(retPolicy, dSourceRef["result"].(string))
 	if err != nil {
 		logger.Fatal(err)
 	}
