@@ -704,7 +704,7 @@ func (c *myClient) provisionVDB(vdbParams PGVDBParams, retPol string, wait bool)
 		if wait {
 			c.jobWaiter(action)
 		}
-		err = c.applyDemoRetentionPolicy(retPol, vdbObjRef.(string))
+		err = c.applyDemoRetentionPolicy(retPol, action["result"].(string))
 		return action, err
 	} else if err != nil {
 		return nil, err
