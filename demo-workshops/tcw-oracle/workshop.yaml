@@ -28,7 +28,7 @@ amis:
 - delphix-tcw-jumpbox-oracle12:
     packer:
       batch: 2
-      md5sum: ef154f8461af8d03bd5738177905dfd5
+      md5sum: b1bada36a415b35498700684ca63c41e
       name: delphix-tcw-jumpbox-oracle12.json
 - delphix-tcw-source-oracle12:
     packer:

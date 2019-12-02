@@ -9,10 +9,10 @@ local-debug:
 build:
 	echo $$GOPATH
 	go get -d
-	env CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-X main.version=1.0.5o" -o ./bin/linux64/tw_provision
+	env CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-X main.version=1.0.6o" -o ./bin/linux64/tw_provision
 	
 buildmac:
 	echo $$GOPATH
 	go get -d -v
-	env GOOS=darwin GOARCH=amd64 go build -installsuffix 'static' -ldflags="-X main.version=1.0.5o" -v -o ./bin/macos/tw_provision
+	env GOOS=darwin GOARCH=amd64 go build -installsuffix 'static' -ldflags="-X main.version=1.0.6o" -v -o ./bin/macos/tw_provision
 	

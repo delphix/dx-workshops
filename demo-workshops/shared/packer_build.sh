@@ -35,4 +35,5 @@ function ALL() {
 		PACKER_BUILD ${1}
 	fi
 } 2>&1 | tee ${WORKDIR}/WAIT.log
+[[ ${PIPESTATUS[0]} -ne 0 ]] && ERROR
 READY

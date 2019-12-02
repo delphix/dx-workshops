@@ -229,7 +229,7 @@ function BINARY_BUILD() {
   cd $GODIR
   for each in `ls`; do
     cd ${GODIR}/${each}
-    make build
+    make build || exit 1
   done
 }
 

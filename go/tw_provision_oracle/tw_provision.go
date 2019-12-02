@@ -243,10 +243,10 @@ func (c *myClient) createDatasetGroup(groupName string, wait bool) (results map[
 // groupNameList: a slice of groupNames to create
 func (c *myClient) batchCreateDatasetGroup(groupNameList ...string) (resultsList []map[string]interface{}, err error) {
 	for _, v := range groupNameList {
-		if action, err := c.createDatasetGroup(v, false); err != nil {
+		if result, err := c.createDatasetGroup(v, false); err != nil {
 			return nil, err
-		} else if action != nil {
-			resultsList = append(resultsList, action)
+		} else if result != nil && (result["job"] != nil || result["action"] != nil) {
+			resultsList = append(resultsList, result)
 		}
 	}
 	c.jobWaiter(resultsList...)
@@ -333,7 +333,9 @@ func (c *myClient) linkDatabase(wait bool) (results map[string]interface{}, err 
 	} else {
 		log.Debug(dbObjRef)
 		log.Infof("%s already exists", dbName)
-		return nil, err
+		results := make(map[string]interface{})
+		results["result"] = dbObjRef.(string)
+		return results, err
 	}
 }
 
@@ -402,7 +404,7 @@ func (c *myClient) linkMaskingJob() (results map[string]interface{}, err error) 
 	return action, err
 }
 
-func (c *myClient) provisionVDB(vdbParams VDBParams, wait bool) (results map[string]interface{}, err error) {
+func (c *myClient) provisionVDB(vdbParams VDBParams, retPol string, wait bool) (results map[string]interface{}, err error) {
 	namespace := "database"
 	maskingJSON := ""
 	var maskingJobRef interface{}
@@ -484,27 +486,34 @@ func (c *myClient) provisionVDB(vdbParams VDBParams, wait bool) (results map[str
 		if wait {
 			c.jobWaiter(action)
 		}
+		err = c.applyDemoRetentionPolicy(retPol, action["result"].(string))
 		return action, err
 	} else if err != nil {
 		return nil, err
 	} else {
 		log.Debug(vdbObjRef)
 		log.Infof("%s already exists", vdbParams.vdbName)
-		return nil, err
+		results := make(map[string]interface{})
+		results["result"] = vdbObjRef.(string)
+		err = c.applyDemoRetentionPolicy(retPol, vdbObjRef.(string))
+		return results, err
 	}
 }
 
 // batchProvisionVDB takes one parameter:
 // vdbParamsList: a slice of VDBParams to create
-func (c *myClient) batchProvisionVDB(vdbParamsList ...VDBParams) (resultsList []map[string]interface{}, err error) {
+func (c *myClient) batchProvisionVDB(retPol string, vdbParamsList ...VDBParams) (resultsList []map[string]interface{}, err error) {
 	for _, v := range vdbParamsList {
-		if action, err := c.provisionVDB(v, false); action != nil && err == nil {
-			resultsList = append(resultsList, action)
+		if result, err := c.provisionVDB(v, retPol, false); result != nil && err == nil && (result["job"] != nil || result["action"] != nil) {
+			resultsList = append(resultsList, result)
 		} else if err != nil {
 			return nil, err
 		}
 	}
-	err = c.jobWaiter(resultsList...)
+
+	if resultsList != nil {
+		c.jobWaiter(resultsList...)
+	}
 
 	return resultsList, err
 }
@@ -695,13 +704,15 @@ func (c *myClient) populateMasking() (err error) {
 // containerList: a slice of PatientContainer to create
 func (c *myClient) batchCreateSelfServiceContainer(containerList ...PatientContainer) (resultsList []map[string]interface{}, err error) {
 	for _, v := range containerList {
-		if action, err := c.createSelfServiceContainer(v, false); action != nil && err == nil {
-			resultsList = append(resultsList, action)
+		if result, err := c.createSelfServiceContainer(v, false); result != nil && err == nil && (result["job"] != nil || result["action"] != nil) {
+			resultsList = append(resultsList, result)
 		} else if err != nil {
 			return nil, err
 		}
 	}
-	c.jobWaiter(resultsList...)
+	if resultsList != nil {
+		c.jobWaiter(resultsList...)
+	}
 
 	return resultsList, err
 }
@@ -1015,6 +1026,49 @@ func (c *myClient) updateMaskingService() (map[string]interface{}, error) {
 	return result, err
 }
 
+func (c *myClient) createDemoRetentionPolicy() (string, error) {
+	namespace := "policy"
+	policyName := "Demo"
+	if policyRef, err := c.findObjectByNameReturnReference(namespace, policyName); policyRef == nil && err == nil {
+		postBody := fmt.Sprintf(`{
+		"dataDuration": 2,
+		"dataUnit": "YEAR",
+		"logDuration": 1,
+		"logUnit": "YEAR",
+		"customized": false,
+		"name": "%s",
+		"type": "RetentionPolicy"
+		}`, policyName)
+
+		action, _, err := c.httpPost(namespace, postBody)
+		if err != nil {
+			return "", err
+		}
+
+		c.jobWaiter(action)
+		return action["result"].(string), err
+	} else {
+		return policyRef.(string), err
+	}
+}
+
+func (c *myClient) applyDemoRetentionPolicy(policyRef, containerRef string) error {
+	namespace := "policy"
+	postBody := fmt.Sprintf(`{
+			"target":"%s",
+			"type":"PolicyApplyTargetParameters"
+		}`, containerRef)
+
+	action, _, err := c.httpPost(fmt.Sprintf("%s/%s/apply", namespace, policyRef), postBody)
+	if err != nil {
+		return err
+	}
+
+	c.jobWaiter(action)
+	return err
+
+}
+
 var (
 	opts             Options
 	parser           = flags.NewParser(&opts, flags.Default)
@@ -1042,6 +1096,11 @@ func main() {
 	maskingCR = NewClientRequest("admin", "Admin-12", fmt.Sprintf("http://%s/masking/api", opts.DDPMaskName))
 	maskingClient = maskingCR.initResty()
 	maskingClient.setInitialMaskingPassword()
+
+	retPolicy, err := virtualizationClient.createDemoRetentionPolicy()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	result, err := virtualizationClient.updateMaskingService()
 	if err != nil {
@@ -1083,7 +1142,13 @@ func main() {
 	if err != nil {
 		logger.Fatal(err)
 	}
-	_, err = virtualizationClient.linkDatabase(true)
+
+	dSourceRef, err := virtualizationClient.linkDatabase(true)
+	if err != nil {
+		logger.Fatal(err)
+	}
+
+	err = virtualizationClient.applyDemoRetentionPolicy(retPolicy, dSourceRef["result"].(string))
 	if err != nil {
 		logger.Fatal(err)
 	}
@@ -1117,7 +1182,7 @@ func main() {
 		maskingJob: "Patients Mask",
 	}
 
-	_, err = virtualizationClient.provisionVDB(patmm, true)
+	_, err = virtualizationClient.provisionVDB(patmm, retPolicy, true)
 	if err != nil {
 		logger.Fatal(err)
 	}
@@ -1194,7 +1259,7 @@ func main() {
 		envName:   "devdb",
 	}
 
-	_, err = virtualizationClient.batchProvisionVDB(devdb, testdb, prep1, prep2, prep3, prep4, prep5, prep6)
+	_, err = virtualizationClient.batchProvisionVDB(retPolicy, devdb, testdb, prep1, prep2, prep3, prep4, prep5, prep6)
 	if err != nil {
 		logger.Fatal(err)
 	}

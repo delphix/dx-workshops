@@ -277,10 +277,10 @@ func (c *myClient) createDatasetGroup(groupName string, wait bool) (results map[
 // groupNameList: a slice of groupNames to create
 func (c *myClient) batchCreateDatasetGroup(groupNameList ...string) (resultsList []map[string]interface{}, err error) {
 	for _, v := range groupNameList {
-		if action, err := c.createDatasetGroup(v, false); err != nil {
+		if result, err := c.createDatasetGroup(v, false); err != nil {
 			return nil, err
-		} else if action != nil {
-			resultsList = append(resultsList, action)
+		} else if result != nil && (result["job"] != nil || result["action"] != nil) {
+			resultsList = append(resultsList, result)
 		}
 	}
 	c.jobWaiter(resultsList...)
@@ -604,7 +604,7 @@ func (c *myClient) provisionPVDB(vdbParams PVDBParams, wait bool) (results map[s
 }
 
 // provisionVDB provisions VDBs
-func (c *myClient) provisionVDB(vdbParams PGVDBParams, wait bool) (results map[string]interface{}, err error) {
+func (c *myClient) provisionVDB(vdbParams PGVDBParams, retPol string, wait bool) (results map[string]interface{}, err error) {
 	namespace := "database"
 
 	if vdbObjRef, err := c.findObjectByNameReturnReference(namespace, vdbParams.vdbName); vdbObjRef == nil && err == nil {
@@ -704,13 +704,17 @@ func (c *myClient) provisionVDB(vdbParams PGVDBParams, wait bool) (results map[s
 		if wait {
 			c.jobWaiter(action)
 		}
+		err = c.applyDemoRetentionPolicy(retPol, action["result"].(string))
 		return action, err
 	} else if err != nil {
 		return nil, err
 	} else {
 		log.Debug(vdbObjRef)
 		log.Infof("%s already exists", vdbParams.vdbName)
-		return nil, err
+		results := make(map[string]interface{})
+		results["result"] = vdbObjRef.(string)
+		err = c.applyDemoRetentionPolicy(retPol, vdbObjRef.(string))
+		return results, err
 	}
 }
 
@@ -756,10 +760,10 @@ func (c *myClient) createSourceConfig(scParams AppDataStagedSourceConfig, wait b
 
 // batchProvisionVDB takes one parameter:
 // vdbParamsList: a slice of VDBParams to create
-func (c *myClient) batchProvisionVDB(vdbParamsList ...PGVDBParams) (resultsList []map[string]interface{}, err error) {
+func (c *myClient) batchProvisionVDB(retPol string, vdbParamsList ...PGVDBParams) (resultsList []map[string]interface{}, err error) {
 	for _, v := range vdbParamsList {
-		if action, err := c.provisionVDB(v, false); action != nil && err == nil {
-			resultsList = append(resultsList, action)
+		if result, err := c.provisionVDB(v, retPol, false); result != nil && err == nil && (result["job"] != nil || result["action"] != nil) {
+			resultsList = append(resultsList, result)
 		} else if err != nil {
 			return nil, err
 		}
@@ -964,8 +968,8 @@ func (c *myClient) populateMasking(user, pass string, port int) (err error) {
 // containerList: a slice of PatientContainer to create
 func (c *myClient) batchCreateSelfServiceContainer(containerList ...PatientContainer) (resultsList []map[string]interface{}, err error) {
 	for _, v := range containerList {
-		if action, err := c.createSelfServiceContainer(v, false); action != nil && err == nil {
-			resultsList = append(resultsList, action)
+		if result, err := c.createSelfServiceContainer(v, false); result != nil && err == nil && (result["job"] != nil || result["action"] != nil) {
+			resultsList = append(resultsList, result)
 		} else if err != nil {
 			return nil, err
 		}
@@ -1593,6 +1597,9 @@ func main() {
 	}
 	logger.Info(dSourceRef)
 	err = virtualizationClient.applyDemoRetentionPolicy(retPolicy, dSourceRef["result"].(string))
+	if err != nil {
+		logger.Fatal(err)
+	}
 	err = maskingClient.populateMasking(proddb.dbUser, proddb.dbPass, patmm.port)
 	if err != nil {
 		logger.Fatal(err)
@@ -1612,7 +1619,7 @@ func main() {
 	// 	logger.Fatal(err)
 	// }
 
-	_, err = virtualizationClient.provisionVDB(patmm, true)
+	_, err = virtualizationClient.provisionVDB(patmm, retPolicy, true)
 	if err != nil {
 		logger.Fatal(err)
 	}
@@ -1623,7 +1630,7 @@ func main() {
 		logger.Fatal(err)
 	}
 
-	_, err = virtualizationClient.batchProvisionVDB(devdb, testdb, prep1, prep2, prep3, prep4, prep5, prep6)
+	_, err = virtualizationClient.batchProvisionVDB(retPolicy, devdb, testdb, prep1, prep2, prep3, prep4, prep5, prep6)
 	if err != nil {
 		logger.Fatal(err)
 	}
