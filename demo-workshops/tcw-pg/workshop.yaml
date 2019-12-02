@@ -28,7 +28,7 @@ amis:
 - delphix-tcw-jumpbox-postgres11:
     packer:
       batch: 2
-      md5sum: 5109929d423e5f72149d202c6ba79cf9
+      md5sum: df34b98c999e70724250a9baa8013cc5
       name: delphix-tcw-jumpbox-postgres.json
 - delphix-centos7-source-postgres11:
     packer:
