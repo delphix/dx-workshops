@@ -9,7 +9,7 @@ These have been prepared for Mac/Linux-based installations.
 
 ## Workshop Walk-through Documentation
 
-You can view the workshop walk-through [here](http://18.236.74.213/index.html)
+You can view the workshop walk-through [here](https://delphix.github.io/toolchain-workshop-docs/300/)
 
 ## Simple Installation
 
@@ -58,7 +58,7 @@ You can view the workshop walk-through [here](http://18.236.74.213/index.html)
     AWS_SUBNET_ID=subnet-09f297f4c80d78eef
     AWS_VPC_ID=vpc-0acd2e06169cc859b
     #DELPHIX_ADMIN_PASSWORD Password must be between 6-12 characters and contain 1 digit, 1 uppercase alphabet character, and 1 special character
-    DELPHIX_ADMIN_PASSWORD=Password123
+    DELPHIX_ADMIN_PASSWORD=Password-123
     DELPHIX_VERSION=5.3.6.*
     #GUAC_USER_PASSWORD must be at least 8 characters
     GUACADMIN_PASSWORD=flonkerton
@@ -69,7 +69,7 @@ You can view the workshop walk-through [here](http://18.236.74.213/index.html)
     S3_OBJECT_PATH=/files
     VNC_DEFAULT_PASSWORD=meepmeep
 
-    #Optional - Leave the following two values commented out, if you will use the same as AWS_ACCESS_KEY_ID
+    #Optional
     #S3_AWS_ACCESS_KEY_ID=CCCCCCCCCCCCCCCCC
     #S3_AWS_SECRET_ACCESS_KEY=DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
     #AWS_AZ=us-west-2a
@@ -90,17 +90,12 @@ For those who cannot use Docker
 3. AWS bucket with:
     1. [Datical License file](www.datical.com) named datical_admin.lic
     2. [DaticalDB-linux.gtk.x86_64-2019.2.2.6029.jar](www.datical.com)
-    3. Oracle 12.2.0.1.0 -> [linuxx64_12201_database.zip](https://www.oracle.com/technetwork/database/enterprise-edition/downloads/oracle12c-linux-12201-3608234.html)
-    4. [oracle-instantclient12.2-basic-12.2.0.1.0-1.x86_64.rpm](https://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html)
-    5. [oracle-instantclient12.2-tools-12.2.0.1.0-1.x86_64.rpm](https://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html)
-    6. [oracle-instantclient12.2-jdbc-12.2.0.1.0-1.x86_64.rpm](https://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html)
-    7. [oracle-instantclient12.2-sqlplus-12.2.0.1.0-1.x86_64.rpm](https://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html)
 4. AWS access keys with permissions to read the s3 bucket from #2
 5. AWS access keys to create and destroy EC2 objects (VPCs, subnets, SGs, ami's, instances, etc)
 6. [Ansible 2.8.2+](https://www.ansible.com/)
 7. [Packer 1.4.2+](https://packer.io)
 8. [Terraform >=0.12.5](https://terraform.io)
-9. [git](https://git-scm.com/downloads)
+9.  [git](https://git-scm.com/downloads)
 10. [jq](https://stedolan.github.io/jq/)
 11. [python 2.7](https://www.python.org)
 12. [netaddr](https://pypi.org/project/netaddr)

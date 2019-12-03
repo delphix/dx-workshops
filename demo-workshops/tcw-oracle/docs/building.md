@@ -9,7 +9,7 @@ These have been prepared for Mac/Linux-based installations.
 
 ## Workshop Walk-through Documentation
 
-You can view the workshop walk-through [here](http://18.236.74.213/index.html)
+You can view the workshop walk-through [here](https://delphix.github.io/toolchain-workshop-docs/300/)
 
 ## Simple Installation
 
@@ -52,7 +52,7 @@ You can view the workshop walk-through [here](http://18.236.74.213/index.html)
 
 ### Environment File
 
-    AWS_ACCESS_KEY_ID=AAAAAAAAAAAAAAAAAAAA
+        AWS_ACCESS_KEY_ID=AAAAAAAAAAAAAAAAAAAA
     AWS_COSTCENTER=867-5309 - Who Do I Turn To
     AWS_EXPIRATION=2037-07-01
     AWS_KEYNAME=KEY NAME WITHOUT .pem
@@ -63,7 +63,7 @@ You can view the workshop walk-through [here](http://18.236.74.213/index.html)
     AWS_SUBNET_ID=subnet-09f297f4c80d78eef
     AWS_VPC_ID=vpc-0acd2e06169cc859b
     #DELPHIX_ADMIN_PASSWORD Password must be between 6-12 characters and contain 1 digit, 1 uppercase alphabet character, and 1 special character
-    DELPHIX_ADMIN_PASSWORD=Password123
+    DELPHIX_ADMIN_PASSWORD=Password-123
     DELPHIX_VERSION=5.3.6.*
     #GUAC_USER_PASSWORD must be at least 8 characters
     GUACADMIN_PASSWORD=flonkerton
@@ -74,7 +74,7 @@ You can view the workshop walk-through [here](http://18.236.74.213/index.html)
     S3_OBJECT_PATH=/files
     VNC_DEFAULT_PASSWORD=meepmeep
 
-    #Optional - Leave the following two values commented out, if you will use the same as AWS_ACCESS_KEY_ID
+    #Optional
     #S3_AWS_ACCESS_KEY_ID=CCCCCCCCCCCCCCCCC
     #S3_AWS_SECRET_ACCESS_KEY=DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
     #AWS_AZ=us-west-2a
