@@ -131,7 +131,7 @@
     "pg_ver": "{{env `PG_VER`}}",
     "region": "{{env `AWS_REGION`}}",
     "release": "{{env `RELEASE`}}",
-    "seed": "d27a7e6",
+    "seed": "1cc49c3",
     "source": "delphix-ubuntu-bionic-guacamole.json",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",
     "vpc_id": "{{env `AWS_VPC_ID`}}"
