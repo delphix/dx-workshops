@@ -1,9 +1,8 @@
 # Various Delphix Dynamic Data Platform Workshops and associated automation artifacts like Packer templates, Terraform blueprints, Golang, etc <!-- omit in toc -->
 
+- [Toolchain Workshops](#toolchain-workshops)
 - [Description](#description)
 - [Go Examples](#go-examples)
-- [Workshops](#workshops)
-  - [Toolchain Workshop](#toolchain-workshop)
 - [Base Templates](#base-templates)
   - [Usage](#usage)
     - [Configuring](#configuring)
@@ -15,6 +14,13 @@
 - [Reporting Issues](#reporting-issues)
 - [Statement of Support](#statement-of-support)
 - [License](#license)
+
+## Toolchain Workshops
+
+If you are interested in deploying the Toolchain Workshops, please see the instructions at one of the following links below:
+
+[Oracle Toolchain Workshop](demo-workshops/tcw-oracle/docs/building.md)
+[Postgres Toolchain Workshop](demo-workshops/tcw-pg/docs/building.md)
 
 ## Description
 
@@ -44,12 +50,6 @@ The Oracle templates requires access to the Oracle binaries placed in an AWS s3 
 
 The go directory contains examples of interacting with the Delphix Dynamic Data Platform using golang. The examples in that directory are purpose-built to be used in the workshops contained within this repo.
 
-## Workshops
-
-### Toolchain Workshop
-
-Please see the documentation for the [Toolchain Workshop](demo-workshops/tcw/docs/building.md)
-
 ## Base Templates
 
 1. Clone this repository
@@ -62,7 +62,6 @@ After cloning this repo, install the required Ansible dependencies.
 ```bash
 brew install ansible packer git
 git clone https://github.com/delphix/dx-workshops
-cd base-templates
 cp .example.env .example.env
 ansible-galaxy install -r roles/X_requirements.yml
 ```
@@ -96,6 +95,7 @@ The below values are arbitrary, and only for tagging resources
 
 ```bash
 source .example.env
+cd packer-templates
 packer build delphix-centOS6.9-oracle11.2.0.4.json
 ```
 
@@ -120,6 +120,7 @@ Second Example:
 
 ```bash
 source .dafdb-source
+cd packer-templates
 packer build delphix-toolchain-dafdb-source.json
 ```
 
