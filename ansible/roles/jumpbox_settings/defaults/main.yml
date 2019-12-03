@@ -25,7 +25,7 @@ lab_systems:
   - prodweb
   - testweb
 
-docs_host: "18.236.74.213"
+docs_host: "https://delphix.github.io/toolchain-workshop-docs/archives"
 
 docs_ver: "300"
 
