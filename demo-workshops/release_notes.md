@@ -12,7 +12,7 @@
 7. numerous stability enhancements
 8. Data Catalog bookmarks now include HMS, to allow multiple daily entries
 9. Added scripts/tests to test sequence of operations on a build
-10. dSource now has super long retention Policy to avoid workshop issues
+10. dSource and VDBs now have super long retention Policy to avoid workshop issues
 11. zip code is now masked in the patients data
 12. Chrome caching/fetching is turned off on the jumpbox
 13. Corrected Masking Engine bookmark
