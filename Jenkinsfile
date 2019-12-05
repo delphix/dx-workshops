@@ -205,14 +205,12 @@ pipeline {
     }
     post{
         always{
-            script{environment.terraformDestroy("tcw-oracle")}
-            script{environment.terraformDestroy("tcw-pg")}
             script{environment.chownership()}
         }
-        // success{
-        //     script{environment.terraformDestroy("tcw-oracle")}
-        //     script{environment.terraformDestroy("tcw-pg")}
-        // }
+        success{
+            script{environment.terraformDestroy("tcw-oracle")}
+            script{environment.terraformDestroy("tcw-pg")}
+        }
     }
 }
  
