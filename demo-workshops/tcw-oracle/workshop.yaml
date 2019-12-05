@@ -33,12 +33,12 @@ amis:
 - delphix-tcw-source-oracle12:
     packer:
       batch: 3
-      md5sum: 76fcffd8af38f2a9ce0182fd9abd24d6
+      md5sum: aa40bc9771a864e5f05e4c849010f487
       name: delphix-tcw-source-oracle12.json
 - delphix-tcw-target-oracle12:
     packer:
       batch: 3
-      md5sum: f7d0abb79b4fdbc52a5d3f58f1aee8d1
+      md5sum: 43a0bf5c5f8649525198351e28fb5523
       name: delphix-tcw-target-oracle12.json
 - delphix-tcw-centos7-tooling-base:
     packer:
