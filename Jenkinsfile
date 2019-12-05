@@ -183,6 +183,8 @@ pipeline {
                             }
                             steps{
                                 dir(env.TF_DIR){
+                                    // Change the subnet so that we are also testing the reconfiguration on provisioning
+                                    sh "sed -e 's|cidr_block.*|cidr_block = \"10.0.2.0/24\"|' ${env.TF_DIR}/modules/subnet/main.tf"
                                     script{environment.terraformBuild("true",env.WORKSHOP)}
                                 }
                             }
