@@ -90,7 +90,7 @@ pipeline {
                             }
                             steps{
                                 echo "Copying firewall rules"
-                                sh "cp /var/lib/jenkins/firewall.tf ${env.TF_DIR}/modules/firewall/main.tf"
+                                sh "cp /var/lib/jenkins/firewall.tf ${env.TF_DIR}/modules/firewall/variables.tf"
                                 dir(env.TF_DIR){
                                     script{environment.terraformBuild("false",env.WORKSHOP)}
                                 }
@@ -123,7 +123,7 @@ pipeline {
                             steps{
                                 dir(env.TF_DIR){
                                     // Change the subnet so that we are also testing the reconfiguration on provisioning
-                                    sh "sed -i -e 's|\"0\".*|\"0\" = \"10.0.2.0/24\"|' modules/subnet/main.tf"
+                                    sh "sed -i -e 's|\"0\".*|\"0\" = \"10.0.2.0/24\"|' modules/subnet/variables.tf"
                                     script{environment.terraformBuild("true",env.WORKSHOP)}
                                 }
                             }
