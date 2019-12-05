@@ -31,19 +31,19 @@ You can view the workshop walk-through [here](https://delphix.github.io/toolchai
 2. Copy the .example.docker file to .docker.env and edit the variables to suit your environment (i.e. AWS keys and region) See #EnvironmentFile below
 3. Open a terminal in the root of this repository
 4. Build the demo AMI's in AWS via the Docker container (this process will take 45-60 minutes  
-```docker-compose run tcw build```
+```docker-compose run tcw-pg build```
 5. Once the container completes, check for an ERROR.log or READY.log file. READY.log means the ami's were created successfully. ERROR.log means there was an issue. Please examine and resolve the issue and then start the process again. The build should resume from the last successful AMI.
 6. Deploy the environment (this takes just a few minutes)  
-```docker-compose run tcw deploy```
+```docker-compose run tcw-pg deploy```
 7. To get your environment information  
-```docker-compose run tcw env```
+```docker-compose run tcw-pg env```
 8. The login username for the jumpbox is delphix, and the password is the value from the GUAC_USER_PASSWORD in your .docker.env
 9. After the workshop is deployed, it can take 20-25 minutes for the environment automation to start and configure all of the components. There are two easy ways to check on the status of the workshop:
    1. Login to the jumpbox. When the file named WAIT on the desktop changes to READY, the workshop is ready to use. If the WAIT file changes to ERROR, something went wrong. This file is a log, you can open to inspect what happened.
    2. Use the built-in `ready` command. This command will tail the above log file and will return when the startup routine is correct.  
-   ```docker-compose run tcw ready```
+   ```docker-compose run tcw-pg ready```
 1.  When you are finished using your environment, teardown the environment  
-```docker-compose run tcw destroy```
+```docker-compose run tcw-pg destroy```
 
 ### Environment File
 
@@ -108,16 +108,16 @@ For those who cannot use Docker
 2. Copy the .example.env file to .environment.env and edit the variables to suit your environment (i.e. AWS keys and region) See #EnvironmentFile above
 . Open a terminal in the root of this repository
 3. Build the demo AMI's in AWS (this process will take 45-60 minutes)  
-```demo-workshops/tcw/image-builder/packer_build.sh```
+```demo-workshops/tcw-pg/image-builder/packer_build.sh```
 4. Once the build completes, check for an ERROR.log or READY.log file. READY.log means the ami's were created successfully. ERROR.log means there was an issue. Please examine and resolve the issue and then start the process again. The build should resume from the last successful AMI.
 5. Deploy the environment (this takes just a few minutes)  
-```demo-workshops/tcw/image-builder/terraform.sh apply```
+```demo-workshops/tcw-pg/image-builder/terraform.sh apply```
 6. To get your environment information  
-```demo-workshops/tcw/image-builder/terraform.sh output environment```
+```demo-workshops/tcw-pg/image-builder/terraform.sh output environment```
 7. The login username for the jumpbox is delphix, and the password is the value from the GUAC_USER_PASSWORD in your .docker.env
 8. When the WAIT file changes to READY on the desktop, the workshop is ready to use. If the WAIT file changes to ERROR, then examine the file to see what error has occurred. (This can take 20-25 minutes)
 9. When you are finished using your environment, teardown the environment  
-```demo-workshops/tcw/image-builder/terraform.sh destroy```
+```demo-workshops/tcw-oracle/image-builder/terraform.sh destroy```
 
 ### Upgrading
 
@@ -125,5 +125,5 @@ If you are pulling an updated copy of this repo:
 
 1. Validate any updates to the environment variables
 2. Force a rebuild of the docker container, just to be sure you have all the latest changes.  
-```docker-compose run tcw build --no-cache```
+```docker-compose run tcw-pg build --no-cache```
 3. Then follow from step 3 of [Simple Installation](#simple-installation)

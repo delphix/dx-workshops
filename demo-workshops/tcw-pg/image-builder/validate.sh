@@ -8,7 +8,7 @@ trap "cleanup" SIGINT
 S3_BINARIES=(Plugin_postgreSQL_1.3.0.zip datical_admin.lic DaticalDB-linux.gtk.x86_64-5.2.5347.jar linuxx64_12201_database.zip oracle-instantclient12.2-basic-12.2.0.1.0-1.x86_64.rpm oracle-instantclient12.2-tools-12.2.0.1.0-1.x86_64.rpm oracle-instantclient12.2-jdbc-12.2.0.1.0-1.x86_64.rpm oracle-instantclient12.2-sqlplus-12.2.0.1.0-1.x86_64.rpm)
 
 function HELP() {
-    echo -e "\nPlease visit https://github.com/delphix/dx-workshops/blob/master/demo-workshops/tcw/docs/building.md to validate the pre-requisites."
+    echo -e "\nPlease visit https://github.com/delphix/dx-workshops/blob/master/demo-workshops/tcw-pg/docs/building.md to validate the pre-requisites."
     exit 1
 }
 
