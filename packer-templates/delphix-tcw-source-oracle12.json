@@ -117,7 +117,7 @@
     "md5sum": "",
     "region": "{{env `AWS_REGION`}}",
     "release": "{{env `RELEASE`}}",
-    "seed": "3a2bf76",
+    "seed": "8eb23a1",
     "source": "delphix-centos7-oracle-12.2.0.1.json",
     "subnet_id": "{{env `AWS_SUBNET_ID`}}",
     "vpc_id": "{{env `AWS_VPC_ID`}}"
