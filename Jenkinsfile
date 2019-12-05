@@ -123,7 +123,7 @@ pipeline {
                             steps{
                                 dir(env.TF_DIR){
                                     // Change the subnet so that we are also testing the reconfiguration on provisioning
-                                    sh "sed -i -e 's|cidr_block.*|cidr_block = \"10.0.2.0/24\"|' modules/subnet/main.tf"
+                                    sh "sed -i -e 's|\"0\".*|\"0\" = \"10.0.2.0/24\"|' modules/subnet/main.tf"
                                     script{environment.terraformBuild("true",env.WORKSHOP)}
                                 }
                             }
@@ -186,7 +186,7 @@ pipeline {
                             steps{
                                 dir(env.TF_DIR){
                                     // Change the subnet so that we are also testing the reconfiguration on provisioning
-                                    sh "sed -i -e 's|cidr_block.*|cidr_block = \"10.0.2.0/24\"|' modules/subnet/main.tf"
+                                    sh "sed -i -e 's|\"0\".*|\"0\" = \"10.0.2.0/24\"|' modules/subnet/main.tf"
                                     script{environment.terraformBuild("true",env.WORKSHOP)}
                                 }
                             }
