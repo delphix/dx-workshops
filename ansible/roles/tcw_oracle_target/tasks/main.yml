@@ -31,6 +31,14 @@
     regexp: '^environment_address'
     line: 'environment_address=devdb'
   become_user: root
+- name: Add a restart dbora if not running to cron 
+  cron:
+    name: "Enroll into Delphix on boot"
+    special_time: reboot
+    job: "if [[ ! $(pgrep 'ora_.*_.*cdb') ]]; then echo \"starting oracle\" > /tmp/db.log; sudo -i -u oracle dbstart &>> /tmp/db.log; fi; pgrep _patcdb &>> /tmp/db.log"
+  become: no
+  tags:
+    - cron
 - name: Creates the reboot crontab for self_enroll 
   cron:
     name: "Enroll into Delphix on boot"
