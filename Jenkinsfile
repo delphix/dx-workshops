@@ -22,6 +22,8 @@ pipeline {
                 sh "cp ${env.ANSIBLE_CERT}* certs"
                 echo "Copying env file"
                 sh "cp /var/lib/jenkins/.docker.env ."
+                echo "cleaning up docker"
+                sh "docker rmi -f tcw-oracle tcw-pg"
                 // echo "Copying s3 backend file"
                 // sh "cp /var/lib/jenkins/terraform_dev_backend.tf ${env.TF_DIR}/."
             }
