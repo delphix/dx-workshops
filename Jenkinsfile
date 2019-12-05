@@ -90,7 +90,7 @@ pipeline {
                             }
                             steps{
                                 echo "Copying firewall rules"
-                                sh "cp /var/lib/jenkins/firewall.tf ${env.TF_DIR}/modules/firewall/firewall.tf"
+                                sh "cp /var/lib/jenkins/firewall.tf ${env.TF_DIR}/modules/firewall/main.tf"
                                 dir(env.TF_DIR){
                                     script{environment.terraformBuild("false",env.WORKSHOP)}
                                 }
