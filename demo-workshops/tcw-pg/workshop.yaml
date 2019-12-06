@@ -15,7 +15,7 @@ amis:
       batch: 2
       md5sum: 290b20c4898fcdcc5a741082302e186c
       name: delphix-centos7-base-postgres.json
-- delphix-tcw-centos7-patients-app:
+- delphix-tcw-centos7-patients-app-postgres11:
     packer:
       batch: 2
       md5sum: 15519faf0e1438effdb63bd2d274c84c
@@ -50,5 +50,5 @@ amis:
       batch: 4
       md5sum: c0dea28d498385a11b63a80d652ff26b
       name: delphix-tcw-tooling-postgres.json
-- delphix-tcw-virtualizationengine: {}
-- delphix-tcw-maskingengine: {}
+- delphix-tcw-virtualizationengine-postgres11: {}
+- delphix-tcw-maskingengine-postgres11: {}

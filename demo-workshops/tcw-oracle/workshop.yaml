@@ -15,7 +15,7 @@ amis:
       batch: 2
       md5sum: ad8f60a1472314cbfd5a86475dadfb8c
       name: delphix-centos7-oracle-12.2.0.1.json
-- delphix-tcw-centos7-patients-app:
+- delphix-tcw-centos7-patients-app-oracle12:
     packer:
       batch: 2
       md5sum: 15519faf0e1438effdb63bd2d274c84c
@@ -50,5 +50,5 @@ amis:
       batch: 4
       md5sum: 72dec0ac67ef3144f260d52fd8e8ddc6
       name: delphix-tcw-tooling-oracle12.json
-- delphix-tcw-virtualizationengine: {}
-- delphix-tcw-maskingengine: {}
+- delphix-tcw-virtualizationengine-oracle12: {}
+- delphix-tcw-maskingengine-oracle12: {}
