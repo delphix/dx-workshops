@@ -104,8 +104,12 @@ function CERT_TEST() {
 
 function AMI_INFO() {
     for each in "$@"; do
-        # query for an existing AMI with the name and md5sum number, and store that information in a file
-        aws ec2 --region ${AWS_REGION} describe-images --owner self --filters "Name=name,Values=${each}-*" "Name=tag:md5sum,Values=$(GET_MD5SUM ${each})" --query 'sort_by(Images, &CreationDate)[-1]' > /tmp/${each}_info.json
+      unset TAG_FILTER
+      if [[ -n $(GET_MD5SUM ${each}) ]]; then
+        TAG_FILTER="Name=tag:md5sum,Values=$(GET_MD5SUM ${each})"
+      fi
+      # query for an existing AMI with the name and md5sum number, and store that information in a file
+      aws ec2 --region ${AWS_REGION} describe-images --owner self --filters "Name=name,Values=${each}-*" ${TAG_FILTER} --query 'sort_by(Images, &CreationDate)[-1]' > /tmp/${each}_info.json
     done
     JOB_WAIT
 }
@@ -278,6 +282,20 @@ function RETURN_AMI_NAMES {
     AMIS="${@}"
   fi
   echo $AMIS
+}
+
+function LAB_PRINT() {
+    for SYSTEM in $(GET_SYSTEMS); do
+      for AMI_NAME in $(RETURN_AMI_NAMES ${SYSTEM}); do
+        unset TAG_FILTER
+        if [[ -n $(GET_MD5SUM ${AMI_NAME}) ]]; then
+          TAG_FILTER="Name=tag:md5sum,Values=$(GET_MD5SUM ${AMI_NAME})"
+        fi
+        # query for an existing AMI with the name and md5sum number, and store that information in a file
+        AMIID=$(aws ec2 --region ${AWS_REGION} describe-images --owner self --filters "Name=name,Values=${AMI_NAME}-*" ${TAG_FILTER} --query 'sort_by(Images, &CreationDate)[-1]' | jq -r '.ImageId')
+      done
+      [[ ${AMIID} != "null" ]] && echo ${SYSTEM}: ${AMIID}
+    done
 }
 
 function help() {
