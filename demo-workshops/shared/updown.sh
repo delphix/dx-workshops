@@ -9,7 +9,7 @@ SYSTEM_IDS=()
 cd ${TERRAFORM_BLUEPRINTS}
 
 function STATUS(){
-  aws ec2 --region ${AWS_REGION} describe-instances --instance-ids ${SYSTEM_IDS[@]} --output text --query "Reservations[*].Instances[*].[ImageId,State.Name]"
+  aws ec2 --region ${AWS_REGION} describe-instances --instance-ids ${SYSTEM_IDS[@]} --output text --query "Reservations[*].Instances[*].[InstanceId,State.Name]"
 }
 
 function WAIT_FOR(){
