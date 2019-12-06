@@ -2,6 +2,10 @@
 
 ## What's Changed
 
+### v3.01
+1. Updated names in workshop.yaml for accuracy
+2. added internal lab_print() function
+
 ### v3.0
 1. Postgres workshop added
 2. Minimum Delphix version 5.3.6
