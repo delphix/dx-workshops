@@ -285,17 +285,18 @@ function RETURN_AMI_NAMES {
 }
 
 function LAB_PRINT() {
-    for SYSTEM in $(GET_SYSTEMS); do
-      for AMI_NAME in $(RETURN_AMI_NAMES ${SYSTEM}); do
-        unset TAG_FILTER
-        if [[ -n $(GET_MD5SUM ${AMI_NAME}) ]]; then
-          TAG_FILTER="Name=tag:md5sum,Values=$(GET_MD5SUM ${AMI_NAME})"
-        fi
-        # query for an existing AMI with the name and md5sum number, and store that information in a file
-        AMIID=$(aws ec2 --region ${AWS_REGION} describe-images --owner self --filters "Name=name,Values=${AMI_NAME}-*" ${TAG_FILTER} --query 'sort_by(Images, &CreationDate)[-1]' | jq -r '.ImageId')
-      done
-      [[ ${AMIID} != "null" ]] && echo ${SYSTEM}: ${AMIID}
+  SUFFIX=${1:-$SUFFIX}
+  for SYSTEM in $(GET_SYSTEMS); do
+    for AMI_NAME in $(RETURN_AMI_NAMES ${SYSTEM}); do
+      unset TAG_FILTER
+      if [[ -n $(GET_MD5SUM ${AMI_NAME}) ]]; then
+        TAG_FILTER="Name=tag:md5sum,Values=$(GET_MD5SUM ${AMI_NAME})"
+      fi
+      # query for an existing AMI with the name and md5sum number, and store that information in a file
+      AMIID=$(aws ec2 --region ${AWS_REGION} describe-images --owner self --filters "Name=name,Values=${AMI_NAME}-*" ${TAG_FILTER} --query 'sort_by(Images, &CreationDate)[-1]' | jq -r '.ImageId')
     done
+    [[ ${AMIID} != "null" ]] && echo ${SYSTEM}: ${AMIID}
+  done
 }
 
 function help() {

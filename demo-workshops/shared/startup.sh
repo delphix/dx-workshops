@@ -52,6 +52,9 @@ image)
 ready)
   exec /bin/ws_ready.sh
   ;;
+lab_print)
+  LAB_PRINT "$@"
+  ;;
 ""|*)
   help
   ;;
